@@ -45,3 +45,32 @@
         padding: initial;
         margin: 0 auto;
     }
+
+.swipeout > .card {
+    margin:2px !important;
+}    
+
+.swipeout-actions-right {
+    height: 97% !important; 
+    top: 2% !important; 
+}
+
+.toolbar {
+    background: rgba(0, 0, 0, 0.88) !important;
+}
+
+.toolbar-text {
+    font-size: 25px !important;
+    color: white;
+}
+
+.toolbar-inner > .button {
+    border: initial;
+}
+
+.toolbar-text > .toolbar-icon {
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+    font-size: 22px;
+}

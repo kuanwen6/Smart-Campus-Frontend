@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-   <meta http-equiv="Content-Security-Policy" content="
+    <meta http-equiv="Content-Security-Policy" content="
                                 default-src *;
                                 style-src 'self' 'unsafe-inline'; 
                                 script-src * 'self' 'unsafe-inline' 'unsafe-eval';
                                 img-src 'self' data: content:;
-                                connect-src * ;">  
+                                connect-src * ;">
     
     
     <!-- Required meta tags-->
@@ -28,10 +28,7 @@
     .center{
       text-align: center;
     }
-    .high-button{
-      height: 50vh !important;
-    }
-    .favorite-cards{
+    .big-card{
         width:100%;
         padding: initial;
         margin: 0 auto;
@@ -54,25 +51,22 @@
                         <span>Back</span>
                     </a>
                 </div>
-                <div class="center" >自訂行程</div>
+                <div class="center" >讓我推薦你</div>
                 <div class="right">
                     
                 </div>
             </div>
         </div>
         <div class="pages navbar-through">
-          <div data-page="customRoute" class="page">
+          <div data-page="themeRoute" class="page no-toolbar">
             <!-- Scrollable page content-->
             <div class="page-content">
-              <div class="content-block favorite-cards">
-                <div class="list-block">
-                  <ul class="swipe-list" style="position:initial;background:none;">
-                  </ul>
-                </div>
-              </div>
+              <div class="content-block big-card"></div>
+              
             </div>
           </div>
         </div>
+        
       </div>
     </div>
     <!-- Path to Framework7 Library JS-->

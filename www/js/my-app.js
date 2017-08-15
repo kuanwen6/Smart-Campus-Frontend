@@ -77,11 +77,15 @@ function createCards() {
 
 function createFavoriteCards() {
   for (let i = 0; i < favorite.length; i += 1) {
-    $$('.favorite-cards').append(`<div class="card" id="${favorite[i].id}">
+    $$('.swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
+                <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:15vh;">
                         <div class="row no-gutter">
-                            <i class="f7-icons color-black delete-route" id="${favorite[i].id}" style="font-weight:bold; font-size:20px;position:absolute;right:0px;">delete_round</i>
-                            <div class="col-35"><img src="${favorite[i].img}" style="width:20vh;height:15vh;"></div>
+                            <i class="f7-icons color-red delete-route" id="${favorite[i].id}" style="font-size:21px;position:absolute;right:8px; top:5px;">delete_round_fill</i>
+                            <div class="col-35">
+                              <img src="${favorite[i].img}" style="width:20vh;height:15vh;">
+                              <i class="f7-icons color-red" style="font-size:17px;position:absolute;bottom:3px;left:16.5vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                            </div>
                             <div class="col-60" style="padding:8px;">
                                 <div class="card-title"><span>${favorite[i].title}</span></div>
                                 <div class="row" style="margin-top:8vh;">
@@ -91,7 +95,17 @@ function createFavoriteCards() {
                             </div>
                         </div>
                     </div>
-                </div>`);
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete swipeout-overswipe">
+                    <div>
+                      <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">trash_fill</i>
+                      <br>
+                      <p style="font-size:13px;">確認刪除</p>
+                    </div>
+                  </a>
+                </div>
+              </li>`);
   }
 }
 
@@ -102,6 +116,28 @@ function findRoute(id) {
     }
   }
 }
+
+
+$$('.center').on('click', () => {
+  let modal = document.getElementById('myModal');
+
+  // Get the image and insert it inside the modal - use its "alt" text as a caption
+  let img = document.getElementById('themeImg');
+  let modalImg = document.getElementById('img01');
+  let captionText = document.getElementById('caption');
+  img.onclick = () => {
+    modal.style.display = 'block';
+    modalImg.src = 'img/leadership.png';
+  };
+
+  // Get the <span> element that closes the modal
+  let span = document.getElementsByClassName('close')[0];
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+    modal.style.display = 'none';
+  }
+});
 
 myApp.onPageInit('themeRoute', (page) => {
 // run createContentPage func after link was clicked
@@ -114,6 +150,7 @@ myApp.onPageInit('themeRoute', (page) => {
       context: {
         title: route.title,
         time: route.time,
+        previous: 'themeRoute.html',
       },
     });
   });
@@ -121,28 +158,30 @@ myApp.onPageInit('themeRoute', (page) => {
 
 myApp.onPageInit('routeDetail', (page) => {
 // run createContentPage func after link was clicked
-  $$('.toolbar-inner').html('<a href="#" class="button button-big" style="text-align:center; margin:0 auto; font-size: 30px; height:48px;">開始參觀</a>');
+  $$('.toolbar-inner').html(`<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀
+                              <i class="f7-icons color-red toolbar-icon">navigation_fill</i></a>`);
 });
 
 myApp.onPageInit('customRoute', (page) => {
 // run createContentPage func after link was clicked
-  $$('.toolbar-inner').html('<a href="#" class="button button-big" style="text-align:center; margin:0 auto; font-size: 30px; height:48px;">確定行程</a>');
+  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>');
+  
   createFavoriteCards();
 
-  $$('.delete-route').on('click', function () { // if change to () => { ,it will go wrong!
-    console.log(this.id);
+  $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
+    myApp.swipeoutOpen($$(`li#${this.id}`));
     myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
-    $$(`#${this.id}`).remove();
+    myApp.swipeoutDelete($$(`li#${this.id}`));
   });
 
-  $$('.button-big').on('click', () => {
+  $$('.toolbar').on('click', () => {
     mainView.router.load({
       url: 'routeDetail.html',
       context: {
         title: '自訂行程',
-        time: 'unknow',
+        time: 'unknown',
+        previous: 'customRoute.html',
       },
     });
   });
 });
-
