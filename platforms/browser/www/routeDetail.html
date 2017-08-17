@@ -15,18 +15,35 @@
   <div data-page="routeDetail" class="page">
     <!-- Scrollable page content-->
     <div class="page-content">
-      <div class="content-block">
-        <div class="intro">
-          <p style="font-size: 6.5vw;">行程介紹:</p>
-          <a style="font-size: 4vw; margin-left: 4vw;">{{introduction}}</a>
-        </div>
-        <div class="time">
-          <p style="font-size:6.5vw;">預計時間:</p>
-          <a style="font-size: 4vw; margin-left: 4vw;">{{time}}分鐘</a>
-        </div>
-        <div class="itemList">
-          <p style="font-size:6.5vw;">景點列表:</p>
-          <a style="font-size: 4vw; margin-left: 4vw;">{{itemList}}</a>
+      <div class="content-block" style="padding: 0px;">
+        <div class="list-block accordion-list">
+          <ul>
+            <li class="accordion-item" id="time"><a href="#" class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">預計時間: {{time}}分鐘</div>
+                </div></a>
+            </li>
+            <li class="accordion-item" id="introduction"><a href="#" class="item-link">
+                <div class="item-inner">
+                  <div class="item-title">行程介紹</div>
+                </div></a>
+              <div class="accordion-item-content">
+                <div class="content-block">
+                  <p>{{introduction}}</p>
+                </div>
+              </div>
+            </li>
+            <li class="accordion-item" id="itemList"><a href="#" class="item-link">
+                <div class="item-inner">
+                  <div class="item-title">景點列表</div>
+                </div></a>
+              <div class="accordion-item-content">
+                <div class="content-block">
+                  <p>{{itemList}}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

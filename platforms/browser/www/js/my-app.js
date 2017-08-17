@@ -151,6 +151,7 @@ myApp.onPageInit('themeRoute', (page) => {
         title: route.title,
         time: route.time,
         previous: 'themeRoute.html',
+        introduction: route.info,
       },
     });
   });
@@ -160,12 +161,12 @@ myApp.onPageInit('routeDetail', (page) => {
 // run createContentPage func after link was clicked
   $$('.toolbar-inner').html(`<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀
                               <i class="f7-icons color-red toolbar-icon">navigation_fill</i></a>`);
+  myApp.accordionOpen($$('li#introduction'));
 });
 
 myApp.onPageInit('customRoute', (page) => {
 // run createContentPage func after link was clicked
-  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>');
-  
+  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>'); 
   createFavoriteCards();
 
   $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!

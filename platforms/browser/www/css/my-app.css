@@ -31,6 +31,11 @@
   font-feature-settings: "liga";
 }
 
+body {
+    font-family: Microsoft JhengHei;
+    letter-spacing: 2px;
+}
+
 .big-card{
         width:100%;
         padding: initial;
@@ -57,11 +62,14 @@
 
 .toolbar {
     background: rgba(0, 0, 0, 0.88) !important;
+    height: 9.5vh;
 }
 
 .toolbar-text {
-    font-size: 25px !important;
+    font-size: 20px !important;
     color: white;
+    font-family: Microsoft JhengHei;
+    letter-spacing: 3px;
 }
 
 .toolbar-inner > .button {
@@ -75,7 +83,6 @@
     font-size: 22px;
 }
 
-
 .center{
     text-align: center;
 }
@@ -85,6 +92,37 @@
     margin-bottom: -3vh;
 }
 
+.favorite-cards > .list-block {
+    margin: 0px;
+}
+
+.favorite-tab {
+    text-align: center; 
+    color: white; 
+    font-size: 2.5vh;
+    height: 4.5vh;
+    line-height: 4.5vh;
+    background-color: purple;
+}
+
+.accordion-item > .item-link, .accordion-item > .item-content {
+    padding-left: 0;
+    background-color: pink; 
+}
+
+.accordion-item > .item-link > .item-inner {
+    padding-right: 0px;
+    background-image: initial; 
+}
+
+.accordion-item > .item-link > .item-inner > .item-title, .accordion-item > .item-content > .item-inner > .item-title {
+    margin: 0 auto;
+    color: white;
+}
+
+.content-block > .content-block > .content-block-inner > p {
+    margin: 0.3em 0;
+}
 
 /* The Modal (background) */
 .custom-modal {
