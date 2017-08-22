@@ -117,21 +117,19 @@ function findRoute(id) {
   }
 }
 
-
 $$('.center').on('click', () => {
-  let modal = document.getElementById('myModal');
+  const modal = document.getElementById('myModal');
 
   // Get the image and insert it inside the modal - use its "alt" text as a caption
-  let img = document.getElementById('themeImg');
-  let modalImg = document.getElementById('img01');
-  let captionText = document.getElementById('caption');
+  const img = document.getElementById('themeImg');
+  const modalImg = document.getElementById('img01');
   img.onclick = () => {
     modal.style.display = 'block';
     modalImg.src = 'img/leadership.png';
   };
 
   // Get the <span> element that closes the modal
-  let span = document.getElementsByClassName('close')[0];
+  const span = document.getElementsByClassName('close')[0];
 
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
@@ -139,7 +137,7 @@ $$('.center').on('click', () => {
   }
 });
 
-myApp.onPageInit('themeRoute', (page) => {
+myApp.onPageInit('themeRoute', () => {
 // run createContentPage func after link was clicked
   createCards();
 
@@ -152,19 +150,20 @@ myApp.onPageInit('themeRoute', (page) => {
         time: route.time,
         previous: 'themeRoute.html',
         introduction: route.info,
+        img: route.img,
       },
     });
   });
 });
 
-myApp.onPageInit('routeDetail', (page) => {
+myApp.onPageInit('routeDetail', () => {
 // run createContentPage func after link was clicked
   $$('.toolbar-inner').html(`<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀
                               <i class="f7-icons color-red toolbar-icon">navigation_fill</i></a>`);
   myApp.accordionOpen($$('li#introduction'));
 });
 
-myApp.onPageInit('customRoute', (page) => {
+myApp.onPageInit('customRoute', () => {
 // run createContentPage func after link was clicked
   $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>'); 
   createFavoriteCards();
@@ -182,7 +181,80 @@ myApp.onPageInit('customRoute', (page) => {
         title: '自訂行程',
         time: 'unknown',
         previous: 'customRoute.html',
+        img: 'img/ncku.jpg',
       },
+    });
+  });
+});
+
+myApp.onPageInit('gamePage', () => {
+  /* TODO 
+  const question = getQuestion(beacon_id);
+  const options = getOptions();
+  const answer = getAnswer();
+
+  $$('#questionTextArea').html(question);
+  for (let i=0; i<4; i++) {
+    $$(`#answer{i+1}`).html(options[i]);
+  }
+
+  $$('.answer').on('click', function () {
+    lockButton();
+    if (this.id === answer) {
+      correct();
+    } else {
+      wrong();
+    }
+  });
+
+  $$('.confirm').on('click', () => {
+    freeButton();
+    redirection();
+  });
+  */
+
+  const question = '哪座雕像是以魯迅為本的雕塑品，營造出........................';
+  const options = ['沉思者', '太極', '詩人', '舞動'];
+  const answer = 'answer1';
+
+  $$('#questionTextArea').html(question);
+  for (let i = 0; i < 4; i += 1) {
+    $$(`#answer${i+1}`).html(options[i]);
+  }
+
+  $$('.answer').on('click', function answerClicked() {
+    $$('.answer').off('click', answerClicked); // lock the button
+    
+    const modal = $$('#gameEnd-modal');
+    const modalImg = $$('#endImg');
+    if (this.id === 'answer1') {
+      $$(`#${this.id}`).css('background', 'green');
+      $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+      <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+      <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+    </svg>`);
+      setTimeout(() => {
+        modal.css('display', 'block');
+        modalImg.attr('src', 'img/leadership.png');
+      }, 1000);
+    } else {
+      console.log('fail');
+      $$(`#${this.id}`).css('background', 'pink');
+      $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+      <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+      <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
+      <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
+    </svg>`);
+      setTimeout(() => {
+        modal.css('display', 'block');
+        modalImg.attr('src', 'img/leadership.png');
+      }, 1000);
+    }
+  });
+
+  $$('.confirm').on('click', () => {
+    mainView.router.load({
+      url: 'index.html',
     });
   });
 });

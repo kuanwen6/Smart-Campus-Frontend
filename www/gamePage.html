@@ -1,0 +1,45 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="index.html" class="link">
+                        <i class="icon icon-back"></i>
+                        <span>Back</span>
+                    </a>
+        </div>
+        <div class="center">進行遊戲</div>
+        <div class="right"></div>
+    </div>
+</div>
+<div class="pages navbar-through toolbar-fixed">
+    <div data-page="gamePage" class="page no-toolbar">
+        <!-- Scrollable page content-->
+        <div class="page-content" style="background-color:#737373;">
+            <div class="content-block" style="margin: 10px 0;">
+                <div class="level" align="right">
+                    <p><span>等級 </span><span data-progress="50" class="progressbar color-pink"></span></p>
+                </div>
+                <div class="reward" style="text-align:center; margin-top: 2vh;">
+                    <img src="img/coins.png" style="width:50px; vertical-align:middle;">
+                    <span style="font-size:35px; vertical-align:middle;">300</span>
+                </div>
+                <div class="question row">
+                    <div class="col-10" style="font-size:2.8vh; margin-left:8px;"><span>Q:</span></div>
+                    <div class="col-90" style="font-size:2.4vh; padding:5px;">
+                        <span id="questionTextArea"></span>
+                    </div>
+                </div>
+                <div class="options">
+                    <a href="#" id="answer1" class="button button-big button-fill answer"></a>
+                    <a href="#" id="answer2" class="button button-big button-fill answer"></a>
+                    <a href="#" id="answer3" class="button button-big button-fill answer"></a>
+                    <a href="#" id="answer4" class="button button-big button-fill answer"></a>
+                </div>
+            </div>
+        </div>
+        <!-- The Modal -->
+        <div id="gameEnd-modal" class="custom-modal">
+            <img class="custom-modal-content" id="endImg">
+            <a href="#" class="button confirm">OK</a>
+        </div>
+    </div>
+</div>

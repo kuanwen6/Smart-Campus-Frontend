@@ -16,6 +16,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <title>My App</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <!-- Path to Framework7 Library CSS-->
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
     <link rel="stylesheet" href="lib/framework7/css/framework7-icons.css">
@@ -27,7 +28,7 @@
     <!-- Views-->
     <div class="views">
       <!-- Your main view, should have "view-main" class-->
-      <div class="view view-main">
+      <div class="view view-main navbar-through toolbar-fixed">
         <div class="navbar">
             <div class="navbar-inner">
                 <div class="left">
@@ -38,11 +39,13 @@
                 </div>
                 <div class="center" >推薦行程</div>
                 <div class="right">
-                    
+                    <a href="gamePage.html" class="link">
+                        <i class="icon icon-back"></i>
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="pages navbar-through toolbar-fixed">
+        <div class="pages ">
           <div data-page="index" class="page no-toolbar">
             <!-- Scrollable page content-->
             <div class="page-content">

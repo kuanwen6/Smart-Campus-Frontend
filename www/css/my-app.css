@@ -1,34 +1,31 @@
 @font-face {
-  font-family: 'Framework7 Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url("../fonts/Framework7Icons-Regular.eot");
-  src: local('Framework7 Icons'),
-     local('Framework7Icons-Regular'),
-     url("../fonts/Framework7Icons-Regular.woff2") format("woff2"),
-     url("../fonts/Framework7Icons-Regular.woff") format("woff"),
-     url("../fonts/Framework7Icons-Regular.ttf") format("truetype");
+    font-family: 'Framework7 Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/Framework7Icons-Regular.eot");
+    src: local('Framework7 Icons'), local('Framework7Icons-Regular'), url("../fonts/Framework7Icons-Regular.woff2") format("woff2"), url("../fonts/Framework7Icons-Regular.woff") format("woff"), url("../fonts/Framework7Icons-Regular.ttf") format("truetype");
 }
 
-.f7-icons, .framework7-icons {
-  font-family: 'Framework7 Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 25px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-feature-settings: "liga";
-  -moz-font-feature-settings: "liga=1";
-  -moz-font-feature-settings: "liga";
-  font-feature-settings: "liga";
+.f7-icons,
+.framework7-icons {
+    font-family: 'Framework7 Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 25px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-feature-settings: "liga";
+    -moz-font-feature-settings: "liga=1";
+    -moz-font-feature-settings: "liga";
+    font-feature-settings: "liga";
 }
 
 body {
@@ -36,28 +33,9 @@ body {
     letter-spacing: 2px;
 }
 
-.big-card{
-        width:100%;
-        padding: initial;
-        margin: 0 auto;
-}
-.card-title{
+.card-title {
     font-size: 3.5vh;
-    margin-top: -1.5vh; 
-}
-.favorite-cards{
-        width:100%;
-        padding: initial;
-        margin: 0 auto;
-    }
-
-.swipeout > .card {
-    margin:2px !important;
-}    
-
-.swipeout-actions-right {
-    height: 97% !important; 
-    top: 2% !important; 
+    margin-top: -1.5vh;
 }
 
 .toolbar {
@@ -72,74 +50,247 @@ body {
     letter-spacing: 3px;
 }
 
-.toolbar-inner > .button {
+.toolbar-inner>.button {
     border: initial;
 }
 
-.toolbar-text > .toolbar-icon {
-    -ms-transform: rotate(45deg); /* IE 9 */
-    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+.toolbar-text>.toolbar-icon {
+    -ms-transform: rotate(45deg);
+    /* IE 9 */
+    -webkit-transform: rotate(45deg);
+    /* Chrome, Safari, Opera */
     transform: rotate(45deg);
     font-size: 22px;
 }
 
-.center{
+.center {
     text-align: center;
 }
-.high-button{
+
+.high-button {
     height: 48vh !important;
     margin-top: 5vh;
     margin-bottom: -3vh;
 }
 
-.favorite-cards > .list-block {
+
+/*  themeRoute.html  */
+
+.big-card {
+    width: 100%;
+    padding: initial;
+    margin: 0 auto;
+}
+
+
+/*  customRoute.html  */
+
+.favorite-cards {
+    width: 100%;
+    padding: initial;
+    margin: 0 auto;
+}
+
+.swipeout>.card {
+    margin: 2px !important;
+}
+
+.swipeout-actions-right {
+    height: 97% !important;
+    top: 2% !important;
+}
+
+.favorite-cards>.list-block {
     margin: 0px;
 }
 
 .favorite-tab {
-    text-align: center; 
-    color: white; 
+    text-align: center;
+    color: white;
     font-size: 2.5vh;
     height: 4.5vh;
     line-height: 4.5vh;
     background-color: purple;
 }
 
-.accordion-item > .item-link, .accordion-item > .item-content {
+
+/* routeDetail.html  */
+
+.accordion-item>.item-link,
+.accordion-item>.item-content {
     padding-left: 0;
-    background-color: pink; 
+    background-color: pink;
 }
 
-.accordion-item > .item-link > .item-inner {
+.accordion-item>.item-link>.item-inner {
     padding-right: 0px;
-    background-image: initial; 
+    background-image: initial;
 }
 
-.accordion-item > .item-link > .item-inner > .item-title, .accordion-item > .item-content > .item-inner > .item-title {
+.accordion-item>.item-link>.item-inner>.item-title,
+.accordion-item>.item-content>.item-inner>.item-title {
     margin: 0 auto;
     color: white;
 }
 
-.content-block > .content-block > .content-block-inner > p {
+.content-block>.content-block>.content-block-inner>p {
     margin: 0.3em 0;
 }
 
-/* The Modal (background) */
-.custom-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 30vh; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+.title-img {
+    width: 100%;
 }
 
+
+/*  gamePage.html  */
+
+.level>p>span,
+.reward>span {
+    color: white;
+    font-weight: bold;
+}
+
+.options {
+    margin-top: 4vh;
+    text-align: center;
+}
+
+.options>.button {
+    height: 10vh;
+    line-height: 9.5vh;
+    margin-top: 1.5vh;
+    color: black;
+    font-size: 3.6vh;
+    font-weight: bold;
+    background: silver;
+    /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(silver, white, silver);
+    background: -moz-linear-gradient(silver, white, silver);
+    background: -o-linear-gradient(silver, white, silver);
+    background: linear-gradient(silver, white, silver);
+    /* For Safari 5.1 to 6.0 */
+    /* For Opera 11.1 to 12.0 */
+    /* For Firefox 3.6 to 15 */
+    /* Standard syntax */
+}
+
+.level>p>span {
+    display: inline-block !important;
+    vertical-align: middle;
+    font-size: 2.4vh;
+}
+
+.level>p>.progressbar {
+    width: 20vw;
+    height: 1.6vh;
+    margin-left: 8px;
+}
+
+.question {
+    height: 16vh;
+    margin: 0 auto;
+    margin-top: 4vh;
+    background-color: white;
+    width: 100%;
+    font-weight: bold;
+    color: black;
+}
+
+.answer > svg {
+    width: 6vh;
+    display: inline-block;
+    margin-top: 2vh;
+    position: absolute;
+    right: 10px;
+}
+
+.path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+}
+
+.path.circle {
+    -webkit-animation: dash 0.9s ease-in-out;
+    animation: dash 0.9s ease-in-out;
+}
+
+.path.line {
+    stroke-dashoffset: 1000;
+    -webkit-animation: dash 0.9s 0.35s ease-in-out forwards;
+    animation: dash 0.9s 0.35s ease-in-out forwards;
+}
+
+.path.check {
+    stroke-dashoffset: -100;
+    -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
+    animation: dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@-webkit-keyframes dash {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@-webkit-keyframes dash-check {
+    0% {
+        stroke-dashoffset: -100;
+    }
+    100% {
+        stroke-dashoffset: 900;
+    }
+}
+
+@keyframes dash-check {
+    0% {
+        stroke-dashoffset: -100;
+    }
+    100% {
+        stroke-dashoffset: 900;
+    }
+}
+
+
+/* The Modal (background) */
+
+.custom-modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 30vh;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Black w/ opacity */
+}
+
+
 /* Modal Content (image) */
+
 .custom-modal-content {
     margin: auto;
     display: block;
@@ -147,7 +298,9 @@ body {
     max-width: 700px;
 }
 
+
 /* Caption of Modal Image */
+
 #caption {
     margin: auto;
     display: block;
@@ -159,8 +312,11 @@ body {
     height: 150px;
 }
 
+
 /* Add Animation */
-.custom-modal-content, #caption {    
+
+.custom-modal-content,
+#caption {
     -webkit-animation-name: zoom;
     -webkit-animation-duration: 0.6s;
     animation-name: zoom;
@@ -168,16 +324,26 @@ body {
 }
 
 @-webkit-keyframes zoom {
-    from {-webkit-transform:scale(0)} 
-    to {-webkit-transform:scale(1)}
+    from {
+        -webkit-transform: scale(0)
+    }
+    to {
+        -webkit-transform: scale(1)
+    }
 }
 
 @keyframes zoom {
-    from {transform:scale(0)} 
-    to {transform:scale(1)}
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
 }
 
+
 /* The Close Button */
+
 .close {
     position: absolute;
     top: 50px;
