@@ -33,39 +33,50 @@
             <div class="navbar-inner">
                 <div class="left">
                     <a href="itemDetail.html" class="link">
-                        <i class="icon icon-back"></i>
-                        <i class="f7-icons color-blue" style="font-weight:bold">home</i>
+                        <i class="f7-icons color-white">chevron_left</i> 
+                        <i class="f7-icons color-white">home_fill</i>
                     </a>
                 </div>
                 <div class="center" >推薦行程</div>
                 <div class="right">
+                    <a href="themeSite.html" class="link">
+                        <i class="f7-icons color-white">home_fill</i>
+                    </a>
                     <a href="gamePage.html" class="link">
-                        <i class="icon icon-back"></i>
+                      <i class="f7-icons color-white">chevron_left</i> 
                     </a>
                 </div>
             </div>
         </div>
-        <div class="pages ">
+        <div class="pages">
           <div data-page="index" class="page no-toolbar">
             <!-- Scrollable page content-->
             <div class="page-content">
-              <div class="content-block">
-                <div class="row">
-                  <div class="center col-100 tablet-50"><img id="themeImg" src="img/leadership.png" style="width:28vh;height:28vh;"></div>
+              <div class="content-block" style="margin: 0; padding: 0;background-color: white; height: 100%; width: 100%; display: table;">
+                <div class="themePark">
+                  <div><img id="themeImg" src="img/park.png" style="width:100%;height:auto;"></div>
                 </div>
-                <div class="row no-gutter">
-                  <div class="col-50"><a href="themeRoute.html" class="high-button button button-big button-red">讓我推薦你</a></div>
-                  <div class="col-50"><a href="customRoute.html" class="high-button button button-big button-green">自訂行程</a></div>
+                <div class="routeButtonList">
+                  <div id="themeRouteBtn" onclick="mainView.router.load({ url: 'themeRoute.html' });">
+                    <div style="margin-left: 3vh;">
+                        <img class="heartIcon" src="img/hand_heart.png">&nbsp;&nbsp;&nbsp;&nbsp;<span>讓我推薦你</span>
+                    </div>
+                  </div>
+                  <div id="customRouteBtn" style="margin-top: 2px;" onclick="mainView.router.load({ url: 'customRoute.html' });">
+                    <div>
+                      <img class="heartIcon" src="img/heart.png">&nbsp;&nbsp;&nbsp;&nbsp;<span>自訂行程</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               
             </div>
-            <!-- The Modal -->
-            <div id="myModal" class="custom-modal">
+            <!-- The Modal 
+            <div id="myModal" class="custom-modal" href="itemDetail.html">
               <span class="close">&times;</span>
               <img class="custom-modal-content" id="img01">
               <div id="caption"></div>
-            </div>
+            </div>-->
           </div>
         </div>
         <div class="toolbar">

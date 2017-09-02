@@ -2,6 +2,7 @@
 const myApp = new Framework7({
   template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
   cache: false,
+  swipeBackPage: false,
 });
 
 // Export selectors engine
@@ -54,6 +55,36 @@ const favorite = [{
   range: '400',
 }];
 
+const sites = [{
+  id: 'site1',
+  name: '自然類',
+  content: '內容',
+  category: 'nature',
+  image: 'img/ncku.jpg',
+  range: '40',
+}, {
+  id: 'site2',
+  name: '古蹟類',
+  content: '內容',
+  category: 'history',
+  image: 'img/ncku.jpg',
+  range: '40',
+}, {
+  id: 'site3',
+  name: '藝文類',
+  content: '內容',
+  category: 'art',
+  image: 'img/ncku.jpg',
+  range: '40',
+}, {
+  id: 'site4',
+  name: '行政類',
+  content: '內容',
+  category: 'business',
+  image: 'img/ncku.jpg',
+  range: '40',
+}];
+
 function createCards() {
   for (let i = 0; i < data.length; i += 1) {
     $$('.big-card').append(`<div class="card" id="${data[i].id}">
@@ -79,16 +110,16 @@ function createFavoriteCards() {
   for (let i = 0; i < favorite.length; i += 1) {
     $$('.swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
                 <div class="card swipeout-content">
-                    <div href="#" class="card-content" style="height:15vh;">
+                    <div href="#" class="card-content" style="height:18vh;">
                         <div class="row no-gutter">
                             <i class="f7-icons color-red delete-route" id="${favorite[i].id}" style="font-size:21px;position:absolute;right:8px; top:5px;">delete_round_fill</i>
-                            <div class="col-35">
-                              <img src="${favorite[i].img}" style="width:20vh;height:15vh;">
-                              <i class="f7-icons color-red" style="font-size:17px;position:absolute;bottom:3px;left:16.5vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                            <div class="col-55">
+                              <img src="${favorite[i].img}" style="width:32vh;height:18vh;">
+                              <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                             </div>
-                            <div class="col-60" style="padding:8px;">
+                            <div class="col-40" style="padding:8px;">
                                 <div class="card-title"><span>${favorite[i].title}</span></div>
-                                <div class="row" style="margin-top:8vh;">
+                                <div class="row" style="margin-top:9vh;">
                                     <div class="col-60"></div>
                                     <div class="col-35"><span>${favorite[i].range}公尺</span></div>
                                 </div>
@@ -109,6 +140,39 @@ function createFavoriteCards() {
   }
 }
 
+function createSites() {
+  for (let i = 0; i < sites.length; i += 1) {
+    $$(`.${sites[i].category}-list`).append(`<li class="swipeout" id="${sites[i].id}">
+    <div class="card swipeout-content">
+        <div href="#" class="card-content" style="height:18vh;">
+            <div class="row no-gutter">
+                <div class="col-55">
+                  <img src="${sites[i].image}" style="width:32vh;height:18vh;">
+                  <i id="favorite-heart-${sites[i].id}" class="f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                </div>
+                <div class="col-40" style="padding:8px;">
+                    <div class="card-title"><span>${sites[i].name}</span></div>
+                    <div class="row" style="margin-top:9vh;">
+                        <div class="col-60"></div>
+                        <div class="col-35"><span>${sites[i].range}公尺</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="swipeout-actions-right">
+      <a href="#" class="add-favorite swipeout-overswipe" id="${sites[i].id}">
+        <div>
+          <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+          <br>
+          <p style="font-size:13px;">加入最愛</p>
+        </div>
+      </a>
+    </div>
+  </li>`);
+  }
+}
+
 function findRoute(id) {
   for (let i = 0; i < data.length; i += 1) {
     if (data[i].id === id) {
@@ -116,7 +180,7 @@ function findRoute(id) {
     }
   }
 }
-
+/*
 $$('.center').on('click', () => {
   const modal = document.getElementById('myModal');
 
@@ -136,9 +200,9 @@ $$('.center').on('click', () => {
     modal.style.display = 'none';
   }
 });
+*/
 
 myApp.onPageInit('themeRoute', () => {
-// run createContentPage func after link was clicked
   createCards();
 
   $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
@@ -156,15 +220,44 @@ myApp.onPageInit('themeRoute', () => {
   });
 });
 
+myApp.onPageInit('themeSite', () => {
+  createSites();
+
+  $$('.swipeout-overswipe').on('click', function () { // if change to () => { , it will go wrong!
+    if ($(this).hasClass('add-favorite')) {
+      // add this.id to favorite
+      console.log('add toggle');
+      $(`#favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+      $(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
+      myApp.swipeoutClose($$(`li#${this.id}`));
+      $(this).children('div').children('p').html('移出最愛');
+    } else {
+      // remove this.id to favorite
+      console.log('remove toggle');
+      $(`#favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+      $(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
+      myApp.swipeoutClose($$(`li#${this.id}`));
+      $(this).children('div').children('p').html('加入最愛');
+    }
+  });
+/*
+  $$('.remove-favorite').on('click', function () { // if change to () => { , it will go wrong!
+    // remove this.id to favorite
+    console.log('remove toggle');
+    $(`#favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+    $(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
+    myApp.swipeoutClose($$(`li#${this.id}`));
+  });
+*/
+});
+
 myApp.onPageInit('routeDetail', () => {
-// run createContentPage func after link was clicked
   $$('.toolbar-inner').html(`<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀
                               <i class="f7-icons color-red toolbar-icon">navigation_fill</i></a>`);
   myApp.accordionOpen($$('li#introduction'));
 });
 
 myApp.onPageInit('customRoute', () => {
-// run createContentPage func after link was clicked
   $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>'); 
   createFavoriteCards();
 
@@ -212,6 +305,7 @@ myApp.onPageInit('gamePage', () => {
     redirection();
   });
   */
+  $('.custom-modal-content').css('top', 44 + (($(window).height() - $(window).width() * 0.96 - 44) / 2));
 
   const question = '哪座雕像是以魯迅為本的雕塑品，營造出........................';
   const options = ['沉思者', '太極', '詩人', '舞動'];
@@ -228,33 +322,40 @@ myApp.onPageInit('gamePage', () => {
     const modal = $$('#gameEnd-modal');
     const modalImg = $$('#endImg');
     if (this.id === 'answer1') {
-      $$(`#${this.id}`).css('background', 'green');
+      $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-      <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-      <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+      <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+      <polyline class="path check" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
     </svg>`);
       setTimeout(() => {
         modal.css('display', 'block');
-        modalImg.attr('src', 'img/leadership.png');
-      }, 1000);
+      }, 1200);
     } else {
       console.log('fail');
-      $$(`#${this.id}`).css('background', 'pink');
+      $$(`#${this.id}`).css('background', '#ff66cc');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-      <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-      <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
-      <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
+      <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+      <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
+      <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
     </svg>`);
       setTimeout(() => {
         modal.css('display', 'block');
-        modalImg.attr('src', 'img/leadership.png');
-      }, 1000);
+      }, 1200);
     }
   });
 
-  $$('.confirm').on('click', () => {
-    mainView.router.load({
-      url: 'index.html',
-    });
+  $$('#endImg').on('click', (e) => {
+    const pHeight = $('#endImg').height();
+    const pOffset = $('#endImg').offset();
+    const y = e.pageY - pOffset.top;
+    console.log('Y: '+ e.pageY);
+    console.log('Off: '+ pOffset.top);
+    console.log('H: '+ pHeight);
+
+    if (y > pHeight * 0.78 && y <= pHeight) {
+      mainView.router.load({
+        url: 'index.html',
+      });
+    }
   });
 });

@@ -11,7 +11,7 @@
     font-family: 'Framework7 Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 25px;
+    font-size: 20px;
     line-height: 1;
     letter-spacing: normal;
     text-transform: none;
@@ -36,6 +36,16 @@ body {
 .card-title {
     font-size: 3.5vh;
     margin-top: -1.5vh;
+}
+
+.navbar, .subnavbar {
+    background-image: url('../img/navbar_bg.png');
+    background-size: cover;
+    color: white;
+}
+
+.navbar span, .navbar .f7-icons {
+    color: white;
 }
 
 .toolbar {
@@ -74,6 +84,38 @@ body {
 }
 
 
+/*  index.html  */
+
+.themePark, .routeButtonList {
+    display: table-row;
+}
+
+.routeButtonList {
+    height: 100%;
+}
+
+.routeButtonList > div {
+    background-image: url('../img/recommend-button.png');
+    background-size: 100% 100%;
+    height: 49.5%;
+    position: relative;
+}
+
+#themeRouteBtn > div , #customRouteBtn > div {
+    position: absolute;
+    margin: 0 auto;
+    text-align: center;
+    top: 50%;
+    transform: translate(0,-50%);
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+.heartIcon {
+    width: 17%;
+    vertical-align: middle;
+}
+
 /*  themeRoute.html  */
 
 .big-card {
@@ -111,8 +153,13 @@ body {
     height: 4.5vh;
     line-height: 4.5vh;
     background-color: purple;
+    background-image: url('../img/navbar_bg.png');
+    background-size: cover;
 }
 
+.list-block .swipeout-actions-right a.swipeout-delete {
+    background: #8a9bdb !important;
+}
 
 /* routeDetail.html  */
 
@@ -162,16 +209,25 @@ body {
     color: black;
     font-size: 3.6vh;
     font-weight: bold;
-    background: silver;
-    /* For browsers that do not support gradients */
+
+    background-image: url('../img/answer-button.png');
+    background-size: 100% 100%;
+    /*background: silver;
+     For browsers that do not support gradients */
+    /*
     background: -webkit-linear-gradient(silver, white, silver);
     background: -moz-linear-gradient(silver, white, silver);
     background: -o-linear-gradient(silver, white, silver);
     background: linear-gradient(silver, white, silver);
+    */
     /* For Safari 5.1 to 6.0 */
     /* For Opera 11.1 to 12.0 */
     /* For Firefox 3.6 to 15 */
-    /* Standard syntax */
+    /* Standard syntax 
+    -webkit-transition: background .2s ease-in;
+    -moz-transition: background .2s ease-in;
+      -o-transition: background .2s ease-in;
+         transition: background .2s ease-in;*/
 }
 
 .level>p>span {
@@ -184,6 +240,10 @@ body {
     width: 20vw;
     height: 1.6vh;
     margin-left: 8px;
+}
+
+.progressbar span {
+    background: #d8427a !important;
 }
 
 .question {
@@ -207,6 +267,7 @@ body {
 .path {
     stroke-dasharray: 1000;
     stroke-dashoffset: 0;
+    stroke-width:7.5;
 }
 
 .path.circle {
@@ -262,6 +323,36 @@ body {
     }
 }
 
+/*  themeSite.html  */
+.button.active {
+    background: none;
+}
+
+.subnavbar {
+    padding: 0;
+}
+
+.subnavbar > .buttons-row {
+    height: 100%;
+}
+
+.subnavbar .button {
+    color: white !important;
+    padding: 0 !important;
+    font-size: 15px !important;
+    height: 100%;
+    line-height: 42px;
+    border: 1px solid white;
+}
+
+.tabs > .page-content, .tabs > .page-content > .content-block {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.swipeout-overswipe {
+    background-color: #8a9bdb !important;
+}
 
 /* The Modal (background) */
 
@@ -271,8 +362,6 @@ body {
     position: fixed;
     /* Stay in place */
     z-index: 1;
-    /* Sit on top */
-    padding-top: 30vh;
     /* Location of the box */
     left: 0;
     top: 0;
@@ -284,7 +373,7 @@ body {
     /* Enable scroll if needed */
     background-color: rgb(0, 0, 0);
     /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.6);
     /* Black w/ opacity */
 }
 
@@ -292,10 +381,9 @@ body {
 /* Modal Content (image) */
 
 .custom-modal-content {
-    margin: auto;
-    display: block;
     width: 80%;
-    max-width: 700px;
+    position: absolute;
+    left: 10%;
 }
 
 
