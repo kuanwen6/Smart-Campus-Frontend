@@ -163,10 +163,16 @@ body {
 
 /* routeDetail.html  */
 
-.accordion-item>.item-link,
+.accordion-item>.item-link {
+    padding-left: 0;
+    background-image: url('../img/accordion-bar.png');
+    background-size: cover;
+}
+
 .accordion-item>.item-content {
     padding-left: 0;
-    background-color: pink;
+    background-image: url('../img/accordion-time-bar.png');
+    background-size: cover;
 }
 
 .accordion-item>.item-link>.item-inner {
@@ -212,22 +218,6 @@ body {
 
     background-image: url('../img/answer-button.png');
     background-size: 100% 100%;
-    /*background: silver;
-     For browsers that do not support gradients */
-    /*
-    background: -webkit-linear-gradient(silver, white, silver);
-    background: -moz-linear-gradient(silver, white, silver);
-    background: -o-linear-gradient(silver, white, silver);
-    background: linear-gradient(silver, white, silver);
-    */
-    /* For Safari 5.1 to 6.0 */
-    /* For Opera 11.1 to 12.0 */
-    /* For Firefox 3.6 to 15 */
-    /* Standard syntax 
-    -webkit-transition: background .2s ease-in;
-    -moz-transition: background .2s ease-in;
-      -o-transition: background .2s ease-in;
-         transition: background .2s ease-in;*/
 }
 
 .level>p>span {
@@ -323,6 +313,68 @@ body {
     }
 }
 
+@keyframes blink {
+    /**
+     * At the start of the animation the dot
+     * has an opacity of .2
+     */
+    0% {
+      opacity: .2;
+    }
+    /**
+     * At 20% the dot is fully visible and
+     * then fades out slowly
+     */
+    20% {
+      opacity: 1;
+    }
+    /**
+     * Until it reaches an opacity of .2 and
+     * the animation can start again
+     */
+    100% {
+      opacity: .2;
+    }
+}
+
+.loading span {
+    animation-name: blink;
+    animation-duration: 2.6s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+}
+
+.loading span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.loading span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+.loading span:nth-child(4) {
+    animation-delay: .6s;
+}
+
+.loading span:nth-child(5) {
+    animation-delay: .8s;
+}
+
+.loading span:nth-child(6) {
+    animation-delay: 1s;
+}
+
+.loading span:nth-child(7) {
+    animation-delay: 1.2s;
+}
+
+.loading span:nth-child(8) {
+    animation-delay: 1.4s;
+}
+
+.loading span:nth-child(9) {
+    animation-delay: 1.6s;
+}
 /*  themeSite.html  */
 .button.active {
     background: none;
@@ -377,6 +429,29 @@ body {
     /* Black w/ opacity */
 }
 
+.custom-start-modal {
+    display: block;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: #302f2f;
+    /* Black w/ opacity */
+
+    -webkit-animation: fadeInFromNone 1s ease-out;
+    -webkit-animation-delay: 4s; /* Safari 4.0 - 8.0 */
+    animation: fadeInFromNone 1s ease-out;
+    animation-delay: 4s;
+}
 
 /* Modal Content (image) */
 
@@ -386,6 +461,48 @@ body {
     left: 10%;
 }
 
+.custom-start-modal-content {
+    width: 68%;
+    position: absolute;
+    left: 16%;
+    color: white;
+    font-size: 5.5vw;
+    top: 46vh; 
+}
+
+@-webkit-keyframes fadeInFromNone {
+    0% {
+        display: block;
+        opacity: 1;
+    }
+
+    1% {
+        display: block;
+        opacity: 1;
+    }
+
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeInFromNone {
+    0% {
+        display: block;
+        opacity: 1;
+    }
+
+    1% {
+        display: block;
+        opacity: 1;
+    }
+
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}
 
 /* Caption of Modal Image */
 
@@ -428,7 +545,6 @@ body {
         transform: scale(1)
     }
 }
-
 
 /* The Close Button */
 

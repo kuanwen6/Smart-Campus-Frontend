@@ -10,7 +10,7 @@ const $$ = Dom7;
 
 // Add view
 const mainView = myApp.addView('.view-main', {
-// Because we use fixed-through navbar we can enable dynamic navbar
+  // Because we use fixed-through navbar we can enable dynamic navbar
   dynamicNavbar: true,
 });
 
@@ -112,7 +112,7 @@ function createFavoriteCards() {
                 <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:18vh;">
                         <div class="row no-gutter">
-                            <i class="f7-icons color-red delete-route" id="${favorite[i].id}" style="font-size:21px;position:absolute;right:8px; top:5px;">delete_round_fill</i>
+                            <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:21px; width:21px;position:absolute;right:8px; top:5px;">
                             <div class="col-55">
                               <img src="${favorite[i].img}" style="width:32vh;height:18vh;">
                               <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
@@ -142,13 +142,13 @@ function createFavoriteCards() {
 
 function createSites() {
   for (let i = 0; i < sites.length; i += 1) {
-    $$(`.${sites[i].category}-list`).append(`<li class="swipeout" id="${sites[i].id}">
+    $$(`.${sites[i].category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}">
     <div class="card swipeout-content">
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-55">
                   <img src="${sites[i].image}" style="width:32vh;height:18vh;">
-                  <i id="favorite-heart-${sites[i].id}" class="f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                  <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-40" style="padding:8px;">
                     <div class="card-title"><span>${sites[i].name}</span></div>
@@ -170,6 +170,36 @@ function createSites() {
       </a>
     </div>
   </li>`);
+
+    //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
+    $$('.search-all-list').append(`<li class="swipeout swipeout-search-${sites[i].id}" id="${sites[i].id}">
+  <div class="card swipeout-content">
+      <div href="#" class="card-content" style="height:18vh;">
+          <div class="row no-gutter">
+              <div class="col-55">
+                <img src="${sites[i].image}" style="width:32vh;height:18vh;">
+                <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:28vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+              </div>
+              <div class="col-40" style="padding:8px;">
+                  <div class="card-title"><span>${sites[i].name}</span></div>
+                  <div class="row" style="margin-top:9vh;">
+                      <div class="col-60"></div>
+                      <div class="col-35"><span>${sites[i].range}公尺</span></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="swipeout-actions-right">
+    <a href="#" class="add-favorite swipeout-overswipe" id="${sites[i].id}">
+      <div>
+        <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+        <br>
+        <p style="font-size:13px;">加入最愛</p>
+      </div>
+    </a>
+  </div>
+</li>`);
   }
 }
 
@@ -227,28 +257,22 @@ myApp.onPageInit('themeSite', () => {
     if ($(this).hasClass('add-favorite')) {
       // add this.id to favorite
       console.log('add toggle');
-      $(`#favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+      $(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+      //$(`#favorite-heart-${this.id}`).remove();
       $(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
-      myApp.swipeoutClose($$(`li#${this.id}`));
+      myApp.swipeoutClose($(`li.swipeout-${this.id}`));
+      myApp.swipeoutClose($(`li.swipeout-search-${this.id}`));
       $(this).children('div').children('p').html('移出最愛');
     } else {
       // remove this.id to favorite
       console.log('remove toggle');
-      $(`#favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+      $(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
       $(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
-      myApp.swipeoutClose($$(`li#${this.id}`));
+      myApp.swipeoutClose($(`li.swipeout-${this.id}`));
+      myApp.swipeoutClose($(`li.swipeout-search-${this.id}`));
       $(this).children('div').children('p').html('加入最愛');
     }
   });
-/*
-  $$('.remove-favorite').on('click', function () { // if change to () => { , it will go wrong!
-    // remove this.id to favorite
-    console.log('remove toggle');
-    $(`#favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-    $(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
-    myApp.swipeoutClose($$(`li#${this.id}`));
-  });
-*/
 });
 
 myApp.onPageInit('routeDetail', () => {
@@ -258,7 +282,7 @@ myApp.onPageInit('routeDetail', () => {
 });
 
 myApp.onPageInit('customRoute', () => {
-  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>'); 
+  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>');
   createFavoriteCards();
 
   $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
@@ -305,6 +329,11 @@ myApp.onPageInit('gamePage', () => {
     redirection();
   });
   */
+
+  setTimeout(() => {
+    $$('#gameStart-modal').css('display', 'none');
+  }, 5000);
+
   $('.custom-modal-content').css('top', 44 + (($(window).height() - $(window).width() * 0.96 - 44) / 2));
 
   const question = '哪座雕像是以魯迅為本的雕塑品，營造出........................';
@@ -318,7 +347,7 @@ myApp.onPageInit('gamePage', () => {
 
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
-    
+
     const modal = $$('#gameEnd-modal');
     const modalImg = $$('#endImg');
     if (this.id === 'answer1') {
@@ -348,9 +377,9 @@ myApp.onPageInit('gamePage', () => {
     const pHeight = $('#endImg').height();
     const pOffset = $('#endImg').offset();
     const y = e.pageY - pOffset.top;
-    console.log('Y: '+ e.pageY);
-    console.log('Off: '+ pOffset.top);
-    console.log('H: '+ pHeight);
+    console.log('Y: ' + e.pageY);
+    console.log('Off: ' + pOffset.top);
+    console.log('H: ' + pHeight);
 
     if (y > pHeight * 0.78 && y <= pHeight) {
       mainView.router.load({
