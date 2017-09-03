@@ -120,8 +120,8 @@ function createFavoriteCards() {
                             <div class="col-40" style="padding:8px;">
                                 <div class="card-title"><span>${favorite[i].title}</span></div>
                                 <div class="row" style="margin-top:9vh;">
-                                    <div class="col-60"></div>
-                                    <div class="col-35"><span>${favorite[i].range}公尺</span></div>
+                                    <div class="col-30"></div>
+                                    <div class="col-65"><span>${favorite[i].range}公尺</span></div>
                                 </div>
                             </div>
                         </div>
@@ -153,8 +153,8 @@ function createSites() {
                 <div class="col-40" style="padding:8px;">
                     <div class="card-title"><span>${sites[i].name}</span></div>
                     <div class="row" style="margin-top:9vh;">
-                        <div class="col-60"></div>
-                        <div class="col-35"><span>${sites[i].range}公尺</span></div>
+                        <div class="col-30"></div>
+                        <div class="col-65"><span>${sites[i].range}公尺</span></div>
                     </div>
                 </div>
             </div>
@@ -183,8 +183,8 @@ function createSites() {
               <div class="col-40" style="padding:8px;">
                   <div class="card-title"><span>${sites[i].name}</span></div>
                   <div class="row" style="margin-top:9vh;">
-                      <div class="col-60"></div>
-                      <div class="col-35"><span>${sites[i].range}公尺</span></div>
+                      <div class="col-30"></div>
+                      <div class="col-65"><span>${sites[i].range}公尺</span></div>
                   </div>
               </div>
           </div>
@@ -210,27 +210,6 @@ function findRoute(id) {
     }
   }
 }
-/*
-$$('.center').on('click', () => {
-  const modal = document.getElementById('myModal');
-
-  // Get the image and insert it inside the modal - use its "alt" text as a caption
-  const img = document.getElementById('themeImg');
-  const modalImg = document.getElementById('img01');
-  img.onclick = () => {
-    modal.style.display = 'block';
-    modalImg.src = 'img/leadership.png';
-  };
-
-  // Get the <span> element that closes the modal
-  const span = document.getElementsByClassName('close')[0];
-
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function () {
-    modal.style.display = 'none';
-  }
-});
-*/
 
 myApp.onPageInit('themeRoute', () => {
   createCards();
@@ -253,12 +232,19 @@ myApp.onPageInit('themeRoute', () => {
 myApp.onPageInit('themeSite', () => {
   createSites();
 
+  $$('li.swipeout').on('click', function () {
+    mainView.router.load({
+      url: 'itemDetail.html',
+      context: {
+      },
+    });
+  });
+
   $$('.swipeout-overswipe').on('click', function () { // if change to () => { , it will go wrong!
     if ($(this).hasClass('add-favorite')) {
       // add this.id to favorite
       console.log('add toggle');
       $(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-      //$(`#favorite-heart-${this.id}`).remove();
       $(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
       myApp.swipeoutClose($(`li.swipeout-${this.id}`));
       myApp.swipeoutClose($(`li.swipeout-search-${this.id}`));
@@ -348,27 +334,38 @@ myApp.onPageInit('gamePage', () => {
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
 
-    const modal = $$('#gameEnd-modal');
-    const modalImg = $$('#endImg');
+    
     if (this.id === 'answer1') {
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-      <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-      <polyline class="path check" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-    </svg>`);
+        <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+        <polyline class="path check" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+      </svg>`);
+      $$('#endImg').attr('src', 'img/success-board.png');
       setTimeout(() => {
-        modal.css('display', 'block');
+        $$('#gameEnd-modal').css('display', 'block');
+        $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">
+          <span style="font-size:6vw;font-weight:bold;">等級4</span><br><br>
+          <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+        </div>`);
       }, 1200);
     } else {
       console.log('fail');
-      $$(`#${this.id}`).css('background', '#ff66cc');
+      $$(`#${this.id}`).css('background', '#ff4d4d');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
-      <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-      <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
-      <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
-    </svg>`);
+        <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+        <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
+        <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
+      </svg>`);
+      $$('#endImg').attr('src', 'img/fail-board.png');
+      
       setTimeout(() => {
-        modal.css('display', 'block');
+        $$('#gameEnd-modal').css('display', 'block');
+        $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">
+          <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+        </div>`);
       }, 1200);
     }
   });
