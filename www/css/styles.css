@@ -1,0 +1,160 @@
+/*
+   statusbar-overlay sets the background color for the overlay. Black text is the default when the statusbar plugin is not added. When the
+   statusbar plugin is added, it also adds default setting to make the content white via:
+
+       <preference name="StatusBarStyle" value="lightcontent"/>
+
+   Setting the background color to black will allow the default light content (white text/icons) to show on it. The statusbar plugin is included
+   in the config.xml file and will be added by the CLI when you build locally.
+
+   See https://github.com/apache/cordova-plugin-statusbar
+*/
+
+.statusbar-overlay {
+    background: #000000;
+}
+/*
+div[class*="col-"] {	
+    background: #fff;
+    padding: 5% 11%;
+}
+*/
+.info_btn img,
+.map_btn img,
+.site_btn img,
+.plan_btn img {
+    width: 100%;
+}
+
+.list-block .item-inner:after {
+    display: none;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.filter_table div {
+    display: table-row;
+    height: 10vh;
+}
+
+.filter_table img {
+    width: 6vw;
+    position: relative;
+    top: 3vh;
+}
+
+.filter_table span {
+    position: relative;
+    left: 3vw;
+    font-size: 4.5vw;
+    color: white;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-family: Microsoft JhengHei;
+}
+
+.filter_added {
+    text-decoration: line-through;
+    color: grey !important;
+}
+
+.marker_info {
+    display: none;
+    position: fixed;
+    z-index: 3;
+    bottom: 0px;
+    background-image: url('../marker_info_bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+    height: 25vh;
+}
+
+.marker_info span {
+    position: absolute;
+    color: white;
+    font-family: 'Cabin', sans-serif, '微軟正黑體';
+}
+
+.login-form-to-json {
+    margin-top: 2vh;
+    height: 8vh;
+    width: 100%;
+    background-image: url('../login_button.png');
+    background-size: 100% 100%;
+}
+
+.popup-register {
+    background-image: url('../welcome_bg.png');
+    background-size: 100% 100%;
+}
+
+.register-form-to-json {
+    margin-top: 2vh;
+    height: 10vh;
+    width: 100%;
+    background-image: url('../register_button.png');
+    background-size: 100% 100%;
+}
+
+.level_and_money {
+    display: table;
+    margin: auto;
+}
+
+.level_and_money div {
+    display: table-row;
+}
+
+.level_and_money img {
+    display: table-cell;
+    margin: auto;
+    height: 4vh;
+    padding: 2vh 0;
+
+}
+
+.level_and_money span {
+    display: table-cell;
+    color: #6c7b8a;
+    font-family: Microsoft JhengHei;
+    font-weight: bold;
+    font-size: 4.6vmin;
+    letter-spacing: 2px;
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
+
+.collections {
+	border: 1px solid;
+	border-color: rgba(39, 53, 160, 0.25);
+	width: 88vw;
+    height: 42vw;
+    bottom: 5vh;
+    overflow: scroll;
+    margin: 0 auto;
+}
+
+.collections div {
+	position: relative;
+	display: inline-block;
+	height: 20vw;
+	width: 20vw;
+	margin: 0 1.5px;
+	box-shadow: 3px 3px 6px 0px rgba(39, 53, 160, 0.18);
+}
+
+.collections div img {
+	position: absolute;
+	display: block;
+	max-height: 80%;
+	max-width: 70%;
+	margin: 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

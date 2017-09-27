@@ -23,6 +23,280 @@ $$(document).on('page:init', (e) => {
 
 mainView.hideToolbar();
 
+const mySwiper = myApp.swiper('.swiper-container', {
+  pagination: '.swiper-pagination',
+});
+
+const welcomescreenSlides = [{
+    id: 'slide0',
+    picture: '<img src=\'../welcome_page1.png\'>',
+  },
+  {
+    id: 'slide1',
+    title: 'Slide 1', // optional
+    picture: '<div class="tutorialicon">✲</div>',
+    text: 'This is slide 2',
+  },
+  {
+    id: 'slide2',
+    title: 'Slide 2', // optional
+    picture: '<div class="tutorialicon">♫</div>',
+    text: 'This is slide 3',
+  },
+  {
+    id: 'slide3',
+    picture: '<div class="tutorialicon">☆</div>',
+    text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
+  },
+];
+
+// Handle Cordova Device Ready Event
+$$(document).on('deviceready', () => {
+  console.log('Device is ready!');
+  var applaunchCount = window.localStorage.getItem('launchCount');
+
+  if (!applaunchCount) {
+    window.localStorage.setItem('launchCount', 1);
+
+    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
+    $$(document).on('click', '.welcome-close-btn', () => {
+      welcomescreen.close();
+    });
+  } else {
+    console.log("App has launched " + ++localStorage.launchCount + " times.");
+  }
+});
+
+
+$$('.login-form-to-json').on('click', () => {
+  const formData = myApp.formToJSON('#login-form');
+  console.log(formData);
+  alert(JSON.stringify(formData));
+});
+
+$$('.register-form-to-json').on('click', () => {
+  const formData = myApp.formToJSON('#register-form');
+  console.log(formData);
+  alert(JSON.stringify(formData));
+});
+
+var monuments = [
+  ['Confucius Temple', 22.998279, 120.214809],
+  ['Chikan House', 22.998299, 120.216794],
+];
+
+var arts = [
+  ['Flutter', 22.998171, 120.216955],
+  ['Thinker', 23.000831, 120.215108],
+];
+
+var landscapes = [
+  ['Yung Park', 22.999003, 120.215434],
+  ['Lake', 22.99768339, 120.2157563],
+];
+
+var administrativeUnit = [
+  ['Post Office', 22.998166, 120.214360],
+  ['Cool', 22.998640, 120.217943],
+];
+
+myApp.onPageInit('map', (page) => {
+
+  $$('.open-filter').on('click', () => {
+    $$('#map_filter').css('display', 'block');
+  });
+
+  $$(window).on('click', (event) => {
+    if (event.target === $$('#map_filter')[0]) {
+      $$('#map_filter').css('display', 'none');
+    }
+  });
+
+  $$('.filter_table div').on('click', (e) => {
+    $$(e.currentTarget).children('span').toggleClass('filter_added');
+    setGroupMarkerVisible(e.currentTarget.id);
+  });
+
+
+  var Latitude = undefined;
+  var Longitude = undefined;
+  var Accuracy = undefined;
+  var image = {
+    url: './icon/mobileimgs2.png',
+    size: new google.maps.Size(22, 22),
+    origin: new google.maps.Point(0, 18),
+    anchor: new google.maps.Point(11, 11)
+  };
+  var locationMarker = new google.maps.Marker({
+    clickable: false,
+    icon: image,
+    shadow: null,
+    zIndex: 999,
+  });
+  var locationCircle = new google.maps.Circle({
+    fillColor: '#61a0bf',
+    fillOpacity: 0.4,
+    strokeColor: '#1bb6ff',
+    strokeOpacity: 0.4,
+    strokeWeight: 1,
+  });
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: { lat: 23, lng: 120.22 },
+    disableDefaultUI: true,
+    clickableIcons: false,
+  });
+
+
+  var markers = [monuments, arts, landscapes, administrativeUnit];
+  setMarkers(map);
+
+  locationMarker.setMap(map);
+  locationCircle.setMap(map);
+
+  map.addListener('click', hideMarkerInfo);
+  var walkingLineSymbol = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillOpacity: 1,
+    scale: 3
+  };
+
+  var walkingPathLine = {
+    strokeColor: '#0eb7f6',
+    strokeOpacity: 0,
+    fillOpacity: 0,
+    icons: [{
+      icon: walkingLineSymbol,
+      offset: '0',
+      repeat: '10px'
+    }],
+  };
+
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+  directionsDisplay.setMap(map);
+
+  function calculateAndDisplayRoute(directionsService, directionsDisplay, origin) {
+    var waypts = [];
+    var totalDistance = 0;
+    var totalDuration = 0;
+
+    for (const markerGroup of markers) {
+      for (const marker of markerGroup) {
+        waypts.push({ location: { lat: marker[1], lng: marker[2] } });
+      }
+    }
+
+    directionsService.route({
+      origin: origin,
+      destination: origin,
+      waypoints: waypts,
+      optimizeWaypoints: true,
+      travelMode: 'WALKING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        response.routes[0].legs = response.routes[0].legs.slice(0, -1);
+        directionsDisplay.setDirections(response);
+        console.log(response);
+        for (const leg of response.routes[0].legs) {
+          totalDistance += leg.distance.value;
+          totalDuration += leg.duration.value;
+        }
+        console.log(totalDistance + " m, " + totalDuration + " s");
+      } else
+        window.alert('Directions request failed due to ' + status);
+    });
+  }
+
+  function setMarkers(map) {
+    var icon = ['marker_red.png', 'marker_orange.png', 'marker_green.png', 'marker_blue.png']
+
+    for (var i = 0; i < markers.length; i++) {
+      for (var j = 0; j < markers[i].length; j++) {
+        var dot = markers[i][j];
+        var marker = new google.maps.Marker({
+          position: { lat: dot[1], lng: dot[2] },
+          title: dot[0],
+          map: map,
+          icon: {
+            url: icon[i],
+            scaledSize: new google.maps.Size(25, 36),
+            anchor: new google.maps.Point(12.5, 36),
+          },
+        });
+
+        marker.addListener('click', showMarkerInfo);
+        dot.push(marker);
+      }
+    }
+  }
+
+  function showMarkerInfo() {
+    $$('.marker_info').css('display', 'block');
+  }
+
+  function hideMarkerInfo() {
+    $$('.marker_info').css('display', 'none');
+  }
+
+  function setGroupMarkerVisible(groupId) {
+    for (var i = 0; i < markers[groupId].length; i++) {
+      markers[groupId][i][3].setVisible(!markers[groupId][i][3].visible);
+    }
+  }
+
+  function getMap(latitude, longitude, accuracy) {
+    locationMarker.setPosition({ lat: latitude, lng: longitude });
+    locationCircle.setCenter({ lat: latitude, lng: longitude });
+    locationCircle.setRadius(accuracy);
+
+    console.log("added marker!");
+    //myApp.alert("lat:" + latitude + "\nlng:" + longitude + "\nacc:" + accuracy);
+  }
+
+  var onMapWatchSuccess = function(position) {
+
+    if (!onMapWatchSuccess.first) {
+      calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
+    }
+    onMapWatchSuccess.first = true;
+
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+    var updatedAccuracy = position.coords.accuracy;
+
+    if (updatedLatitude !== Latitude || updatedLongitude !== Longitude || updatedAccuracy !== Accuracy) {
+
+      Latitude = updatedLatitude;
+      Longitude = updatedLongitude;
+      Accuracy = updatedAccuracy
+
+      getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
+    }
+  }
+
+  function onMapError(error) {
+    console.log('code: ' + error.code + '\n' +
+      'message: ' + error.message + '\n');
+  }
+
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+  calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
+});
+
+
+myApp.onPageInit('info', (page) => {
+  for (var i = 0; i < 16; i++) {
+    $$('.collections').append('<div></div>');
+  }
+  for (var i = 0; i < 5; i++) {
+    $$('.collections > div').eq(i).append('<img src="../collection_'+(i+1)+'.png"/>');
+  }
+})
+
+
+/*             wen                */
+
 const data = [{
   id: 'temple',
   title: '台南孔廟一日行',
@@ -210,6 +484,10 @@ function findRoute(id) {
     }
   }
 }
+
+myApp.onPageInit('route', () => {
+  mainView.hideToolbar();
+});
 
 myApp.onPageInit('themeRoute', () => {
   createCards();
