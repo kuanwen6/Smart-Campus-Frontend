@@ -519,22 +519,22 @@ myApp.onPageInit('themeSite', () => {
   });
 
   $$('.swipeout-overswipe').on('click', function () { // if change to () => { , it will go wrong!
-    if ($(this).hasClass('add-favorite')) {
+    if ($$(this).hasClass('add-favorite')) {
       // add this.id to favorite
       console.log('add toggle');
-      $(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-      $(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
-      myApp.swipeoutClose($(`li.swipeout-${this.id}`));
-      myApp.swipeoutClose($(`li.swipeout-search-${this.id}`));
-      $(this).children('div').children('p').html('移出最愛');
+      $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+      $$(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
+      myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+      myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+      $$(this).children('div').children('p').html('移出最愛');
     } else {
       // remove this.id to favorite
       console.log('remove toggle');
-      $(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-      $(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
-      myApp.swipeoutClose($(`li.swipeout-${this.id}`));
-      myApp.swipeoutClose($(`li.swipeout-search-${this.id}`));
-      $(this).children('div').children('p').html('加入最愛');
+      $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+      $$(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
+      myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+      myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+      $$(this).children('div').children('p').html('加入最愛');
     }
   });
 });
@@ -598,7 +598,7 @@ myApp.onPageInit('gamePage', () => {
     $$('#gameStart-modal').css('display', 'none');
   }, 5000);
 
-  $('.custom-modal-content').css('top', 44 + (($(window).height() - $(window).width() * 0.96 - 44) / 2));
+  $$('.custom-modal-content').css('top', 44 + (($$(window).height() - $$(window).width() * 0.96 - 44) / 2));
 
   const question = '哪座雕像是以魯迅為本的雕塑品，營造出........................';
   const options = ['沉思者', '太極', '詩人', '舞動'];
@@ -649,8 +649,8 @@ myApp.onPageInit('gamePage', () => {
   });
 
   $$('#endImg').on('click', (e) => {
-    const pHeight = $('#endImg').height();
-    const pOffset = $('#endImg').offset();
+    const pHeight = $$('#endImg').height();
+    const pOffset = $$('#endImg').offset();
     const y = e.pageY - pOffset.top;
     console.log('Y: ' + e.pageY);
     console.log('Off: ' + pOffset.top);
