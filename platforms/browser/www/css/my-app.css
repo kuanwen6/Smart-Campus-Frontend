@@ -34,7 +34,9 @@ body {
 }
 
 .card-title {
-    font-size: 3.5vh;
+    font-size: 3vh;
+    padding: 6px;
+    font-weight: bold; 
     margin-top: -1.5vh;
 }
 
