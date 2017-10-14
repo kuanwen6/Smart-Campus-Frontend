@@ -29,7 +29,7 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src=\'../welcome_page1.png\'>',
+    picture: '<img src=\'..img/welcome_page1.png\'>',
   },
   {
     id: 'slide1',
@@ -209,7 +209,7 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    var icon = ['marker_red.png', 'marker_orange.png', 'marker_green.png', 'marker_blue.png']
+    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png']
 
     for (var i = 0; i < markers.length; i++) {
       for (var j = 0; j < markers[i].length; j++) {
@@ -290,7 +290,7 @@ myApp.onPageInit('info', (page) => {
     $$('.collections').append('<div></div>');
   }
   for (var i = 0; i < 5; i++) {
-    $$('.collections > div').eq(i).append('<img src="../collection_'+(i+1)+'.png"/>');
+    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_'+(i+1)+'.png"/>');
   }
 })
 
