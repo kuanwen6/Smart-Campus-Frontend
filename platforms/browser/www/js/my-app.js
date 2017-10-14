@@ -464,6 +464,10 @@ function findSequence(stations, sequence) {
   return result;
 }
 
+function findStation(stations, id) {
+  return stations.filter((entry) => { return entry.id === id; })[0];
+}
+
 myApp.onPageInit('route', () => {
   mainView.hideToolbar();
 });
@@ -517,31 +521,36 @@ myApp.onPageInit('themeSite', () => {
     url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
     success: (data) => {
-      console.log(JSON.parse(data).data);
-      createSites(JSON.parse(data).data);
+      const stations = JSON.parse(data).data;
+      createSites(stations);
 
 
-      $('li.swipeout').on('click', function () {
+      $$('li.swipeout').on('click', function () {
+        const site = findStation(stations, parseInt(this.id, 10));
         console.log(this);
         mainView.router.load({
           url: 'itemDetail.html',
           context: {
+            site,
           },
         });
       });
 
       $$('.swipeout').on('swipeout:closed', () => {
-        $('li.swipeout').on('click', function () {
+        $$('li.swipeout').on('click', function () {
+          const site = findStation(stations, parseInt(this.id, 10));
+          console.log(site);
           mainView.router.load({
             url: 'itemDetail.html',
             context: {
+              site,
             },
           });
         });
       });
       
       function favorites() { // if change to () => { , it will go wrong!
-        $('li.swipeout').off('click');
+        $$('li.swipeout').off('click');
         if ($$(this).hasClass('add-favorite')) {
           // add this.id to favorite
           console.log('add toggle');
