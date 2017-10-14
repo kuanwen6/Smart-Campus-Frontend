@@ -1,47 +1,45 @@
-<!-- We don't need a full layout in this file because this page will be parsed with Ajax. -->
-<!-- Top Navbar-->
 <div class="navbar">
-    <div class="navbar-inner">
-        <div class="left">
-            <a href="#" class="back link">
+  <div class="navbar-inner">
+    <div class="left">
+      <a href="#" class="back link">
                 <i class="icon icon-back"></i>
                 <span>Back</span>
             </a>
-        </div>
-        <div class="center sliding">地圖總覽</div>
-        <div class="right">
-            <a href="#" class="open-filter"><i class="f7-icons color-blue">filter</i></a>
-        </div>
     </div>
+    <div class="center sliding">地圖總覽</div>
+    <div class="right">
+      <a href="#" class="open-filter"><i class="f7-icons color-blue">filter</i></a>
+    </div>
+  </div>
 </div>
 <div class="pages">
-    <div data-page="map" class="page no-toolbar">
-        <div id="map_filter" style="display: none; z-index: 2; position: absolute; padding-right: 10vw; padding-left: 10vw; padding-top: 20vh; width: 80vw; height: 100%; background-color: rgba(0,0,0,0.4);">
-            <img src="filter_bg.png" style="width: 80vw; position: absolute;">
-            <div class="filter_table" style="display: table;position: relative;top: 7vh;left: 15vw;">
-                <div class="filter_div" id="0">
-                    <img src="marker_red.png"><span>古  蹟  主題站點</span>
-                </div>
-                <div class="filter_div" id="1">
-                    <img src="marker_orange.png"><span>藝  文  主題站點</span>
-                </div>
-                <div class="filter_div" id="2">
-                    <img src="marker_green.png"><span>景  觀  主題站點</span>
-                </div>
-                <div class="filter_div" id="3">
-                    <img src="marker_blue.png"><span>我是王冠軍  主題站點</span>
-                </div>
-            </div>
+  <div data-page="map" class="page no-toolbar">
+    <div id="map_filter" style="display: none; z-index: 2; position: absolute; padding-right: 10vw; padding-left: 10vw; padding-top: 20vh; width: 80vw; height: 100%; background-color: rgba(0,0,0,0.4);">
+      <img src="img/filter_bg.png" style="width: 80vw; position: absolute;">
+      <div class="filter_table" style="display: table;position: relative;top: 7vh;left: 15vw;">
+        <div class="filter_div" id="0">
+          <img src="img/markers/marker_red.png"><span>古  蹟  主題站點</span>
         </div>
-        <div class="page-content">
-            <div id="map"></div>
+        <div class="filter_div" id="1">
+          <img src="img/markers/marker_orange.png"><span>藝  文  主題站點</span>
         </div>
-        <div class="marker_info">
-            <img src="test_info_pic.png" style="position: absolute; height: 60%; top: 27%; left: 5%; max-width: 40%;">
-            <span style="left: 45%; top: 27%; font-size: 3.5vmin; letter-spacing: 1.5px;">/ 藝文主題 /</span>
-            <span style="left: 45%; top: 45%; font-size: 4.5vmin; letter-spacing: 1.5px;">思想者<br>/ THE THINKER</span>
-            <span style="bottom: 10%; right: 5%; font-size: 4vmin;">0.3 公尺</span>
-            <img src="my_favorite_white.png" style="position: absolute; height: 15%; top: 27%; right: 7%;">
+        <div class="filter_div" id="2">
+          <img src="img/markers/marker_green.png"><span>景  觀  主題站點</span>
         </div>
+        <div class="filter_div" id="3">
+          <img src="img/markers/marker_blue.png"><span>我是王冠軍  主題站點</span>
+        </div>
+      </div>
     </div>
+    <div class="page-content">
+      <div id="map"></div>
+    </div>
+    <div class="marker_info">
+      <img src="img/test_info_pic.png" style="position: absolute; height: 60%; top: 27%; left: 5%; max-width: 40%;">
+      <span style="left: 45%; top: 27%; font-size: 3.5vmin; letter-spacing: 1.5px;">/ 藝文主題 /</span>
+      <span style="left: 45%; top: 45%; font-size: 4.5vmin; letter-spacing: 1.5px;">思想者<br>/ THE THINKER</span>
+      <span style="bottom: 10%; right: 5%; font-size: 4vmin;">0.3 公尺</span>
+      <img src="img/my_favorite_white.png" style="position: absolute; height: 15%; top: 27%; right: 7%;">
+    </div>
+  </div>
 </div>

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+<<<<<<< HEAD
     <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
             https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
@@ -34,129 +35,126 @@
     src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script>
+=======
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>My App</title>
+  <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
+  <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/welcomescreen.css">
+  <link rel="stylesheet" href="css/framework7-icons.css">
+  <link rel="stylesheet" href="css/my-app.css">
+>>>>>>> f748521413751dc5f9207ff34149e18b1e567bec
 </head>
 
 <body>
-    <!-- Status bar overlay for full screen mode (PhoneGap) -->
-    <div class="statusbar-overlay"></div>
-    <!-- Panels overlay-->
-    <div class="panel-overlay"></div>
-    <!-- Left panel with reveal effect-->
-    <div class="panel panel-left panel-reveal">
-        <div class="content-block">
-            <p>Left panel content goes here</p>
+  <div class="statusbar-overlay"></div>
+  <div class="panel-overlay"></div>
+  <div class="views">
+    <div class="view view-main navbar-through toolbar-through">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="center sliding">Awesome App</div>
+          <div class="right">
+            <a href="#" class="link icon-only"><i class="icon icon-bars"></i></a>
+          </div>
         </div>
-    </div>
-    <!-- Views -->
-    <div class="views">
-        <!-- Your main view, should have "view-main" class -->
-        <div class="view view-main navbar-through toolbar-through">
-            <!-- Top Navbar-->
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Awesome App</div>
-                    <div class="right">
-                        <!--
-                          Right link contains only icon - additional "icon-only" class
-                          Additional "open-panel" class tells app to open panel when we click on this link
-                        -->
-                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
-                    </div>
-                </div>
-            </div>
-            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
-            <div class="pages">
-                <!-- Page, "data-page" contains page name -->
-                <div data-page="index" class="page bg-white">
-                    <!-- Scrollable page content -->
-                    <div class="page-content">
-                        <form id="login-form" class="list-block inset" style="margin-left: 10vw;margin-right: 10vw;">
-                            <ul style="border: 1px solid #ddd;">
-                                <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
-                                    <div class="item-media"><i class="f7-icons color-gray">email_fill</i></div>
-                                    <div class="item-inner" style="width: 65vw;">
-                                        <div class="item-input">
-                                            <input type="email" name="email" placeholder="Email">
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item-content" style="height: 8vh;">
-                                    <div class="item-media"><i class="f7-icons color-gray">lock_fill</i></div>
-                                    <div class="item-inner" style="width: 65vw;">
-                                        <div class="item-input">
-                                            <input type="password" name="password" placeholder="Password">
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="login-form-to-json""></div>
-                        </form>
-                        <div class="content-block home_btn">
-                            <div class="row no-gutter" style="border-bottom: 1px solid; border-color: rgba(0,0,0,.2);">
-                                <div class="col-50 info_btn" style="border-right: 1px solid; border-color: rgba(0,0,0,.2);">
-                                    <a href="info.html"><img src="info_button.png"></a>
-                                </div>
-                                <div class="col-50 map_btn" style="border-left: 1px solid; border-color: rgba(0,0,0,.2);">
-                                    <a href="map.html"><img src="map_button.png"></a>
-                                </div>
-                            </div>
-                            <div class="row no-gutter" style="border-top: 1px solid; border-color: rgba(0,0,0,.2);">
-                                <div class="col-50 site_btn" style="border-right: 1px solid; border-color: rgba(0,0,0,.2);">
-                                    <a href="themeSite.html"><img src="theme_site_button.png"></a>
-                                </div>
-                                <div class="col-50 plan_btn" style="border-left: 1px solid; border-color: rgba(0,0,0,.2);">
-                                    <a href="route.html"><img src="travel_plan_button.png"></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="content-block" style="text-align: center;">
-                            <a href="#" data-popup=".popup-register" class="open-popup"><img src="1.jpg" style="height: 3vh"></img></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="popup popup-register">
-        <div class="content-block">
-            <a href="#" class="close-popup" style="position: absolute; right: 8vw;"><i class="f7-icons color-black">close</i></a>
-        </div>
-        <div class="content-block" style="text-align: center; position: relative; top: 20vh;">
-            <p style="font-size: 17px">註冊新帳戶</p>
-        </div>
-        <form id="register-form" class="list-block inset" style="margin-left: 10vw; margin-right: 10vw; position: relative; top: 20vh;">
-            <ul style="border: 1px solid #ddd;">
+      </div>
+      <div class="pages">
+        <div data-page="index" class="page bg-white">
+          <div class="page-content">
+            <form id="login-form" class="list-block inset" style="margin-left: 10vw;margin-right: 10vw;">
+              <ul style="border: 1px solid #ddd;">
                 <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
-                    <div class="item-inner" style="width: 65vw;">
-                        <div class="item-input">
-                            <input type="email" name="email" placeholder="Email">
-                        </div>
+                  <div class="item-media"><i class="f7-icons color-gray">email_fill</i></div>
+                  <div class="item-inner" style="width: 65vw;">
+                    <div class="item-input">
+                      <input type="email" name="email" placeholder="Email">
                     </div>
-                </li>
-                <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
-                    <div class="item-inner" style="width: 65vw;">
-                        <div class="item-input">
-                            <input type="password" name="password" placeholder="密碼">
-                        </div>
-                    </div>
+                  </div>
                 </li>
                 <li class="item-content" style="height: 8vh;">
-                    <div class="item-inner" style="width: 65vw;">
-                        <div class="item-input">
-                            <input type="text" name="username" placeholder="使用者名稱">
-                        </div>
+                  <div class="item-media"><i class="f7-icons color-gray">lock_fill</i></div>
+                  <div class="item-inner" style="width: 65vw;">
+                    <div class="item-input">
+                      <input type="password" name="password" placeholder="Password">
                     </div>
+                  </div>
                 </li>
-            </ul>
-            <div class="register-form-to-json"></div>
-        </form>
+              </ul>
+              <div class="login-form-to-json" "></div>
+            </form>
+            <div class="content-block ">
+              <div>
+                <div>
+                  <a href="info.html "><img src="img/info_button.png "></a>
+                </div>
+                <div>
+                  <a href="map.html "><img src="img/map_button.png "></a>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <a href="themeSite.html "><img src="img/theme_site_button.png "></a>
+                </div>
+                <div>
+                  <a href="route.html "><img src="img/travel_plan_button.png "></a>
+                </div>
+              </div>
+            </div>
+            <div class="content-block " style="text-align: center; ">
+              <a href="# " data-popup=".popup-register " class="open-popup "><img src="img/1.jpg " style="height: 3vh "></img></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar "></div>
     </div>
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
-    <script src="js/welcomescreen.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1ug3pDy-rR6btRx88y-K9znjzRTUeHIE" type="text/javascript"></script>
-    <script src="js/my-app.js"></script>
+  </div>
+  <div class="popup popup-register ">
+    <div class="content-block ">
+      <a href="# " class="close-popup " style="position: absolute; right: 8vw; "><i class="f7-icons color-black ">close</i></a>
+    </div>
+    <div class="content-block " style="text-align: center; position: relative; top: 20vh; ">
+      <p style="font-size: 17px ">註冊新帳戶</p>
+    </div>
+    <form id="register-form " class="list-block inset " style="margin-left: 10vw; margin-right: 10vw; position: relative; top: 20vh; ">
+      <ul style="border: 1px solid #ddd; ">
+        <li class="item-content " style="height: 8vh; border-bottom: 1px solid #ddd; ">
+          <div class="item-inner " style="width: 65vw; ">
+            <div class="item-input ">
+              <input type="email " name="email " placeholder="Email ">
+            </div>
+          </div>
+        </li>
+        <li class="item-content " style="height: 8vh; border-bottom: 1px solid #ddd; ">
+          <div class="item-inner " style="width: 65vw; ">
+            <div class="item-input ">
+              <input type="password " name="password " placeholder="密碼 ">
+            </div>
+          </div>
+        </li>
+        <li class="item-content " style="height: 8vh; ">
+          <div class="item-inner " style="width: 65vw; ">
+            <div class="item-input ">
+              <input type="text " name="username " placeholder="使用者名稱 ">
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="register-form-to-json "></div>
+    </form>
+  </div>
+  <script src="cordova.js"></script>
+  <script src="lib/framework7/js/framework7.min.js "></script>
+  <script src="js/welcomescreen.js "></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1ug3pDy-rR6btRx88y-K9znjzRTUeHIE"></script>
+  <script src="js/my-app.js "></script>
 </body>
 
 </html>
