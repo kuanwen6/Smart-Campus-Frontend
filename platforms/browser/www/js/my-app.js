@@ -520,20 +520,33 @@ myApp.onPageInit('themeSite', () => {
       console.log(JSON.parse(data).data);
       createSites(JSON.parse(data).data);
 
-      $$('li.swipeout').on('click', function () {
+
+      $('li.swipeout').on('click', function () {
+        console.log(this);
         mainView.router.load({
           url: 'itemDetail.html',
           context: {
           },
         });
       });
-    
-      $$('.swipeout-overswipe').on('click', function () { // if change to () => { , it will go wrong!
+
+      $$('.swipeout').on('swipeout:closed', () => {
+        $('li.swipeout').on('click', function () {
+          mainView.router.load({
+            url: 'itemDetail.html',
+            context: {
+            },
+          });
+        });
+      });
+      
+      function favorites() { // if change to () => { , it will go wrong!
+        $('li.swipeout').off('click');
         if ($$(this).hasClass('add-favorite')) {
           // add this.id to favorite
           console.log('add toggle');
           $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-          $$(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
+          $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
           myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
           myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
           $$(this).children('div').children('p').html('移出最愛');
@@ -541,12 +554,14 @@ myApp.onPageInit('themeSite', () => {
           // remove this.id to favorite
           console.log('remove toggle');
           $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-          $$(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
+          $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
           myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
           myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
           $$(this).children('div').children('p').html('加入最愛');
         }
-      });
+      }
+
+      $$('.swipeout-overswipe').on('click', favorites);
     },
     error: (data) => {
       console.log(data);
