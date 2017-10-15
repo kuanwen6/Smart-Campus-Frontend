@@ -93,12 +93,8 @@ $$('.login-form-to-json').on('click', () => {
       window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
-      for (var reward of data['data']['reward']) {
-        window.localStorage.setItem('reward' + reward, true);
-      }
-      for (var favorite_stations of data['data']['favorite_stations']) {
-        window.localStorage.setItem('favorite_stations' + favorite_stations, true);
-      }
+      window.localStorage.setItem('reward', JSON.stringify(data['data']['reward']));
+      window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
     },
     error = function(data) {
       console.log("login fail");
