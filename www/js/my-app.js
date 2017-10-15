@@ -208,7 +208,7 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png']
+    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png'];
 
     for (var i = 0; i < markers.length; i++) {
       for (var j = 0; j < markers[i].length; j++) {
@@ -268,11 +268,11 @@ myApp.onPageInit('map', (page) => {
 
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
-      Accuracy = updatedAccuracy
+      Accuracy = updatedAccuracy;
 
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
     }
-  }
+  };
 
   function onMapError(error) {
     console.log('code: ' + error.code + '\n' +
@@ -291,12 +291,34 @@ myApp.onPageInit('info', (page) => {
   for (var i = 0; i < 5; i++) {
     $$('.collections > div').eq(i).append('<img src="../img/collections/collection_'+(i+1)+'.png"/>');
   }
-})
+});
 
 
 /*             wen                */
+function distance(lat1, lng1, lat2, lng2) {
+  if (lat1 === -1 && lng1 === -1) {
+    return '未開啟GPS';
+  }
 
-function createCards(data) {
+  const radlat1 = Math.PI * lat1 / 180;
+  const radlat2 = Math.PI * lat2 / 180;
+  const theta = lng1 - lng2;
+  const radtheta = Math.PI * theta / 180;
+  let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist);
+  dist = dist * 180 / Math.PI;
+  dist *= 69.09;
+  dist *= 1.609344;
+
+  if (dist < 1) {
+    dist *= 1000;
+    return `${dist.toFixed(0)} 公尺`;
+  }
+  return `${dist.toFixed(1)} 公里`;
+}
+
+
+function createCards(data, callback) {
   for (let i = 0; i < data.length; i += 1) {
     let description = data[i].description;
     if (data[i].description.length > 12) {
@@ -320,10 +342,15 @@ function createCards(data) {
                     <div class="card-footer"><span>預估時間: 10 分鐘</span></div>
                 </div>`);
   }
+
+  callback();
 }
 
-function createFavoriteCards(favorite) {
+function createFavoriteCards(favorite, lat, lng, callback) {
+  let distanceBetween;
   for (let i = 0; i < favorite.length; i += 1) {
+    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
+
     $$('.swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
                 <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:18vh;">
@@ -336,7 +363,7 @@ function createFavoriteCards(favorite) {
                             <div class="col-50" style="padding:8px;">
                                 <div class="card-title"><span>${favorite[i].name}</span></div>
                                 <div style="position:absolute; right:0; bottom:5px;">
-                                  <span>10 公尺</span>
+                                  <span>${distanceBetween}</span>
                                 </div>
                             </div>
                         </div>
@@ -353,10 +380,13 @@ function createFavoriteCards(favorite) {
                 </div>
               </li>`);
   }
+
+  callback();
 }
 
-function createSites(sites) {
+function createSites(sites, lat, lng, callback) {
   let category;
+  let distanceBetween;
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -375,6 +405,8 @@ function createSites(sites) {
         category = 'art';
     }
 
+    distanceBetween = distance(lat, lng, sites[i].location[1], sites[i].location[0]);
+
     $$(`.${category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}" style="z-index:100;">
     <div class="card swipeout-content">
         <div href="#" class="card-content" style="height:18vh;">
@@ -386,7 +418,7 @@ function createSites(sites) {
                 <div class="col-50" style="padding:8px;">
                     <div class="card-title"><span>${sites[i].name}</span></div>
                     <div style="position:absolute; right:0; bottom:5px;">
-                        <span>10 公尺</span>
+                        <span>${distanceBetween}</span>
                     </div>
                 </div>
             </div>
@@ -432,6 +464,8 @@ function createSites(sites) {
   </div>
 </li>`);
   }
+
+  callback();
 }
 
 function findRoute(routes, id) {
@@ -466,32 +500,33 @@ myApp.onPageInit('themeRoute', () => {
     type: 'get',
     success: (stations) => {
       const stationsObj = JSON.parse(stations).data;
-      console.log(stationsObj);
-      
+
       $$.ajax({
         url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
         type: 'get',
         success: (plans) => {
           const plansObj = JSON.parse(plans).data;
-          console.log(plansObj);
-          createCards(plansObj);
 
-          $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
-            const route = findRoute(plansObj, this.id);
-            const itemList = findSequence(stationsObj, route.station_sequence);
-
-            mainView.router.load({
-              url: 'routeDetail.html',
-              context: {
-                title: route.name,
-                time: '10',
-                previous: 'themeRoute.html',
-                introduction: route.description,
-                img: route.image,
-                itemList,
-              },
+          function cardOnclick() {
+            $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
+              const route = findRoute(plansObj, this.id);
+              const itemList = findSequence(stationsObj, route.station_sequence);
+  
+              mainView.router.load({
+                url: 'routeDetail.html',
+                context: {
+                  title: route.name,
+                  time: '10',
+                  previous: 'themeRoute.html',
+                  introduction: route.description,
+                  img: route.image,
+                  itemList,
+                },
+              });
             });
-          });
+          }
+
+          createCards(plansObj, cardOnclick);
         },
         error: (data) => {
           console.log(data);
@@ -510,24 +545,12 @@ myApp.onPageInit('themeSite', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      createSites(stations);
 
-
-      $$('li.swipeout').on('click', function () {
-        const site = findStation(stations, parseInt(this.id, 10));
-        console.log(this);
-        mainView.router.load({
-          url: 'itemDetail.html',
-          context: {
-            site,
-          },
-        });
-      });
-
-      $$('.swipeout').on('swipeout:closed', () => {
+      //  because haved to wait for appened fininshed
+      function onclickFunc() {
         $$('li.swipeout').on('click', function () {
           const site = findStation(stations, parseInt(this.id, 10));
-          console.log(site);
+          console.log(this);
           mainView.router.load({
             url: 'itemDetail.html',
             context: {
@@ -535,30 +558,52 @@ myApp.onPageInit('themeSite', () => {
             },
           });
         });
-      });
-      
-      function favorites() { // if change to () => { , it will go wrong!
-        $$('li.swipeout').off('click');
-        if ($$(this).hasClass('add-favorite')) {
-          // add this.id to favorite
-          console.log('add toggle');
-          $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-          $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
-          myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-          myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-          $$(this).children('div').children('p').html('移出最愛');
-        } else {
-          // remove this.id to favorite
-          console.log('remove toggle');
-          $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-          $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
-          myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-          myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-          $$(this).children('div').children('p').html('加入最愛');
+
+        $$('.swipeout').on('swipeout:closed', () => {
+          $$('li.swipeout').on('click', function () {
+            const site = findStation(stations, parseInt(this.id, 10));
+            console.log(site);
+            mainView.router.load({
+              url: 'itemDetail.html',
+              context: {
+                site,
+              },
+            });
+          });
+        });
+        
+        function favorites() { // if change to () => { , it will go wrong!
+          $$('li.swipeout').off('click');
+          if ($$(this).hasClass('add-favorite')) {
+            // add this.id to favorite
+            console.log('add toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+            $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+            $$(this).children('div').children('p').html('移出最愛');
+          } else {
+            // remove this.id to favorite
+            console.log('remove toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+            $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+            $$(this).children('div').children('p').html('加入最愛');
+          }
         }
+
+        $$('.swipeout-overswipe').on('click', favorites);
       }
 
-      $$('.swipeout-overswipe').on('click', favorites);
+      function onSuccess(position) {
+        createSites(stations, position.coords.latitude, position.coords.longitude, onclickFunc);
+      }
+
+      function onError() {
+        createSites(stations, -1, -1, onclickFunc);
+      }
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
     },
     error: (data) => {
       console.log(data);
@@ -589,42 +634,57 @@ myApp.onPageInit('customRoute', () => {
       const stations = JSON.parse(data).data;
       const favoriteSequence = [2, 1]; // = get favorite list
       let itemList = findSequence(stations, favoriteSequence);
-      createFavoriteCards(itemList);
+
+      function deleteFunc() {
+        $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
+          myApp.swipeoutOpen($(`li#${this.id}`));
+          myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
+          myApp.swipeoutDelete($(`li#${this.id}`));
+
+          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+          if (index > -1) {
+            favoriteSequence.splice(index, 1);
+          }
+        });
+
+        $$('.swipeout-overswipe').on('click', function () {
+          console.log(this.id);
+          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+          if (index > -1) {
+            favoriteSequence.splice(index, 1);
+          }
+        }); 
+      }
+
+      function onSuccess(position) {
+        createFavoriteCards(itemList, position.coords.latitude, position.coords.longitude, deleteFunc);
+      }
+
+      function onError() {
+        createFavoriteCards(itemList, -1, -1, deleteFunc);
+      }
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
-      $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
-        myApp.swipeoutOpen($(`li#${this.id}`));
-        myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
-        myApp.swipeoutDelete($(`li#${this.id}`));
-
-        const index = favoriteSequence.indexOf(parseInt(this.id, 10));
-        if (index > -1) {
-          favoriteSequence.splice(index, 1);
-        }
-      });
-
-      $$('.swipeout-overswipe').on('click', function () {
-        console.log(this.id);
-        const index = favoriteSequence.indexOf(parseInt(this.id, 10));
-        if (index > -1) {
-          favoriteSequence.splice(index, 1);
-        }
-      }); 
 
       $$('.toolbar').off('click');// avoid append multiple onclicked on toolbar
       $$('.toolbar').on('click', () => {
-        itemList = findSequence(stations, favoriteSequence);
-        mainView.router.load({
-          url: 'routeDetail.html',
-          context: {
-            title: '自訂行程',
-            time: 'unknown',
-            previous: 'customRoute.html',
-            introduction: '自己想的好棒喔',
-            img: itemList[0].image.primary,
-            itemList,
-          },
-        });
+        if (favoriteSequence.length === 0) {
+          myApp.alert('並沒有選擇任何站點喔!', '注意');
+        } else {
+          itemList = findSequence(stations, favoriteSequence);
+          mainView.router.load({
+            url: 'routeDetail.html',
+            context: {
+              title: '自訂行程',
+              time: 'unknown',
+              previous: 'customRoute.html',
+              introduction: '自己想的好棒喔',
+              img: itemList[0].image.primary,
+              itemList,
+            },
+          });
+        }
       });
     },
   });
