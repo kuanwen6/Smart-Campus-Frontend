@@ -73,6 +73,7 @@ body {
     /* Chrome, Safari, Opera */
     transform: rotate(45deg);
     font-size: 22px;
+    display: inline-flex;
 }
 
 .center {

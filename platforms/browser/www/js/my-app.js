@@ -1,7 +1,6 @@
 // Initialize your app
 const myApp = new Framework7({
   template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
-  cache: false,
   swipeBackPage: false,
 });
 
@@ -209,7 +208,7 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png']
+    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png'];
 
     for (var i = 0; i < markers.length; i++) {
       for (var j = 0; j < markers[i].length; j++) {
@@ -269,11 +268,11 @@ myApp.onPageInit('map', (page) => {
 
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
-      Accuracy = updatedAccuracy
+      Accuracy = updatedAccuracy;
 
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
     }
-  }
+  };
 
   function onMapError(error) {
     console.log('code: ' + error.code + '\n' +
@@ -292,23 +291,34 @@ myApp.onPageInit('info', (page) => {
   for (var i = 0; i < 5; i++) {
     $$('.collections > div').eq(i).append('<img src="../img/collections/collection_'+(i+1)+'.png"/>');
   }
-})
+});
 
 
 /*             wen                */
-const favorite = [{
-  id: 'temple',
-  title: '孔廟',
-  img: 'img/temple.JPG',
-  range: '30',
-}, {
-  id: 'ncku',
-  title: '成大榕園',
-  img: 'img/ncku.jpg',
-  range: '400',
-}];
+function distance(lat1, lng1, lat2, lng2) {
+  if (lat1 === -1 && lng1 === -1) {
+    return '未開啟GPS';
+  }
 
-function createCards(data) {
+  const radlat1 = Math.PI * lat1 / 180;
+  const radlat2 = Math.PI * lat2 / 180;
+  const theta = lng1 - lng2;
+  const radtheta = Math.PI * theta / 180;
+  let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist);
+  dist = dist * 180 / Math.PI;
+  dist *= 69.09;
+  dist *= 1.609344;
+
+  if (dist < 1) {
+    dist *= 1000;
+    return `${dist.toFixed(0)} 公尺`;
+  }
+  return `${dist.toFixed(1)} 公里`;
+}
+
+
+function createCards(data, callback) {
   for (let i = 0; i < data.length; i += 1) {
     let description = data[i].description;
     if (data[i].description.length > 12) {
@@ -332,30 +342,35 @@ function createCards(data) {
                     <div class="card-footer"><span>預估時間: 10 分鐘</span></div>
                 </div>`);
   }
+
+  callback();
 }
 
-function createFavoriteCards() {
+function createFavoriteCards(favorite, lat, lng, callback) {
+  let distanceBetween;
   for (let i = 0; i < favorite.length; i += 1) {
+    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
+
     $$('.swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
                 <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:18vh;">
                         <div class="row no-gutter">
                             <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:21px; width:21px;position:absolute;right:8px; top:5px;">
                             <div class="col-50">
-                              <img src="${favorite[i].img}" style="width:28vh;height:18vh;object-fit: cover;">
+                              <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
                               <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                             </div>
                             <div class="col-50" style="padding:8px;">
-                                <div class="card-title"><span>${favorite[i].title}</span></div>
+                                <div class="card-title"><span>${favorite[i].name}</span></div>
                                 <div style="position:absolute; right:0; bottom:5px;">
-                                  <span>${favorite[i].range}公尺</span>
+                                  <span>${distanceBetween}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="swipeout-actions-right">
-                  <a href="#" class="swipeout-delete swipeout-overswipe">
+                  <a href="#" class="swipeout-delete swipeout-overswipe" id="${favorite[i].id}">
                     <div>
                       <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">trash_fill</i>
                       <br>
@@ -365,10 +380,13 @@ function createFavoriteCards() {
                 </div>
               </li>`);
   }
+
+  callback();
 }
 
-function createSites(sites) {
+function createSites(sites, lat, lng, callback) {
   let category;
+  let distanceBetween;
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -387,6 +405,8 @@ function createSites(sites) {
         category = 'art';
     }
 
+    distanceBetween = distance(lat, lng, sites[i].location[1], sites[i].location[0]);
+
     $$(`.${category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}" style="z-index:100;">
     <div class="card swipeout-content">
         <div href="#" class="card-content" style="height:18vh;">
@@ -398,7 +418,7 @@ function createSites(sites) {
                 <div class="col-50" style="padding:8px;">
                     <div class="card-title"><span>${sites[i].name}</span></div>
                     <div style="position:absolute; right:0; bottom:5px;">
-                        <span>10 公尺</span>
+                        <span>${distanceBetween}</span>
                     </div>
                 </div>
             </div>
@@ -444,6 +464,8 @@ function createSites(sites) {
   </div>
 </li>`);
   }
+
+  callback();
 }
 
 function findRoute(routes, id) {
@@ -464,6 +486,10 @@ function findSequence(stations, sequence) {
   return result;
 }
 
+function findStation(stations, id) {
+  return stations.filter((entry) => { return entry.id === id; })[0];
+}
+
 myApp.onPageInit('route', () => {
   mainView.hideToolbar();
 });
@@ -474,32 +500,33 @@ myApp.onPageInit('themeRoute', () => {
     type: 'get',
     success: (stations) => {
       const stationsObj = JSON.parse(stations).data;
-      console.log(stationsObj);
-      
+
       $$.ajax({
         url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
         type: 'get',
         success: (plans) => {
           const plansObj = JSON.parse(plans).data;
-          console.log(plansObj);
-          createCards(plansObj);
 
-          $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
-            const route = findRoute(plansObj, this.id);
-            const itemList = findSequence(stationsObj, route.station_sequence);
-
-            mainView.router.load({
-              url: 'routeDetail.html',
-              context: {
-                title: route.name,
-                time: '10',
-                previous: 'themeRoute.html',
-                introduction: route.description,
-                img: route.image,
-                itemList,
-              },
+          function cardOnclick() {
+            $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
+              const route = findRoute(plansObj, this.id);
+              const itemList = findSequence(stationsObj, route.station_sequence);
+  
+              mainView.router.load({
+                url: 'routeDetail.html',
+                context: {
+                  title: route.name,
+                  time: '10',
+                  previous: 'themeRoute.html',
+                  introduction: route.description,
+                  img: route.image,
+                  itemList,
+                },
+              });
             });
-          });
+          }
+
+          createCards(plansObj, cardOnclick);
         },
         error: (data) => {
           console.log(data);
@@ -517,36 +544,66 @@ myApp.onPageInit('themeSite', () => {
     url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
     success: (data) => {
-      console.log(JSON.parse(data).data);
-      createSites(JSON.parse(data).data);
+      const stations = JSON.parse(data).data;
 
-      $$('li.swipeout').on('click', function () {
-        mainView.router.load({
-          url: 'itemDetail.html',
-          context: {
-          },
+      //  because haved to wait for appened fininshed
+      function onclickFunc() {
+        $$('li.swipeout').on('click', function () {
+          const site = findStation(stations, parseInt(this.id, 10));
+          console.log(this);
+          mainView.router.load({
+            url: 'itemDetail.html',
+            context: {
+              site,
+            },
+          });
         });
-      });
-    
-      $$('.swipeout-overswipe').on('click', function () { // if change to () => { , it will go wrong!
-        if ($$(this).hasClass('add-favorite')) {
-          // add this.id to favorite
-          console.log('add toggle');
-          $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-          $$(`#${this.id}.swipeout-overswipe`).removeClass('add-favorite').addClass('remove-favorite');
-          myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-          myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-          $$(this).children('div').children('p').html('移出最愛');
-        } else {
-          // remove this.id to favorite
-          console.log('remove toggle');
-          $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-          $$(`#${this.id}.swipeout-overswipe`).removeClass('remove-favorite').addClass('add-favorite');
-          myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-          myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-          $$(this).children('div').children('p').html('加入最愛');
+
+        $$('.swipeout').on('swipeout:closed', () => {
+          $$('li.swipeout').on('click', function () {
+            const site = findStation(stations, parseInt(this.id, 10));
+            console.log(site);
+            mainView.router.load({
+              url: 'itemDetail.html',
+              context: {
+                site,
+              },
+            });
+          });
+        });
+        
+        function favorites() { // if change to () => { , it will go wrong!
+          $$('li.swipeout').off('click');
+          if ($$(this).hasClass('add-favorite')) {
+            // add this.id to favorite
+            console.log('add toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+            $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+            $$(this).children('div').children('p').html('移出最愛');
+          } else {
+            // remove this.id to favorite
+            console.log('remove toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+            $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+            $$(this).children('div').children('p').html('加入最愛');
+          }
         }
-      });
+
+        $$('.swipeout-overswipe').on('click', favorites);
+      }
+
+      function onSuccess(position) {
+        createSites(stations, position.coords.latitude, position.coords.longitude, onclickFunc);
+      }
+
+      function onError() {
+        createSites(stations, -1, -1, onclickFunc);
+      }
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
     },
     error: (data) => {
       console.log(data);
@@ -555,31 +612,88 @@ myApp.onPageInit('themeSite', () => {
 });
 
 myApp.onPageInit('routeDetail', () => {
-  $$('.toolbar-inner').html(`<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀
-                              <i class="f7-icons color-red toolbar-icon">navigation_fill</i></a>`);
+  $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
   myApp.accordionOpen($$('li#introduction'));
 });
 
 myApp.onPageInit('customRoute', () => {
-  $$('.toolbar-inner').html('<a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a>');
-  createFavoriteCards();
-
-  $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
-    myApp.swipeoutOpen($$(`li#${this.id}`));
-    myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
-    myApp.swipeoutDelete($$(`li#${this.id}`));
+  /* TODO
+  ajax get favorite
+  if is empty => no favorite
+    hide toolbar
+  else 
+  */
+  $$('.back-force').on('click', () => {
+    mainView.router.back({ url: 'route.html', force: true });
   });
 
-  $$('.toolbar').on('click', () => {
-    mainView.router.load({
-      url: 'routeDetail.html',
-      context: {
-        title: '自訂行程',
-        time: 'unknown',
-        previous: 'customRoute.html',
-        img: 'img/ncku.jpg',
-      },
-    });
+  $$.ajax({
+    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    type: 'get',
+    success: (data) => {
+      const stations = JSON.parse(data).data;
+      const favoriteSequence = [2, 1]; // = get favorite list
+      let itemList = findSequence(stations, favoriteSequence);
+
+      function deleteFunc() {
+        $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
+          myApp.swipeoutOpen($(`li#${this.id}`));
+          myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
+          myApp.swipeoutDelete($(`li#${this.id}`));
+
+          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+          if (index > -1) {
+            favoriteSequence.splice(index, 1);
+          }
+        });
+
+        $$('.swipeout-overswipe').on('click', function () {
+          console.log(this.id);
+          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+          if (index > -1) {
+            favoriteSequence.splice(index, 1);
+          }
+        }); 
+      }
+
+      function onSuccess(position) {
+        createFavoriteCards(itemList, position.coords.latitude, position.coords.longitude, deleteFunc);
+      }
+
+      function onError() {
+        createFavoriteCards(itemList, -1, -1, deleteFunc);
+      }
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
+
+      $$('.toolbar').off('click');// avoid append multiple onclicked on toolbar
+      $$('.toolbar').on('click', () => {
+        if (favoriteSequence.length === 0) {
+          myApp.alert('並沒有選擇任何站點喔!', '注意');
+        } else {
+          itemList = findSequence(stations, favoriteSequence);
+          mainView.router.load({
+            url: 'routeDetail.html',
+            context: {
+              title: '自訂行程',
+              time: 'unknown',
+              previous: 'customRoute.html',
+              introduction: '自己想的好棒喔',
+              img: itemList[0].image.primary,
+              itemList,
+            },
+          });
+        }
+      });
+    },
+  });
+});
+
+
+myApp.onPageInit('routeDetail', () => {
+  $$('.back-force').on('click', function () {
+    mainView.router.back({ url: this.id, force: true });
   });
 });
 

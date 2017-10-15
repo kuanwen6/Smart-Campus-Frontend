@@ -6,7 +6,7 @@
                         <span>Back</span>
                     </a>
     </div>
-    <div class="center">舞/Dance</div>
+    <div class="center">{{site.name}}</div>
     <div class="right"></div>
   </div>
 </div>
@@ -16,22 +16,15 @@
     <div class="page-content" style="background-color:#9E9E9E;">
       <div class="content-block" style="margin: 15px 0;">
         <div style="position: relative;">
-            <img src="img/ncku.jpg" style="width:100%;">
+            <img src="{{site.image.primary}}" style="width:100%;">
             <i class="f7-icons color-red" style="font-size:25px;position:absolute;bottom:15px;right:15px; text-shadow: 0px 0px 8px white;">heart_fill</i>
         </div>
         <div class="content-block" style="margin: 5px 0;">
             <div class="content-block-inner">
-                <p>舞/Dance</p>
-                <p>胡宏述/藝術家</p>
+                <p>{{site.name}}</p>
             </div>
             <div class="content-block-inner">
-                <p>2006</p>
-                <p>雕塑、木頭</p>
-                <p>44x44x47 cm</p>
-                <p>光復校區藝術中心</p>
-            </div>
-            <div class="content-block-inner">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae porta enim. Sed ultricies lacinia mauris, non tincidunt sem eleifend eget. Duis convallis quis sem non volutpat. Morbi risus lorem, dapibus et nulla ac, pharetra maximus elit. Etiam vitae lacus a dui hendrerit ornare vitae id est. Pellentesque ut tortor id sem maximus lobortis at egestas nulla. Nulla pretium, nunc et porta ullamcorper, sem lorem elementum massa, rhoncus ullamcorper odio dui vel mauris. Ut lobortis neque congue eros posuere blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla facilisi. In sem dolor, tempus eu tellus</p>
+                {{site.content}}
             </div>
         </div>
       </div>
