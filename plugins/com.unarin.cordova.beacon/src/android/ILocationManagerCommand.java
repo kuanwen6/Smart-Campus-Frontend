@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*
        Licensed to the Apache Software Foundation (ASF) under one
        or more contributor license agreements.  See the NOTICE file
@@ -18,8 +16,11 @@
        specific language governing permissions and limitations
        under the License.
 */
+package com.unarin.cordova.beacon;
 
-// Coho updates this line:
-var VERSION = "4.1.0";
+import org.apache.cordova.PluginResult;
 
-console.log(VERSION);
+interface ILocationManagerCommand {
+    PluginResult run();
+}
+
