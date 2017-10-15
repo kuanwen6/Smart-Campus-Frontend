@@ -28,7 +28,7 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src=\'..img/welcome_page1.png\'>',
+    picture: '<img src=\'../img/welcome_page1.png\'>',
   },
   {
     id: 'slide1',
@@ -49,14 +49,12 @@ const welcomescreenSlides = [{
   },
 ];
 
-// Handle Cordova Device Ready Event
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
-  var applaunchCount = window.localStorage.getItem('launchCount');
 
+  var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
-
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
       welcomescreen.close();
@@ -64,19 +62,75 @@ $$(document).on('deviceready', () => {
   } else {
     console.log("App has launched " + ++localStorage.launchCount + " times.");
   }
+
+  var userLoggedIn = window.localStorage.getItem('logged_in');
+  if (userLoggedIn) {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+  }
 });
 
+var hookurl = 'https://smartcampus.csie.ncku.edu.tw/'
 
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
   console.log(formData);
-  alert(JSON.stringify(formData));
+
+  $$.post(
+    url = hookurl + 'smart_campus/login/',
+    data = {
+      'email': formData['email'],
+      'password': formData['password']
+    },
+    success = function(data) {
+      console.log("login success");
+      $$('#login-form').hide();
+      $$('#register-btn').hide();
+
+      data = JSON.parse(data);
+      console.log(data);
+      window.localStorage.setItem('logged_in', true);
+      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
+      window.localStorage.setItem('nickname', data['data']['nickname']);
+      window.localStorage.setItem('coins', data['data']['coins']);
+      for (var reward of data['data']['reward']) {
+        window.localStorage.setItem('reward' + reward, true);
+      }
+      for (var favorite_stations of data['data']['favorite_stations']) {
+        window.localStorage.setItem('favorite_stations' + favorite_stations, true);
+      }
+    },
+    error = function(data) {
+      console.log("login fail");
+      console.log(data);
+      myApp.alert('', '登入失敗，請重新輸入');
+    }
+  );
 });
 
 $$('.register-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#register-form');
   console.log(formData);
-  alert(JSON.stringify(formData));
+
+  $$.post(
+    url = hookurl + 'smart_campus/signup/',
+    data = {
+      'email': formData['email'],
+      'password': formData['password'],
+      'nickname': formData['nickname']
+    },
+    success = function(data) {
+      console.log("register success");
+      myApp.alert('嗨! ' + formData['nickname'], '註冊成功!', function() {
+        myApp.closeModal();
+      });
+    },
+    error = function(data) {
+      console.log("register fail");
+      console.log(data);
+      myApp.alert(data['responseText'], '註冊失敗');
+    }
+  );
 });
 
 var monuments = [
@@ -289,7 +343,7 @@ myApp.onPageInit('info', (page) => {
     $$('.collections').append('<div></div>');
   }
   for (var i = 0; i < 5; i++) {
-    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_'+(i+1)+'.png"/>');
+    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_' + (i + 1) + '.png"/>');
   }
 });
 
@@ -508,10 +562,10 @@ myApp.onPageInit('themeRoute', () => {
           const plansObj = JSON.parse(plans).data;
 
           function cardOnclick() {
-            $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
+            $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
               const route = findRoute(plansObj, this.id);
               const itemList = findSequence(stationsObj, route.station_sequence);
-  
+
               mainView.router.load({
                 url: 'routeDetail.html',
                 context: {
@@ -548,7 +602,7 @@ myApp.onPageInit('themeSite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
-        $$('li.swipeout').on('click', function () {
+        $$('li.swipeout').on('click', function() {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -560,7 +614,7 @@ myApp.onPageInit('themeSite', () => {
         });
 
         $$('.swipeout').on('swipeout:closed', () => {
-          $$('li.swipeout').on('click', function () {
+          $$('li.swipeout').on('click', function() {
             const site = findStation(stations, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -571,7 +625,7 @@ myApp.onPageInit('themeSite', () => {
             });
           });
         });
-        
+
         function favorites() { // if change to () => { , it will go wrong!
           $$('li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
@@ -636,7 +690,7 @@ myApp.onPageInit('customRoute', () => {
       let itemList = findSequence(stations, favoriteSequence);
 
       function deleteFunc() {
-        $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
+        $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
           myApp.swipeoutOpen($(`li#${this.id}`));
           myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
           myApp.swipeoutDelete($(`li#${this.id}`));
@@ -647,13 +701,13 @@ myApp.onPageInit('customRoute', () => {
           }
         });
 
-        $$('.swipeout-overswipe').on('click', function () {
+        $$('.swipeout-overswipe').on('click', function() {
           console.log(this.id);
           const index = favoriteSequence.indexOf(parseInt(this.id, 10));
           if (index > -1) {
             favoriteSequence.splice(index, 1);
           }
-        }); 
+        });
       }
 
       function onSuccess(position) {
@@ -667,7 +721,7 @@ myApp.onPageInit('customRoute', () => {
 
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
-      $$('.toolbar').off('click');// avoid append multiple onclicked on toolbar
+      $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
       $$('.toolbar').on('click', () => {
         if (favoriteSequence.length === 0) {
           myApp.alert('並沒有選擇任何站點喔!', '注意');
@@ -692,7 +746,7 @@ myApp.onPageInit('customRoute', () => {
 
 
 myApp.onPageInit('routeDetail', () => {
-  $$('.back-force').on('click', function () {
+  $$('.back-force').on('click', function() {
     mainView.router.back({ url: this.id, force: true });
   });
 });
@@ -741,7 +795,7 @@ myApp.onPageInit('gamePage', () => {
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
 
-    
+
     if (this.id === 'answer1') {
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
@@ -766,7 +820,7 @@ myApp.onPageInit('gamePage', () => {
         <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
       </svg>`);
       $$('#endImg').attr('src', 'img/fail-board.png');
-      
+
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">
