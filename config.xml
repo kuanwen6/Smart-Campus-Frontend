@@ -27,6 +27,9 @@
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="none" />
     </platform>
+    <config-file platform="ios" target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
+        <string>這個應用程式需要藍芽以偵測iBeacon</string>
+    </config-file>
     <preference name="DisallowOverscroll" value="true" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
