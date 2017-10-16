@@ -28,7 +28,7 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src=\'..img/welcome_page1.png\'>',
+    picture: '<img src=\'../img/welcome_page1.png\'>',
   },
   {
     id: 'slide1',
@@ -49,14 +49,12 @@ const welcomescreenSlides = [{
   },
 ];
 
-// Handle Cordova Device Ready Event
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
-  var applaunchCount = window.localStorage.getItem('launchCount');
 
+  var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
-
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
       welcomescreen.close();
@@ -64,19 +62,71 @@ $$(document).on('deviceready', () => {
   } else {
     console.log("App has launched " + ++localStorage.launchCount + " times.");
   }
+
+  var userLoggedIn = window.localStorage.getItem('logged_in');
+  if (userLoggedIn) {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+  }
 });
 
+var hookurl = 'https://smartcampus.csie.ncku.edu.tw/'
 
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
   console.log(formData);
-  alert(JSON.stringify(formData));
+
+  $$.post(
+    url = hookurl + 'smart_campus/login/',
+    data = {
+      'email': formData['email'],
+      'password': formData['password']
+    },
+    success = function(data) {
+      console.log("login success");
+      $$('#login-form').hide();
+      $$('#register-btn').hide();
+
+      data = JSON.parse(data);
+      console.log(data);
+      window.localStorage.setItem('logged_in', true);
+      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
+      window.localStorage.setItem('nickname', data['data']['nickname']);
+      window.localStorage.setItem('coins', data['data']['coins']);
+      window.localStorage.setItem('reward', JSON.stringify(data['data']['reward']));
+      window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
+    },
+    error = function(data) {
+      console.log("login fail");
+      console.log(data);
+      myApp.alert('', '登入失敗，請重新輸入');
+    }
+  );
 });
 
 $$('.register-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#register-form');
   console.log(formData);
-  alert(JSON.stringify(formData));
+
+  $$.post(
+    url = hookurl + 'smart_campus/signup/',
+    data = {
+      'email': formData['email'],
+      'password': formData['password'],
+      'nickname': formData['nickname']
+    },
+    success = function(data) {
+      console.log("register success");
+      myApp.alert('嗨! ' + formData['nickname'], '註冊成功!', function() {
+        myApp.closeModal();
+      });
+    },
+    error = function(data) {
+      console.log("register fail");
+      console.log(data);
+      myApp.alert(data['responseText'], '註冊失敗');
+    }
+  );
 });
 
 var monuments = [
@@ -289,7 +339,7 @@ myApp.onPageInit('info', (page) => {
     $$('.collections').append('<div></div>');
   }
   for (var i = 0; i < 5; i++) {
-    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_'+(i+1)+'.png"/>');
+    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_' + (i + 1) + '.png"/>');
   }
 });
 
@@ -351,11 +401,11 @@ function createFavoriteCards(favorite, lat, lng, callback) {
   for (let i = 0; i < favorite.length; i += 1) {
     distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
 
-    $$('*[data-page="customRoute"] .swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
+    $$('*[data-page="customRoute"] .swipe-list').append(`<li class="swipeout" id="${favorite[i].id}" style="z-index:100;">
                 <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:18vh;">
                         <div class="row no-gutter">
-                            <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:21px; width:21px;position:absolute;right:8px; top:5px;">
+                            <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:18px; width:18px;position:absolute;right:5px; top:5px;">
                             <div class="col-50">
                               <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
                               <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
@@ -409,7 +459,7 @@ function createFavorite(favorite, lat, lng, callback) {
     <div class="swipeout-actions-right">
       <a href="#" class="remove-favorite swipeout-overswipe" id="${favorite[i].id}">
         <div>
-          <i class="f7-icons color-red" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+          <i class="favorite-heart-${favorite[i].id} f7-icons color-red" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
           <br>
           <p style="font-size:13px;">移出最愛</p>
         </div>
@@ -421,7 +471,7 @@ function createFavorite(favorite, lat, lng, callback) {
   callback();
 }
 
-function createSites(sites, lat, lng, callback) {
+function createSites(sites, favorite, lat, lng, callback) {
   let category;
   let distanceBetween;
   for (let i = 0; i < sites.length; i += 1) {
@@ -444,7 +494,37 @@ function createSites(sites, lat, lng, callback) {
 
     distanceBetween = distance(lat, lng, sites[i].location[1], sites[i].location[0]);
 
-    $$(`.${category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}" style="z-index:100;">
+    if ($.inArray(sites[i].id, favorite) === -1) {
+      $$(`.${category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}" style="z-index:100;">
+      <div class="card swipeout-content">
+          <div href="#" class="card-content" style="height:18vh;">
+              <div class="row no-gutter">
+                  <div class="col-50">
+                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                  </div>
+                  <div class="col-50" style="padding:8px;">
+                      <div class="card-title"><span>${sites[i].name}</span></div>
+                      <div style="position:absolute; right:0; bottom:5px;">
+                          <span>${distanceBetween}</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="swipeout-actions-right">
+        <a href="#" class="add-favorite swipeout-overswipe" id="${sites[i].id}">
+          <div>
+            <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+            <br>
+            <p style="font-size:13px;">加入最愛</p>
+          </div>
+        </a>
+      </div>
+    </li>`);
+
+      //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
+      $$('.search-all-list').append(`<li class="swipeout swipeout-search-${sites[i].id}" id="${sites[i].id}">
     <div class="card swipeout-content">
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
@@ -455,7 +535,7 @@ function createSites(sites, lat, lng, callback) {
                 <div class="col-50" style="padding:8px;">
                     <div class="card-title"><span>${sites[i].name}</span></div>
                     <div style="position:absolute; right:0; bottom:5px;">
-                        <span>${distanceBetween}</span>
+                        <span>10 公尺</span>
                     </div>
                 </div>
             </div>
@@ -464,42 +544,71 @@ function createSites(sites, lat, lng, callback) {
     <div class="swipeout-actions-right">
       <a href="#" class="add-favorite swipeout-overswipe" id="${sites[i].id}">
         <div>
-          <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+          <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
           <br>
           <p style="font-size:13px;">加入最愛</p>
         </div>
       </a>
     </div>
   </li>`);
-
-    //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
-    $$('.search-all-list').append(`<li class="swipeout swipeout-search-${sites[i].id}" id="${sites[i].id}">
-  <div class="card swipeout-content">
-      <div href="#" class="card-content" style="height:18vh;">
-          <div class="row no-gutter">
-              <div class="col-50">
-                <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
-                <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
-              </div>
-              <div class="col-50" style="padding:8px;">
-                  <div class="card-title"><span>${sites[i].name}</span></div>
-                  <div style="position:absolute; right:0; bottom:5px;">
-                      <span>10 公尺</span>
+    } else {
+      $$(`.${category}-list`).append(`<li class="swipeout swipeout-${sites[i].id}" id="${sites[i].id}" style="z-index:100;">
+      <div class="card swipeout-content">
+          <div href="#" class="card-content" style="height:18vh;">
+              <div class="row no-gutter">
+                  <div class="col-50">
+                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                  </div>
+                  <div class="col-50" style="padding:8px;">
+                      <div class="card-title"><span>${sites[i].name}</span></div>
+                      <div style="position:absolute; right:0; bottom:5px;">
+                          <span>${distanceBetween}</span>
+                      </div>
                   </div>
               </div>
           </div>
       </div>
-  </div>
-  <div class="swipeout-actions-right">
-    <a href="#" class="add-favorite swipeout-overswipe" id="${sites[i].id}">
-      <div>
-        <i class="f7-icons color-white" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
-        <br>
-        <p style="font-size:13px;">加入最愛</p>
+      <div class="swipeout-actions-right">
+        <a href="#" class="remove-favorite swipeout-overswipe" id="${sites[i].id}">
+          <div>
+            <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+            <br>
+            <p style="font-size:13px;">移出最愛</p>
+          </div>
+        </a>
       </div>
-    </a>
-  </div>
-</li>`);
+    </li>`);
+
+      //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
+      $$('.search-all-list').append(`<li class="swipeout swipeout-search-${sites[i].id}" id="${sites[i].id}">
+    <div class="card swipeout-content">
+        <div href="#" class="card-content" style="height:18vh;">
+            <div class="row no-gutter">
+                <div class="col-50">
+                  <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                </div>
+                <div class="col-50" style="padding:8px;">
+                    <div class="card-title"><span>${sites[i].name}</span></div>
+                    <div style="position:absolute; right:0; bottom:5px;">
+                        <span>10 公尺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="swipeout-actions-right">
+      <a href="#" class="remove-favorite swipeout-overswipe" id="${sites[i].id}">
+        <div>
+          <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+          <br>
+          <p style="font-size:13px;">移出最愛</p>
+        </div>
+      </a>
+    </div>
+  </li>`);
+    }
   }
 
   callback();
@@ -545,10 +654,10 @@ myApp.onPageInit('themeRoute', () => {
           const plansObj = JSON.parse(plans).data;
 
           function cardOnclick() {
-            $$('.card').on('click', function () { // if change to () => { ,it will go wrong!
+            $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
               const route = findRoute(plansObj, this.id);
               const itemList = findSequence(stationsObj, route.station_sequence);
-  
+
               mainView.router.load({
                 url: 'routeDetail.html',
                 context: {
@@ -582,6 +691,7 @@ myApp.onPageInit('themeSite', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
+      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
@@ -608,7 +718,7 @@ myApp.onPageInit('themeSite', () => {
             });
           });
         });
-        
+
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="themeSite"] li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
@@ -634,11 +744,11 @@ myApp.onPageInit('themeSite', () => {
       }
 
       function onSuccess(position) {
-        createSites(stations, position.coords.latitude, position.coords.longitude, onclickFunc);
+        createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
       }
 
       function onError() {
-        createSites(stations, -1, -1, onclickFunc);
+        createSites(stations, favoriteSequence, -1, -1, onclickFunc);
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
     },
@@ -672,7 +782,7 @@ myApp.onPageInit('favorite', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      const favoriteSequence = [2, 1]; // = get favorite list
+      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
       let itemList = findSequence(stations, favoriteSequence);
 
       $$('*[data-page="favorite"] li.swipeout').off('click');
@@ -758,11 +868,11 @@ myApp.onPageInit('customRoute', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      const favoriteSequence = [2, 1]; // = get favorite list
+      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
       let itemList = findSequence(stations, favoriteSequence);
 
       function deleteFunc() {
-        $$('.delete-route').on('click', function () { // if change to () => { , it will go wrong!
+        $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
           myApp.swipeoutOpen($(`li#${this.id}`));
           myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
           myApp.swipeoutDelete($(`li#${this.id}`));
@@ -779,7 +889,7 @@ myApp.onPageInit('customRoute', () => {
           if (index > -1) {
             favoriteSequence.splice(index, 1);
           }
-        }); 
+        });
       }
 
       function onSuccess(position) {
@@ -793,7 +903,7 @@ myApp.onPageInit('customRoute', () => {
 
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
-      $$('.toolbar').off('click');// avoid append multiple onclicked on toolbar
+      $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
       $$('.toolbar').on('click', () => {
         if (favoriteSequence.length === 0) {
           myApp.alert('並沒有選擇任何站點喔!', '注意');
@@ -818,7 +928,7 @@ myApp.onPageInit('customRoute', () => {
 
 
 myApp.onPageInit('routeDetail', () => {
-  $$('.back-force').on('click', function () {
+  $$('.back-force').on('click', function() {
     mainView.router.back({ url: this.id, force: true });
   });
 });
@@ -867,7 +977,7 @@ myApp.onPageInit('gamePage', () => {
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
 
-    
+
     if (this.id === 'answer1') {
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
@@ -892,7 +1002,7 @@ myApp.onPageInit('gamePage', () => {
         <line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
       </svg>`);
       $$('#endImg').attr('src', 'img/fail-board.png');
-      
+
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">

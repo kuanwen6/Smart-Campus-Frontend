@@ -4,7 +4,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url('../welcome_bg.png');
+    background-image: url('../img/welcome_bg.png');
     background-size: 100% 100%;
     z-index: 10500;
     color: #666;
