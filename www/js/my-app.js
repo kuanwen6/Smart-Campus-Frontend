@@ -90,6 +90,7 @@ $$('.login-form-to-json').on('click', () => {
       data = JSON.parse(data);
       console.log(data);
       window.localStorage.setItem('logged_in', true);
+      window.localStorage.setItem('email', formData['email']);
       window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
@@ -636,6 +637,80 @@ function findStation(stations, id) {
   return stations.filter((entry) => { return entry.id === id; })[0];
 }
 
+function isFavorite(id) {
+  if ($.inArray(id, JSON.parse(window.localStorage.getItem('favorite_stations'))) === -1) {
+    return false;
+  }
+  return true;
+}
+
+function addFavorite(favorite, id) {
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'station_id': id,
+      },
+      success = function(data) {
+        data = JSON.parse(data);
+        console.log(data);
+        window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
+        return data.stations;
+      },
+      error = function(data) {
+        console.log("add fail");
+        return favorite;
+      }
+    );
+  } else {
+    favorite.push(id);
+    window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
+    return favorite;
+  }
+}
+
+function removeFavorite(favorite, id) {
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'station_id': id,
+      },
+      success = function(data) {
+        data = JSON.parse(data);
+        console.log(data);
+        window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
+        return data.stations;
+      },
+      error = function(data) {
+        console.log("add fail");
+        return favorite;
+      }
+    );
+  } else {
+    const index = favorite.indexOf(id);
+    if (index > -1) {
+      favorite.splice(index, 1);
+    }
+    window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
+    return favorite;
+  }
+}
+
+function itemDetailRemove(favorite, id) {
+  $$('.detailHeart').removeClass('color-red').addClass('color-white');
+  favorite = removeFavorite(favorite, id);
+  $$('.detailHeart').attr("onclick",`itemDetailAdd(${favorite},${id})`);
+}
+
+function itemDetailAdd(favorite, id) {
+  $$('.detailHeart').removeClass('color-white').addClass('color-red');
+  favorite = addFavorite(favorite, id);
+  $$('.detailHeart').attr("onclick",`itemDetailRemove(${favorite},${id})`);
+}
+
 myApp.onPageInit('route', () => {
   mainView.hideToolbar();
 });
@@ -687,11 +762,11 @@ myApp.onPageInit('themeRoute', () => {
 
 myApp.onPageInit('themeSite', () => {
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
+      let favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
@@ -702,6 +777,9 @@ myApp.onPageInit('themeSite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              favoriteSequence,
+              previous: 'themeSite.html',
+              favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
         });
@@ -714,6 +792,9 @@ myApp.onPageInit('themeSite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                favoriteSequence,
+                previous: 'themeSite.html',
+                favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
           });
@@ -721,9 +802,14 @@ myApp.onPageInit('themeSite', () => {
 
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="themeSite"] li.swipeout').off('click');
+          
+
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
+            
+            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
             myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
@@ -732,6 +818,9 @@ myApp.onPageInit('themeSite', () => {
           } else {
             // remove this.id to favorite
             console.log('remove toggle');
+
+            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
             myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
@@ -770,19 +859,12 @@ myApp.onPageInit('favorite', () => {
     mainView.router.back({ url: 'themeSite.html', force: true });
   });
 
-  /* TODO
-  ajax get favorite
-  if is empty => no favorite
-    hide toolbar
-  else 
-  */
-
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
+      let favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
       let itemList = findSequence(stations, favoriteSequence);
 
       $$('*[data-page="favorite"] li.swipeout').off('click');
@@ -797,6 +879,9 @@ myApp.onPageInit('favorite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              favoriteSequence,
+              previous: 'favorite.html',
+              favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
         });
@@ -809,6 +894,9 @@ myApp.onPageInit('favorite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                favoriteSequence,
+                previous: 'favorite.html',
+                favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
           });
@@ -817,15 +905,19 @@ myApp.onPageInit('favorite', () => {
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="favorite"] li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
-            // add this.id to favorite
             console.log('add toggle');
+
+            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
             myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
             $$(this).children('div').children('p').html('移出最愛');
           } else {
-            // remove this.id to favorite
             console.log('remove toggle');
+
+            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
             myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
@@ -864,7 +956,7 @@ myApp.onPageInit('customRoute', () => {
   });
 
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
@@ -930,6 +1022,12 @@ myApp.onPageInit('customRoute', () => {
 myApp.onPageInit('routeDetail', () => {
   $$('.back-force').on('click', function() {
     mainView.router.back({ url: this.id, force: true });
+  });
+});
+
+myApp.onPageInit('itemDetail', (page) => {
+  $$('.back-force').on('click', function() {
+    mainView.router.back({ url: page.context.previous, force: true });
   });
 });
 
