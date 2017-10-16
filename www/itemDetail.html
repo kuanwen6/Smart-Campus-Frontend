@@ -1,7 +1,7 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href="index.html" class="link back">
+      <a href="#" class="link back-force">
         <i class="f7-icons color-white">chevron_left</i> 
                         <span>Back</span>
                     </a>
@@ -17,7 +17,11 @@
       <div class="content-block" style="margin: 15px 0;">
         <div style="position: relative;">
             <img src="{{site.image.primary}}" style="width:100%;">
-            <i class="f7-icons color-red" style="font-size:25px;position:absolute;bottom:15px;right:15px; text-shadow: 0px 0px 8px white;">heart_fill</i>
+            {{#if favorite}}
+              <i class="f7-icons color-red detailHeart" style="font-size:25px;position:absolute;bottom:15px;right:15px; text-shadow: 0px 0px 8px white;" onclick='itemDetailRemove([{{favoriteSequence}}],{{site.id}});'>heart_fill</i>
+            {{else}}
+              <i class="f7-icons color-white detailHeart" style="font-size:25px;position:absolute;bottom:15px;right:15px; text-shadow: 0px 0px 8px white;" onclick='itemDetailAdd([{{favoriteSequence}}],{{site.id}});'>heart_fill</i>
+            {{/if}}    
         </div>
         <div class="content-block" style="margin: 5px 0;">
             <div class="content-block-inner">
