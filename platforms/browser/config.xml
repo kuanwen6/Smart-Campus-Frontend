@@ -15,5 +15,8 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
+        <string>這個應用程式需要藍芽以偵測iBeacon</string>
+    </config-file>
     <preference name="DisallowOverscroll" value="true" />
 </widget>

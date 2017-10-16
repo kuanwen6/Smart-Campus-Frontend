@@ -351,7 +351,7 @@ function createFavoriteCards(favorite, lat, lng, callback) {
   for (let i = 0; i < favorite.length; i += 1) {
     distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
 
-    $$('.swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
+    $$('*[data-page="customRoute"] .swipe-list').append(`<li class="swipeout" id="${favorite[i].id}">
                 <div class="card swipeout-content">
                     <div href="#" class="card-content" style="height:18vh;">
                         <div class="row no-gutter">
@@ -379,6 +379,43 @@ function createFavoriteCards(favorite, lat, lng, callback) {
                   </a>
                 </div>
               </li>`);
+  }
+
+  callback();
+}
+
+function createFavorite(favorite, lat, lng, callback) {
+  let distanceBetween;
+  for (let i = 0; i < favorite.length; i += 1) {
+    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
+
+    $$('.favorite-swipe-list').append(`<li class="swipeout swipeout-favorite-${favorite[i].id}" id="${favorite[i].id}" style="z-index:100;">
+    <div class="card swipeout-content">
+        <div href="#" class="card-content" style="height:18vh;">
+            <div class="row no-gutter">
+                <div class="col-50">
+                  <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <i class="favorite-heart-${favorite[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
+                </div>
+                <div class="col-50" style="padding:8px;">
+                    <div class="card-title"><span>${favorite[i].name}</span></div>
+                    <div style="position:absolute; right:0; bottom:5px;">
+                        <span>${distanceBetween}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="swipeout-actions-right">
+      <a href="#" class="remove-favorite swipeout-overswipe" id="${favorite[i].id}">
+        <div>
+          <i class="f7-icons color-red" style="font-size:8vw;position:absolute;top:20%;left:40%;">heart_fill</i>
+          <br>
+          <p style="font-size:13px;">移出最愛</p>
+        </div>
+      </a>
+    </div>
+  </li>`);
   }
 
   callback();
@@ -548,7 +585,7 @@ myApp.onPageInit('themeSite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
-        $$('li.swipeout').on('click', function () {
+        $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -559,8 +596,8 @@ myApp.onPageInit('themeSite', () => {
           });
         });
 
-        $$('.swipeout').on('swipeout:closed', () => {
-          $$('li.swipeout').on('click', function () {
+        $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', () => {
+          $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
             const site = findStation(stations, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -573,7 +610,7 @@ myApp.onPageInit('themeSite', () => {
         });
         
         function favorites() { // if change to () => { , it will go wrong!
-          $$('li.swipeout').off('click');
+          $$('*[data-page="themeSite"] li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
@@ -593,7 +630,7 @@ myApp.onPageInit('themeSite', () => {
           }
         }
 
-        $$('.swipeout-overswipe').on('click', favorites);
+        $$('*[data-page="themeSite"] .swipeout-overswipe').on('click', favorites);
       }
 
       function onSuccess(position) {
@@ -614,6 +651,95 @@ myApp.onPageInit('themeSite', () => {
 myApp.onPageInit('routeDetail', () => {
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
   myApp.accordionOpen($$('li#introduction'));
+});
+
+myApp.onPageInit('favorite', () => {
+  mainView.hideToolbar();
+
+  $$('.back-force').on('click', () => {
+    mainView.router.back({ url: 'themeSite.html', force: true });
+  });
+
+  /* TODO
+  ajax get favorite
+  if is empty => no favorite
+    hide toolbar
+  else 
+  */
+
+  $$.ajax({
+    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    type: 'get',
+    success: (data) => {
+      const stations = JSON.parse(data).data;
+      const favoriteSequence = [2, 1]; // = get favorite list
+      let itemList = findSequence(stations, favoriteSequence);
+
+      $$('*[data-page="favorite"] li.swipeout').off('click');
+      $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
+
+      //  because haved to wait for appened fininshed
+      function onclickFunc() {
+        $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+          const site = findStation(itemList, parseInt(this.id, 10));
+          console.log(this);
+          mainView.router.load({
+            url: 'itemDetail.html',
+            context: {
+              site,
+            },
+          });
+        });
+
+        $$('*[data-page="favorite"] .swipeout').on('swipeout:closed', () => {
+          $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+            const site = findStation(itemList, parseInt(this.id, 10));
+            console.log(site);
+            mainView.router.load({
+              url: 'itemDetail.html',
+              context: {
+                site,
+              },
+            });
+          });
+        });
+        
+        function favorites() { // if change to () => { , it will go wrong!
+          $$('*[data-page="favorite"] li.swipeout').off('click');
+          if ($$(this).hasClass('add-favorite')) {
+            // add this.id to favorite
+            console.log('add toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+            $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
+            $$(this).children('div').children('p').html('移出最愛');
+          } else {
+            // remove this.id to favorite
+            console.log('remove toggle');
+            $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+            $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+            myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
+            $$(this).children('div').children('p').html('加入最愛');
+          }
+        }
+
+        $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
+        $$('*[data-page="favorite"] .swipeout-overswipe').on('click', favorites);
+      }
+
+      function onSuccess(position) {
+        createFavorite(itemList, position.coords.latitude, position.coords.longitude, onclickFunc);
+      }
+
+      function onError() {
+        createFavorite(itemList, -1, -1, onclickFunc);
+      }
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    },
+    error: (data) => {
+      console.log(data);
+    },
+  });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -647,7 +773,7 @@ myApp.onPageInit('customRoute', () => {
           }
         });
 
-        $$('.swipeout-overswipe').on('click', function () {
+        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function () {
           console.log(this.id);
           const index = favoriteSequence.indexOf(parseInt(this.id, 10));
           if (index > -1) {
