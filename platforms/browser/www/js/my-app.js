@@ -108,8 +108,8 @@ $$('.login-form-to-json').on('click', () => {
 
       data = JSON.parse(data);
       console.log(data);
-      window.localStorage.setItem('email', formData['email']);
       window.localStorage.setItem('logged_in', true);
+      window.localStorage.setItem('email', formData['email']);
       window.localStorage.setItem('experience_point', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
