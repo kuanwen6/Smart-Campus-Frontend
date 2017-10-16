@@ -56,6 +56,9 @@ $$(document).on('deviceready', () => {
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
+    window.localStorage.setItem('nickname', 'Guest');
+    window.localStorage.setItem('experience_point', 0);
+    window.localStorage.setItem('coins', 0);
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
       welcomescreen.close();
@@ -67,6 +70,8 @@ $$(document).on('deviceready', () => {
   if (window.localStorage.getItem('logged_in')) {
     $$('#login-form').hide();
     $$('#register-btn').hide();
+    $$('.profile_pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
   }
 
   $$.get(
@@ -75,11 +80,12 @@ $$(document).on('deviceready', () => {
       console.log('get rewards info success');
       window.localStorage.setItem('all_rewards_info', data);
     },
-    error = function(data){
+    error = function(data) {
       console.log('get rewards info fail');
       console.log(data);
     }
   )
+
 });
 
 
@@ -97,6 +103,8 @@ $$('.login-form-to-json').on('click', () => {
       console.log('login success');
       $$('#login-form').hide();
       $$('#register-btn').hide();
+      $$('.profile_pic').removeClass('hide');
+      $$('.nickname').removeClass('hide');
 
       data = JSON.parse(data);
       console.log(data);
@@ -105,7 +113,7 @@ $$('.login-form-to-json').on('click', () => {
       window.localStorage.setItem('experience_point', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
-      window.localStorage.setItem('rewards', JSON.stringify(data['data']['reward']));
+      window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
       window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
     },
     error = function(data) {
@@ -347,14 +355,21 @@ myApp.onPageInit('map', (page) => {
 
 
 myApp.onPageInit('info', (page) => {
+  var level = Math.floor(parseInt(window.localStorage.getItem('experience_point')) / 10);
+  $$('#level').html(level);
+  $$('#coin').html(window.localStorage.getItem('coins'));
+  $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   for (var i = 0; i < 16; i++) {
     $$('.collections').append('<div></div>');
   }
-  rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
-  for (var i = 0; i < rewards.length; i++) {
-    reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
-    $$('.collections > div').eq(i).append('<img src="'+ reward_img +'"/>');
+
+  if (window.localStorage.getItem('rewards')) {
+    rewards = JSON.parse(window.localStorage.getItem('rewards'));
+    all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
+    for (var i = 0; i < rewards.length; i++) {
+      reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
+      $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
+    }
   }
 });
 
