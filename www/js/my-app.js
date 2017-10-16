@@ -28,7 +28,7 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src=\'../img/welcome_page1.png\'>',
+    picture: '<img src="../img/welcome_page1.png">',
   },
   {
     id: 'slide1',
@@ -48,6 +48,7 @@ const welcomescreenSlides = [{
     text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
   },
 ];
+const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/'
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
@@ -55,50 +56,68 @@ $$(document).on('deviceready', () => {
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
+    window.localStorage.setItem('nickname', 'Guest');
+    window.localStorage.setItem('experience_point', 0);
+    window.localStorage.setItem('coins', 0);
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
       welcomescreen.close();
     });
   } else {
-    console.log("App has launched " + ++localStorage.launchCount + " times.");
+    console.log('App has launched ' + ++localStorage.launchCount + ' times.');
   }
 
-  var userLoggedIn = window.localStorage.getItem('logged_in');
-  if (userLoggedIn) {
+  if (window.localStorage.getItem('logged_in')) {
     $$('#login-form').hide();
     $$('#register-btn').hide();
+    $$('.profile_pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
   }
+
+  $$.get(
+    url = HOOKURL + 'smart_campus/get_all_rewards/',
+    success = function(data) {
+      console.log('get rewards info success');
+      window.localStorage.setItem('all_rewards_info', data);
+    },
+    error = function(data) {
+      console.log('get rewards info fail');
+      console.log(data);
+    }
+  )
+
 });
 
-var hookurl = 'https://smartcampus.csie.ncku.edu.tw/'
 
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
   console.log(formData);
 
   $$.post(
-    url = hookurl + 'smart_campus/login/',
+    url = HOOKURL + 'smart_campus/login/',
     data = {
       'email': formData['email'],
       'password': formData['password']
     },
     success = function(data) {
-      console.log("login success");
+      console.log('login success');
       $$('#login-form').hide();
       $$('#register-btn').hide();
+      $$('.profile_pic').removeClass('hide');
+      $$('.nickname').removeClass('hide');
 
       data = JSON.parse(data);
       console.log(data);
       window.localStorage.setItem('logged_in', true);
       window.localStorage.setItem('email', formData['email']);
-      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
+      window.localStorage.setItem('experience_point', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
-      window.localStorage.setItem('reward', JSON.stringify(data['data']['reward']));
+      window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
       window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
     },
     error = function(data) {
-      console.log("login fail");
+      console.log('login fail');
       console.log(data);
       myApp.alert('', '登入失敗，請重新輸入');
     }
@@ -110,20 +129,20 @@ $$('.register-form-to-json').on('click', () => {
   console.log(formData);
 
   $$.post(
-    url = hookurl + 'smart_campus/signup/',
+    url = HOOKURL + 'smart_campus/signup/',
     data = {
       'email': formData['email'],
       'password': formData['password'],
       'nickname': formData['nickname']
     },
     success = function(data) {
-      console.log("register success");
+      console.log('register success');
       myApp.alert('嗨! ' + formData['nickname'], '註冊成功!', function() {
         myApp.closeModal();
       });
     },
     error = function(data) {
-      console.log("register fail");
+      console.log('register fail');
       console.log(data);
       myApp.alert(data['responseText'], '註冊失敗');
     }
@@ -252,7 +271,7 @@ myApp.onPageInit('map', (page) => {
           totalDistance += leg.distance.value;
           totalDuration += leg.duration.value;
         }
-        console.log(totalDistance + " m, " + totalDuration + " s");
+        console.log(totalDistance + ' m, ' + totalDuration + ' s');
       } else
         window.alert('Directions request failed due to ' + status);
     });
@@ -300,8 +319,8 @@ myApp.onPageInit('map', (page) => {
     locationCircle.setCenter({ lat: latitude, lng: longitude });
     locationCircle.setRadius(accuracy);
 
-    console.log("added marker!");
-    //myApp.alert("lat:" + latitude + "\nlng:" + longitude + "\nacc:" + accuracy);
+    console.log('added marker!');
+    //myApp.alert('lat:' + latitude + '\nlng:' + longitude + '\nacc:' + accuracy);
   }
 
   var onMapWatchSuccess = function(position) {
@@ -336,11 +355,21 @@ myApp.onPageInit('map', (page) => {
 
 
 myApp.onPageInit('info', (page) => {
+  var level = Math.floor(parseInt(window.localStorage.getItem('experience_point')) / 10);
+  $$('#level').html(level);
+  $$('#coin').html(window.localStorage.getItem('coins'));
+  $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   for (var i = 0; i < 16; i++) {
     $$('.collections').append('<div></div>');
   }
-  for (var i = 0; i < 5; i++) {
-    $$('.collections > div').eq(i).append('<img src="../img/collections/collection_' + (i + 1) + '.png"/>');
+
+  if (window.localStorage.getItem('rewards')) {
+    rewards = JSON.parse(window.localStorage.getItem('rewards'));
+    all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
+    for (var i = 0; i < rewards.length; i++) {
+      reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
+      $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
+    }
   }
 });
 

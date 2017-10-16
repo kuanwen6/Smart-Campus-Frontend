@@ -14,6 +14,10 @@
   background: #000000;
 }
 
+.hide {
+  display: none;
+}
+
 .list-block .item-inner:after {
   display: none;
 }
@@ -106,6 +110,8 @@
 }
 
 .level_and_money {
+  position: relative;
+  top: 5vh;
   display: table;
   margin: auto;
 }
@@ -135,18 +141,20 @@
 .collections {
   border: 1px solid;
   border-color: rgba(39, 53, 160, 0.25);
-  width: 88vw;
-  height: 42vw;
+  position: absolute;
+  left: 50%;
   bottom: 5vh;
+  transform: translate(-50%, 0);
+  width: 50vh;
+  height: 25vh;
   overflow: scroll;
-  margin: 0 auto;
 }
 
 .collections div {
   position: relative;
   display: inline-block;
-  height: 20vw;
-  width: 20vw;
+  height: 12vh;
+  width: 12vh;
   margin: 0 1.5px;
   box-shadow: 3px 3px 6px 0px rgba(39, 53, 160, 0.18);
 }
@@ -160,4 +168,33 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.profile_pic {
+  position: relative;
+  top: 5vh;
+}
+
+.profile_pic img {
+  height: 20vh;
+  margin: 0 auto;
+  display: block;
+}
+
+.nickname {
+  position: relative;
+  top: 4vh;
+  text-align: center;
+  font-size: 3vh;
+}
+
+.collection {
+  position: absolute;
+  left: 50%;
+  bottom: 29vh;
+  transform: translate(-50%, 0);
+  text-align: center;
+  color: #6c7b8a;
+  font-weight: bold;
+  font-size: 4.6vmin;
 }

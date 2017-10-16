@@ -1,27 +1,33 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href="#" class="back link">
-        <i class="icon icon-back"></i>
-        <span>Back</span>
-      </a>
+      <a href="#" class="back icon-only"><i class="f7-icons">home_fill</i></a>
     </div>
     <div class="center sliding">個人資料</div>
     <div class="right">
-      <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+      <a href="#" class="icon-only"><i class="f7-icons">gear_fill</i></a>
     </div>
   </div>
 </div>
 <div class="pages">
   <div data-page="info" class="page no-toolbar">
     <div class="page-content" style="background-color: white;">
+      <div class="profile_pic">
+        <img src="img/person.png">
+      </div>
+      <div class="nickname">
+        <p>Guest</p>
+      </div>
       <div class="level_and_money">
-        <div style="">
-          <img src="img/level_icon.png"><span>等 級 :</span><span>3</span>
+        <div>
+          <img src="img/level_icon.png"><span>等 級 :</span><span id="level">0</span>
         </div>
-        <div style="">
-          <img src="img/money_icon.png"><span>金 幣 :</span><span>20000</span>
+        <div>
+          <img src="img/money_icon.png"><span>金 幣 :</span><span id="coin">0</span>
         </div>
+      </div>
+      <div class="collection">
+        <p>{ 收藏品 }</p>
       </div>
       <div class="collections"></div>
     </div>
