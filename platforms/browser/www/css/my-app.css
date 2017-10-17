@@ -378,6 +378,15 @@ body {
 .loading span:nth-child(9) {
     animation-delay: 1.6s;
 }
+
+.loading span:nth-child(10) {
+    animation-delay: 1.8s;
+}
+
+.loading span:nth-child(11) {
+    animation-delay: 2.0s;
+}
+
 /*  themeSite.html  */
 .button.active {
     background: none;
@@ -456,18 +465,55 @@ body {
     animation-delay: 4s;
 }
 
+.custom-money-modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Black w/ opacity */
+}
+
 /* Modal Content (image) */
 
 .custom-modal-content {
     width: 80%;
     position: absolute;
     left: 10%;
+    top: calc(22px + 50%);
+    margin-top: -48vw;
+}
+
+.custom-money-content {
+    width: 100%;
+    position: absolute;
+    top: calc(22px + 50%);
+    margin-top: -33.7vw;
 }
 
 .custom-start-modal-content {
     width: 68%;
     position: absolute;
     left: 16%;
+    color: white;
+    font-size: 5.5vw;
+    top: 46vh; 
+}
+
+.custom-money-modal-content {
+    width: 80%;
+    position: absolute;
+    left: 10%;
     color: white;
     font-size: 5.5vw;
     top: 46vh; 

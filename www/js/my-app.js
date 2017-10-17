@@ -58,6 +58,8 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('launchCount', 1);
     window.localStorage.setItem('nickname', 'Guest');
     window.localStorage.setItem('experience_point', 0);
+    window.localStorage.setItem('rewards', '[]');
+    window.localStorage.setItem('favorite_stations', '[]');
     window.localStorage.setItem('coins', 0);
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
@@ -666,6 +668,32 @@ function findStation(stations, id) {
   return stations.filter((entry) => { return entry.id === id; })[0];
 }
 
+function modifyMoney(money, change) {
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_coins/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'coins': money + change,
+      },
+      success = function(data) {
+        data = JSON.parse(data);
+        console.log(data);
+        window.localStorage.setItem('coins', data.coins);
+        return data.coins;
+      },
+      error = function(data) {
+        console.log("add fail");
+        return money;
+      }
+    );
+  } else {
+    window.localStorage.setItem('coins', money + change);
+    return money + change;
+  }
+}
+
+
 function isFavorite(id) {
   if ($.inArray(id, JSON.parse(window.localStorage.getItem('favorite_stations'))) === -1) {
     return false;
@@ -738,6 +766,10 @@ function itemDetailAdd(favorite, id) {
   $$('.detailHeart').removeClass('color-white').addClass('color-red');
   favorite = addFavorite(favorite, id);
   $$('.detailHeart').attr("onclick",`itemDetailRemove(${favorite},${id})`);
+}
+
+function moneySelect() {
+  $$('#money-select-modal').css('display', 'block');
 }
 
 myApp.onPageInit('route', () => {
@@ -1058,43 +1090,40 @@ myApp.onPageInit('itemDetail', (page) => {
   $$('.back-force').on('click', function() {
     mainView.router.back({ url: page.context.previous, force: true });
   });
-});
 
-myApp.onPageInit('gamePage', () => {
-  /* TODO 
-  const question = getQuestion(beacon_id);
-  const options = getOptions();
-  const answer = getAnswer();
+  $$('.custom-money-content').on('click', (e) => {
+    const pHeight = $$('.custom-money-content').height();
+    const pOffset = $$('.custom-money-content').offset();
+    const y = e.pageY - pOffset.top;
+    let money = parseInt(window.localStorage.getItem('coins'),10);
 
-  $$('#questionTextArea').html(question);
-  for (let i=0; i<4; i++) {
-    $$(`#answer{i+1}`).html(options[i]);
-  }
-
-  $$('.answer').on('click', function () {
-    lockButton();
-    if (this.id === answer) {
-      correct();
+    if (y > pHeight * 0.5 && y <= pHeight) {
+      mainView.router.load({
+        url: 'gamePage.html',
+        context: {
+          id: page.context.site.id,
+          gain: 200,
+        },
+      });
     } else {
-      wrong();
+      if (money < 500) {
+        myApp.alert('擁有金幣不足!', '下注失敗');
+      } else {
+        money = modifyMoney(money, -500);
+        mainView.router.load({
+          url: 'gamePage.html',
+          context: {
+            id: page.context.site.id,
+            gain: 1000,
+          },
+        });
+      }
     }
   });
+});
 
-  $$('.confirm').on('click', () => {
-    freeButton();
-    redirection();
-  });
-  */
-
-  setTimeout(() => {
-    $$('#gameStart-modal').css('display', 'none');
-  }, 5000);
-
-  $$('.custom-modal-content').css('top', 44 + (($$(window).height() - $$(window).width() * 0.96 - 44) / 2));
-
-  const question = '哪座雕像是以魯迅為本的雕塑品，營造出........................';
-  const options = ['沉思者', '太極', '詩人', '舞動'];
-  const answer = 'answer1';
+function answerQuestion(question, options, answer, question_id, gain) {
+  let money = parseInt(window.localStorage.getItem('coins'),10);
 
   $$('#questionTextArea').html(question);
   for (let i = 0; i < 4; i += 1) {
@@ -1104,8 +1133,7 @@ myApp.onPageInit('gamePage', () => {
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
 
-
-    if (this.id === 'answer1') {
+    if (this.id === 'answer' + answer.toString()) {
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
         <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
@@ -1120,6 +1148,7 @@ myApp.onPageInit('gamePage', () => {
           <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
         </div>`);
       }, 1200);
+      money = modifyMoney(money, gain);
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
@@ -1139,6 +1168,12 @@ myApp.onPageInit('gamePage', () => {
       }, 1200);
     }
   });
+}
+
+myApp.onPageInit('gamePage', (page) => {
+  setTimeout(() => {
+    $$('#gameStart-modal').css('display', 'none');
+  }, 5000);
 
   $$('#endImg').on('click', (e) => {
     const pHeight = $$('#endImg').height();
@@ -1149,9 +1184,42 @@ myApp.onPageInit('gamePage', () => {
     console.log('H: ' + pHeight);
 
     if (y > pHeight * 0.78 && y <= pHeight) {
-      mainView.router.load({
-        url: 'index.html',
-      });
+      mainView.router.back();
     }
   });
+
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.ajax({
+      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+      type: 'get',
+      data: {
+        'email': window.localStorage.getItem('email'),
+        'station_id': page.context.id,
+      },
+      success: (data) => {
+        const questionData = JSON.parse(data);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+      },
+      error: (data) => {
+        console.log(data);
+        console.log("get question error");
+      }
+    });
+  } else {
+    $$.ajax({
+      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+      type: 'get',
+      data: {
+        'email': 'visitMode@gmail.com',
+        'station_id': page.context.id,
+      },
+      success: (data) => {
+        const questionData = JSON.parse(data);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+      },
+      error: (data) => {
+        console.log("get question error");
+      }
+    });
+  }
 });
