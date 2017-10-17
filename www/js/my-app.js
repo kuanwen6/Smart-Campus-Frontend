@@ -215,8 +215,8 @@ myApp.onPageInit('map', (page) => {
     strokeWeight: 1,
   });
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    center: { lat: 23, lng: 120.22 },
+    zoom: 16,
+    center: { lat: 22.998089, lng: 120.217441 },
     disableDefaultUI: true,
     clickableIcons: false,
   });
@@ -246,9 +246,9 @@ myApp.onPageInit('map', (page) => {
     }],
   };
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
-  directionsDisplay.setMap(map);
+  //var directionsService = new google.maps.DirectionsService;
+  //var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+  //directionsDisplay.setMap(map);
 
   function calculateAndDisplayRoute(directionsService, directionsDisplay, origin) {
     var waypts = [];
@@ -329,12 +329,12 @@ myApp.onPageInit('map', (page) => {
   }
 
   var onMapWatchSuccess = function(position) {
-
+    /*
     if (!onMapWatchSuccess.first) {
       calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
     }
     onMapWatchSuccess.first = true;
-
+    */
     var updatedLatitude = position.coords.latitude;
     var updatedLongitude = position.coords.longitude;
     var updatedAccuracy = position.coords.accuracy;
@@ -355,7 +355,7 @@ myApp.onPageInit('map', (page) => {
   }
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
-  calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
+  //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
 
