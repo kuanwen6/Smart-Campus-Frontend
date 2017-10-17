@@ -88,6 +88,27 @@
   color: white;
 }
 
+.marker_info span:nth-of-type(1) {
+  left: 45%; top: 27%; font-size: 3.5vmin; letter-spacing: 1.5px;
+}
+
+.marker_info span:nth-of-type(2) {
+  left: 45%; top: 45%; font-size: 4.5vmin; letter-spacing: 1.5px;
+}
+
+.marker_info span:nth-of-type(3) {
+  bottom: 10%; right: 5%; font-size: 4vmin;
+}
+
+#marker_img {
+  position: absolute;
+  top: 27%;
+  left: 23%;
+  transform: translate(-50%,0);
+  height: 60%;
+  max-width: 35%;
+}
+
 .login-form-to-json {
   margin-top: 2vh;
   height: 8vh;
@@ -145,7 +166,7 @@
   left: 50%;
   bottom: 5vh;
   transform: translate(-50%, 0);
-  width: 50vh;
+  width: 51vh;
   height: 25vh;
   overflow: scroll;
 }

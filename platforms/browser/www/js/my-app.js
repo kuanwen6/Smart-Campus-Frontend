@@ -181,10 +181,10 @@ myApp.onPageInit('map', (page) => {
   });
 
   const stations = JSON.parse(window.sessionStorage.getItem('all_stations_info'))['data'];
+  var markers;
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
-  var markers = undefined;
   var image = {
     url: './icon/mobileimgs2.png',
     size: new google.maps.Size(22, 22),
@@ -294,6 +294,10 @@ myApp.onPageInit('map', (page) => {
   }
 
   function showMarkerInfo() {
+    var station = stations.find(x => x.name === this.title);
+    $$('#marker_img').attr('src', station['image']['primary']);
+    $$('#marker_category').html('/ '+station['category']+'主題 /');
+    $$('#marker_name').html(station['name'].replace('/','<br>/'));
     $$('.marker_info').css('display', 'block');
   }
 
