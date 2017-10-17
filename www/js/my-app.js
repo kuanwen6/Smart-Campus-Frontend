@@ -81,14 +81,24 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_rewards/',
     success = function(data) {
       console.log('get rewards info success');
-      window.localStorage.setItem('all_rewards_info', data);
+      window.sessionStorage.setItem('all_rewards_info', data);
     },
     error = function(data) {
       console.log('get rewards info fail');
       console.log(data);
     }
   )
-
+  $$.get(
+    url = HOOKURL + 'smart_campus/get_all_stations/',
+    success = function(data) {
+      console.log('get stations info success');
+      window.sessionStorage.setItem('all_stations_info', data);
+    },
+    error = function(data) {
+      console.log('get stations info fail');
+      console.log(data);
+    }
+  )
 });
 
 
@@ -108,7 +118,6 @@ $$('.login-form-to-json').on('click', () => {
       $$('#register-btn').hide();
       $$('.profile_pic').removeClass('hide');
       $$('.nickname').removeClass('hide');
-
 
       data = JSON.parse(data);
       console.log(data);
@@ -154,28 +163,8 @@ $$('.register-form-to-json').on('click', () => {
   );
 });
 
-var monuments = [
-  ['Confucius Temple', 22.998279, 120.214809],
-  ['Chikan House', 22.998299, 120.216794],
-];
-
-var arts = [
-  ['Flutter', 22.998171, 120.216955],
-  ['Thinker', 23.000831, 120.215108],
-];
-
-var landscapes = [
-  ['Yung Park', 22.999003, 120.215434],
-  ['Lake', 22.99768339, 120.2157563],
-];
-
-var administrativeUnit = [
-  ['Post Office', 22.998166, 120.214360],
-  ['Cool', 22.998640, 120.217943],
-];
 
 myApp.onPageInit('map', (page) => {
-
   $$('.open-filter').on('click', () => {
     $$('#map_filter').css('display', 'block');
   });
@@ -191,21 +180,29 @@ myApp.onPageInit('map', (page) => {
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
-
+  const stations = JSON.parse(window.sessionStorage.getItem('all_stations_info'))['data'];
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
+  var markers = undefined;
   var image = {
     url: './icon/mobileimgs2.png',
     size: new google.maps.Size(22, 22),
     origin: new google.maps.Point(0, 18),
     anchor: new google.maps.Point(11, 11)
   };
+  var map = new google.maps.Map($$('#map')[0], {
+    zoom: 16,
+    center: { lat: 22.998089, lng: 120.217441 },
+    disableDefaultUI: true,
+    clickableIcons: false,
+  });
   var locationMarker = new google.maps.Marker({
     clickable: false,
     icon: image,
     shadow: null,
     zIndex: 999,
+    map: map,
   });
   var locationCircle = new google.maps.Circle({
     fillColor: '#61a0bf',
@@ -213,28 +210,13 @@ myApp.onPageInit('map', (page) => {
     strokeColor: '#1bb6ff',
     strokeOpacity: 0.4,
     strokeWeight: 1,
+    map: map,
   });
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 16,
-    center: { lat: 22.998089, lng: 120.217441 },
-    disableDefaultUI: true,
-    clickableIcons: false,
-  });
-
-
-  var markers = [monuments, arts, landscapes, administrativeUnit];
-  setMarkers(map);
-
-  locationMarker.setMap(map);
-  locationCircle.setMap(map);
-
-  map.addListener('click', hideMarkerInfo);
   var walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
     scale: 3
   };
-
   var walkingPathLine = {
     strokeColor: '#0eb7f6',
     strokeOpacity: 0,
@@ -246,6 +228,8 @@ myApp.onPageInit('map', (page) => {
     }],
   };
 
+  map.addListener('click', hideMarkerInfo);
+  setMarkers(map);
   //var directionsService = new google.maps.DirectionsService;
   //var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
   //directionsDisplay.setMap(map);
@@ -283,25 +267,29 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png'];
+    const icon = {
+      '古蹟': 'img/markers/marker_red.png',
+      '藝文': 'img/markers/marker_orange.png',
+      '景觀': 'img/markers/marker_green.png',
+      '行政單位': 'img/markers/marker_blue.png'
+    };
+    const scaledSize = new google.maps.Size(25, 36);
+    const anchor = new google.maps.Point(12.5, 36);
+    markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
 
-    for (var i = 0; i < markers.length; i++) {
-      for (var j = 0; j < markers[i].length; j++) {
-        var dot = markers[i][j];
-        var marker = new google.maps.Marker({
-          position: { lat: dot[1], lng: dot[2] },
-          title: dot[0],
-          map: map,
-          icon: {
-            url: icon[i],
-            scaledSize: new google.maps.Size(25, 36),
-            anchor: new google.maps.Point(12.5, 36),
-          },
-        });
-
-        marker.addListener('click', showMarkerInfo);
-        dot.push(marker);
-      }
+    for (const station of stations) {
+      var marker = new google.maps.Marker({
+        position: { lat: station['location'][1], lng: station['location'][0] },
+        title: station['name'],
+        map: map,
+        icon: {
+          url: icon[station['category']],
+          scaledSize: scaledSize,
+          anchor: anchor,
+        },
+      });
+      marker.addListener('click', showMarkerInfo);
+      markers[station['category']].push(marker);
     }
   }
 
@@ -314,8 +302,9 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setGroupMarkerVisible(groupId) {
-    for (var i = 0; i < markers[groupId].length; i++) {
-      markers[groupId][i][3].setVisible(!markers[groupId][i][3].visible);
+    const category = ['古蹟', '藝文', '景觀', '行政單位'];
+    for (var marker of markers[category[groupId]]) {
+      marker.setVisible(!marker.visible);
     }
   }
 
@@ -323,9 +312,6 @@ myApp.onPageInit('map', (page) => {
     locationMarker.setPosition({ lat: latitude, lng: longitude });
     locationCircle.setCenter({ lat: latitude, lng: longitude });
     locationCircle.setRadius(accuracy);
-
-    console.log('added marker!');
-    //myApp.alert('lat:' + latitude + '\nlng:' + longitude + '\nacc:' + accuracy);
   }
 
   var onMapWatchSuccess = function(position) {
@@ -340,11 +326,9 @@ myApp.onPageInit('map', (page) => {
     var updatedAccuracy = position.coords.accuracy;
 
     if (updatedLatitude !== Latitude || updatedLongitude !== Longitude || updatedAccuracy !== Accuracy) {
-
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
       Accuracy = updatedAccuracy;
-
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
     }
   };
@@ -369,7 +353,7 @@ myApp.onPageInit('info', (page) => {
   }
 
   rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
+  all_rewards_info = JSON.parse(window.sessionStorage.getItem('all_rewards_info'));
   for (var i = 0; i < rewards.length; i++) {
     reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
     $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
@@ -760,13 +744,13 @@ function removeFavorite(favorite, id) {
 function itemDetailRemove(favorite, id) {
   $$('.detailHeart').removeClass('color-red').addClass('color-white');
   favorite = removeFavorite(favorite, id);
-  $$('.detailHeart').attr("onclick",`itemDetailAdd(${favorite},${id})`);
+  $$('.detailHeart').attr("onclick", `itemDetailAdd(${favorite},${id})`);
 }
 
 function itemDetailAdd(favorite, id) {
   $$('.detailHeart').removeClass('color-white').addClass('color-red');
   favorite = addFavorite(favorite, id);
-  $$('.detailHeart').attr("onclick",`itemDetailRemove(${favorite},${id})`);
+  $$('.detailHeart').attr("onclick", `itemDetailRemove(${favorite},${id})`);
 }
 
 function moneySelect() {
@@ -832,7 +816,7 @@ myApp.onPageInit('themeSite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
-        $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
+        $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -847,7 +831,7 @@ myApp.onPageInit('themeSite', () => {
         });
 
         $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
+          $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
             const site = findStation(stations, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -864,13 +848,13 @@ myApp.onPageInit('themeSite', () => {
 
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="themeSite"] li.swipeout').off('click');
-          
+
 
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
-            
-            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+
+            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
@@ -881,7 +865,7 @@ myApp.onPageInit('themeSite', () => {
             // remove this.id to favorite
             console.log('remove toggle');
 
-            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
@@ -934,7 +918,7 @@ myApp.onPageInit('favorite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
-        $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+        $$('*[data-page="favorite"] li.swipeout').on('click', function() {
           const site = findStation(itemList, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -949,7 +933,7 @@ myApp.onPageInit('favorite', () => {
         });
 
         $$('*[data-page="favorite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+          $$('*[data-page="favorite"] li.swipeout').on('click', function() {
             const site = findStation(itemList, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -963,13 +947,13 @@ myApp.onPageInit('favorite', () => {
             });
           });
         });
-        
+
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="favorite"] li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
             console.log('add toggle');
 
-            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
@@ -978,7 +962,7 @@ myApp.onPageInit('favorite', () => {
           } else {
             console.log('remove toggle');
 
-            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
@@ -1037,7 +1021,7 @@ myApp.onPageInit('customRoute', () => {
           }
         });
 
-        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function () {
+        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function() {
           console.log(this.id);
           const index = favoriteSequence.indexOf(parseInt(this.id, 10));
           if (index > -1) {
@@ -1096,7 +1080,7 @@ myApp.onPageInit('itemDetail', (page) => {
     const pHeight = $$('.custom-money-content').height();
     const pOffset = $$('.custom-money-content').offset();
     const y = e.pageY - pOffset.top;
-    let money = parseInt(window.localStorage.getItem('coins'),10);
+    let money = parseInt(window.localStorage.getItem('coins'), 10);
 
     if (y > pHeight * 0.5 && y <= pHeight) {
       mainView.router.load({
@@ -1124,7 +1108,7 @@ myApp.onPageInit('itemDetail', (page) => {
 });
 
 function answerQuestion(question, options, answer, question_id, gain) {
-  let money = parseInt(window.localStorage.getItem('coins'),10);
+  let money = parseInt(window.localStorage.getItem('coins'), 10);
 
   $$('#questionTextArea').html(question);
   for (let i = 0; i < 4; i += 1) {
