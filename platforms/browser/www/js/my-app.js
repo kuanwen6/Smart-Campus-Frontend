@@ -1135,18 +1135,18 @@ myApp.onPageInit('itemDetail', (page) => {
         const questionData = JSON.parse(data);
         console.log(questionData);
         if ($.isEmptyObject(questionData)) {
-          // hide tollbar
-          
+          mainView.hideToolbar();
           console.log('empty');
         } else {
           mainView.showToolbar();
+          $$('.page-content').css('padding-bottom', '9.5vh');
+          $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+          $$('.toolbar').on('click', moneySelect);
           console.log('not');
         }
       },
     });
   }
-
-
 
 
   $$('.custom-money-content').on('click', (e) => {
@@ -1182,6 +1182,8 @@ myApp.onPageInit('itemDetail', (page) => {
       }
     }
     $$('#money-select-modal').css('display', 'none');
+    mainView.hideToolbar();
+    $$('.page-content').css('padding-bottom', 0);
   });
 });
 
