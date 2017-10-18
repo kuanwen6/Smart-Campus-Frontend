@@ -886,8 +886,8 @@ myApp.onPageInit('themeSite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              isBeacon: false,
               favoriteSequence,
-              previous: 'themeSite.html',
               favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
@@ -901,8 +901,8 @@ myApp.onPageInit('themeSite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                isBeacon: false,
                 favoriteSequence,
-                previous: 'themeSite.html',
                 favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
@@ -994,8 +994,8 @@ myApp.onPageInit('favorite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              isBeacon: false,
               favoriteSequence,
-              previous: 'favorite.html',
               favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
@@ -1009,8 +1009,8 @@ myApp.onPageInit('favorite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                isBeacon: false,
                 favoriteSequence,
-                previous: 'favorite.html',
                 favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
@@ -1133,36 +1133,37 @@ myApp.onPageInit('customRoute', () => {
 
 myApp.onPageInit('itemDetail', (page) => {
 //  detect if this station have question to answered
-  if (localStorage.getItem("loggedIn") !== null) {
-    $$.ajax({
-      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-      type: 'get',
-      data: {
-        'email': window.localStorage.getItem('email'),
-        'station_id': page.context.site.id,
-      },
-      success: (data) => {
-        const questionData = JSON.parse(data);
-        console.log(questionData);
-        if ($.isEmptyObject(questionData)) {
-          mainView.hideToolbar();
-          console.log('empty');
-        } else {
-          mainView.showToolbar();
-          $$('.page-content').css('padding-bottom', '9.5vh');
-          $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-          $$('.toolbar').on('click', moneySelect);
-          console.log('not');
-        }
-      },
-    });
-  } else {
-    mainView.showToolbar();
-    $$('.page-content').css('padding-bottom', '9.5vh');
-    $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-    $$('.toolbar').on('click', moneySelect);
+  if (page.context.isBeacon) {
+    if (localStorage.getItem("loggedIn") !== null) {
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': window.localStorage.getItem('email'),
+          'station_id': page.context.site.id,
+        },
+        success: (data) => {
+          const questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
+    } else {
+      mainView.showToolbar();
+      $$('.page-content').css('padding-bottom', '9.5vh');
+      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+      $$('.toolbar').on('click', moneySelect);
+    }
   }
-
 
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();

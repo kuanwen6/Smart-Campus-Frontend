@@ -197,14 +197,28 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
         },
         success: (stations) => {
           const stationsObj = JSON.parse(stations).data;
-          console.log(stationsObj);
+          console.log(stationsObj); // array
 
-          /*Todo Note
-            1. Load station page related to the beacon
-            2. Check if there's any reward related to the station
-              (Reward information for each station is retrieved in Api get_all_stations)
-          */
-  
+          $$.ajax({
+            url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+            type: 'get',
+            success: (data) => {
+              const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
+
+              mainView.router.load({
+                url: 'itemDetail.html',
+                context: {
+                  site,
+                  isBeacon: true,
+                  favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                  favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                },
+              });
+            },
+            error: (data) => {
+              console.log('get station data error');
+            },
+          });
         },
         error: (data) => {
           console.log(data);
