@@ -960,6 +960,8 @@ myApp.onPageInit('routeDetail', (page) => {
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
   if (!page.context.custom) {
     myApp.accordionOpen($$('li#introduction'));
+  } else {
+    myApp.accordionOpen($$('li#itemList'));
   }
 });
 
@@ -1153,6 +1155,11 @@ myApp.onPageInit('itemDetail', (page) => {
         }
       },
     });
+  } else {
+    mainView.showToolbar();
+    $$('.page-content').css('padding-bottom', '9.5vh');
+    $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+    $$('.toolbar').on('click', moneySelect);
   }
 
 
@@ -1173,6 +1180,9 @@ myApp.onPageInit('itemDetail', (page) => {
           gain: 200,
         },
       });
+      $$('#money-select-modal').css('display', 'none');
+      mainView.hideToolbar();
+      $$('.page-content').css('padding-bottom', 0);
     } else {
       console.log('500');
       if (money < 500) {
@@ -1186,11 +1196,11 @@ myApp.onPageInit('itemDetail', (page) => {
             gain: 1000,
           },
         });
+        $$('#money-select-modal').css('display', 'none');
+        mainView.hideToolbar();
+        $$('.page-content').css('padding-bottom', 0);
       }
     }
-    $$('#money-select-modal').css('display', 'none');
-    mainView.hideToolbar();
-    $$('.page-content').css('padding-bottom', 0);
   });
 });
 
