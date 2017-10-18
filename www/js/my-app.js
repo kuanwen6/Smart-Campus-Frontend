@@ -77,6 +77,7 @@ $$(document).on('deviceready', () => {
     $$('#register-btn').hide();
     $$('.profile_pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
 
   $$.get(
@@ -111,6 +112,7 @@ $$('.login-form-to-json').on('click', () => {
       $$('.profile_pic').removeClass('hide');
       $$('.nickname').removeClass('hide');
 
+
       data = JSON.parse(data);
       console.log(data);
       window.localStorage.setItem('logged_in', true);
@@ -120,6 +122,7 @@ $$('.login-form-to-json').on('click', () => {
       window.localStorage.setItem('coins', data['data']['coins']);
       window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
       window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
+      $$('.nickname>p').html(window.localStorage.getItem('nickname'));
     },
     error = function(data) {
       console.log('login fail');
@@ -368,13 +371,11 @@ myApp.onPageInit('info', (page) => {
     $$('.collections').append('<div></div>');
   }
 
-  if (window.localStorage.getItem('rewards')) {
-    rewards = JSON.parse(window.localStorage.getItem('rewards'));
-    all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
-    for (var i = 0; i < rewards.length; i++) {
-      reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
-      $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
-    }
+  rewards = JSON.parse(window.localStorage.getItem('rewards'));
+  all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
+  for (var i = 0; i < rewards.length; i++) {
+    reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
+    $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
   }
 });
 
