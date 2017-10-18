@@ -48,7 +48,10 @@ const welcomescreenSlides = [{
     text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
   },
 ];
-const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/'
+const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
+
+// experience per level
+const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
@@ -784,7 +787,8 @@ function itemDetailRemove(favorite, id) {
   $(`#${id}.swipeout-overswipe`).children('div').children('p').html('加入最愛');
 
   favorite = removeFavorite(favorite, id);
-  $$('.detailHeart').attr("onclick",`itemDetailAdd(${favorite},${id})`);
+
+  $$('.detailHeart').attr("onclick",`itemDetailAdd([${favorite}],${id})`);
 }
 
 function itemDetailAdd(favorite, id) {
@@ -797,7 +801,8 @@ function itemDetailAdd(favorite, id) {
   $(`#${id}.swipeout-overswipe`).children('div').children('p').html('移出最愛');
 
   favorite = addFavorite(favorite, id);
-  $$('.detailHeart').attr("onclick",`itemDetailRemove(${favorite},${id})`);
+
+  $$('.detailHeart').attr("onclick",`itemDetailRemove([${favorite}],${id})`);
 }
 
 function moneySelect() {
@@ -1198,10 +1203,10 @@ function answerQuestion(question, options, answer, question_id, gain) {
 
   console.log('money ' + money);
   console.log('experience_point ' + experience_point);
-  console.log('progress '+ (experience_point % 50) * 2)
+  console.log('progress '+ (experience_point % EXP_PER_LEVEL) * 2)
 
   $$('.money_reward').html(gain);
-  myApp.setProgressbar($$('#level-progress'), (experience_point % 50) * 2);
+  myApp.setProgressbar($$('#level-progress'), (experience_point % EXP_PER_LEVEL) * 2);
 
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
@@ -1209,7 +1214,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
     if (this.id === 'answer' + answer.toString()) {
       money = modifyMoney(money, gain);
       experience_point = experienceUp(experience_point);
-      myApp.setProgressbar($$('#level-progress'), (experience_point % 50) * 2, 1300);
+      myApp.setProgressbar($$('#level-progress'), (experience_point % EXP_PER_LEVEL) * 2, 1300);
 
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
@@ -1220,13 +1225,12 @@ function answerQuestion(question, options, answer, question_id, gain) {
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">
-          <span style="font-size:6vw;font-weight:bold;">等級${Math.floor(experience_point / 50 + 1)}</span><br><br>
+          <span style="font-size:6vw;font-weight:bold;">等級${Math.floor(experience_point / EXP_PER_LEVEL + 1)}</span><br><br>
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
           <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
 
-      /*
       if (window.localStorage.getItem('logged_in') !== null) {
         $$.post(
           url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
@@ -1238,8 +1242,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
             console.log('add answered success');
           },
         );
-      }
-      */
+      }   
       
     } else {
       console.log('fail');
