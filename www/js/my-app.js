@@ -413,7 +413,7 @@ function createCards(data, callback) {
     $$('.big-card').append(`<div class="card" id="${data[i].id}">
                     <div href="#" class="card-content" style="height:15vh;">
                         <div class="row no-gutter">\
-                            <div class="col-35"><img src="${data[i].image}" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                            <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
                             <div class="col-60" style="padding:8px;">
                                 <div class="card-title"><span>${data[i].name}</span></div>
                                 <br>
@@ -442,7 +442,7 @@ function createFavoriteCards(favorite, lat, lng, callback) {
                         <div class="row no-gutter">
                             <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:18px; width:18px;position:absolute;right:5px; top:5px;">
                             <div class="col-50">
-                              <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                              <img src="${favorite[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                               <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                             </div>
                             <div class="col-50" style="padding:8px;">
@@ -479,7 +479,7 @@ function createFavorite(favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${favorite[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${favorite[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -535,7 +535,7 @@ function createSites(sites, favorite, lat, lng, callback) {
           <div href="#" class="card-content" style="height:18vh;">
               <div class="row no-gutter">
                   <div class="col-50">
-                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                     <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                   </div>
                   <div class="col-50" style="padding:8px;">
@@ -564,7 +564,7 @@ function createSites(sites, favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -592,7 +592,7 @@ function createSites(sites, favorite, lat, lng, callback) {
           <div href="#" class="card-content" style="height:18vh;">
               <div class="row no-gutter">
                   <div class="col-50">
-                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                     <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                   </div>
                   <div class="col-50" style="padding:8px;">
@@ -621,7 +621,7 @@ function createSites(sites, favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -830,6 +830,7 @@ myApp.onPageInit('themeRoute', () => {
           const plansObj = JSON.parse(plans).data;
 
           function cardOnclick() {
+            $$('img.lazy').trigger('lazy');
             $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
               const route = findRoute(plansObj, this.id);
               const itemList = findSequence(stationsObj, route.station_sequence);
@@ -876,6 +877,7 @@ myApp.onPageInit('themeSite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
@@ -981,6 +983,7 @@ myApp.onPageInit('favorite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('*[data-page="favorite"] li.swipeout').on('click', function () {
           const site = findStation(itemList, parseInt(this.id, 10));
           console.log(this);
@@ -1067,6 +1070,7 @@ myApp.onPageInit('customRoute', () => {
       let itemList = findSequence(stations, favoriteSequence);
 
       function deleteFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
           myApp.swipeoutOpen($(`li#${this.id}`));
           myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
