@@ -23,8 +23,6 @@ beacon_util.beaconRegions =
 	}
 ];
 
-// Record the received collections (Only for Tests, use local storage instead)
-beacon_util.collections = {}
 
 beacon_util.init_beacon_detection = function()
 {
@@ -53,14 +51,6 @@ beacon_util.init_beacon_detection = function()
       hold: 6000,
       closeOnClick: true,
     });
-  }
-
-  //Retrieve Collection Record from local storage
-  
-  for(var i = 0; i < ftd.length; i++)
-  {
-    var collection = 'Collection' + i.toString() + '2';
-    beacon_util.collections[collection] = window.localStorage.getItem(collection);
   }
   beacon_util.setIBeaconCallback();
 }
