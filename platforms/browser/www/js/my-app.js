@@ -669,7 +669,7 @@ function findStation(stations, id) {
 }
 
 function modifyMoney(money, change) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_coins/',
       data = {
@@ -678,23 +678,20 @@ function modifyMoney(money, change) {
       },
       success = function(data) {
         data = JSON.parse(data);
-        console.log(data.data);
         window.localStorage.setItem('coins', data.data.coins);
-        return parseInt(data.data.coins, 10);
       },
       error = function(data) {
         console.log("add fail");
-        return money;
       }
     );
   } else {
     window.localStorage.setItem('coins', money + change);
-    return money + change;
   }
+  return money + change;
 }
 
 function experienceUp(experience_point) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_experience_point/',
       data = {
@@ -703,19 +700,16 @@ function experienceUp(experience_point) {
       },
       success = function(data) {
         data = JSON.parse(data);
-        console.log(data.data);
         window.localStorage.setItem('experience_point', data.data.experience_point);
-        return parseInt(data.data.experience_point, 10);
       },
       error = function(data) {
         console.log("add fail");
-        return experience_point;
       }
     );
   } else {
     window.localStorage.setItem('experience_point', experience_point + 10);
-    return experience_point + 10;
   }
+  return experience_point + 10;
 }
 
 function isFavorite(id) {
@@ -726,7 +720,7 @@ function isFavorite(id) {
 }
 
 function addFavorite(favorite, id) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
       data = {
@@ -752,7 +746,7 @@ function addFavorite(favorite, id) {
 }
 
 function removeFavorite(favorite, id) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
       data = {
@@ -812,6 +806,9 @@ function moneySelect() {
 
 myApp.onPageInit('route', () => {
   mainView.hideToolbar();
+  $$('.back-force').on('click', function() {
+    mainView.router.back({ url: 'index.html', force: true });
+  });
 });
 
 myApp.onPageInit('themeRoute', () => {
@@ -1174,17 +1171,22 @@ function answerQuestion(question, options, answer, question_id, gain) {
     $$(`#answer${i+1}`).html(options[i]);
   }
 
+  console.log('money ' + money);
+  console.log('experience_point ' + experience_point);
+  console.log('progress '+ (experience_point % 50) * 2)
+
   $$('.money_reward').html(gain);
+  myApp.setProgressbar($$('#level-progress'), (experience_point % 50) * 2);
 
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
-    console.log('money ' + money);
-    console.log('experience_point ' + experience_point);
-
-    money = modifyMoney(money, gain);
-    experience_point = experienceUp(experience_point);
 
     if (this.id === 'answer' + answer.toString()) {
+      money = modifyMoney(money, gain);
+      experience_point = experienceUp(experience_point);
+      console.log(money);
+      console.log(experience_point);
+
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
         <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
@@ -1194,14 +1196,11 @@ function answerQuestion(question, options, answer, question_id, gain) {
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">
-          <span style="font-size:6vw;font-weight:bold;">等級${experience_point / 50 + 1}</span><br><br>
+          <span style="font-size:6vw;font-weight:bold;">等級${Math.floor(experience_point / 50 + 1)}</span><br><br>
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
           <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
-
-      console.log('money ' + money);
-      console.log('experience_point ' + experience_point);
 
       /*
       if (window.localStorage.getItem('logged_in') !== null) {
