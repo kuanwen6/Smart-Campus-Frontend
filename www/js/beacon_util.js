@@ -1,4 +1,7 @@
 /* Beacon Util
+  Beacon detection setup:
+    beacon_util.init_beacon_detection()
+    
   Start Scanning for Beacons by:
     beacon_util.startScanForBeacons()
   Stop:

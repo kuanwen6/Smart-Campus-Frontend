@@ -102,6 +102,10 @@ $$(document).on('deviceready', () => {
       console.log(data);
     }
   )
+
+  //iBeacon Setup
+  beacon_util.init_beacon_detection()
+  beacon_util.startScanForBeacons()
 });
 
 
