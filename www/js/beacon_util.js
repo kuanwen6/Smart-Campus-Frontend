@@ -32,7 +32,7 @@ beacon_util.init_beacon_detection = function()
 	// has the iBeacon functions.
 	window.locationManager = cordova.plugins.locationManager;
 
-  if(device.platform == 'Android'){
+  if(myApp.device.os == 'android'){
     locationManager.isBluetoothEnabled()
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
