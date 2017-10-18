@@ -839,6 +839,7 @@ myApp.onPageInit('themeRoute', () => {
                 context: {
                   title: route.name,
                   time: '10',
+                  custom: false,
                   previous: 'themeRoute.html',
                   introduction: route.description,
                   img: route.image,
@@ -953,9 +954,11 @@ myApp.onPageInit('themeSite', () => {
   });
 });
 
-myApp.onPageInit('routeDetail', () => {
+myApp.onPageInit('routeDetail', (page) => {
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
-  myApp.accordionOpen($$('li#introduction'));
+  if (!page.context.custom) {
+    myApp.accordionOpen($$('li#introduction'));
+  }
 });
 
 myApp.onPageInit('favorite', () => {
@@ -1107,6 +1110,7 @@ myApp.onPageInit('customRoute', () => {
             context: {
               title: '自訂行程',
               time: 'unknown',
+              custom: true,
               previous: 'customRoute.html',
               introduction: '自己想的好棒喔',
               img: itemList[0].image.primary,
@@ -1119,12 +1123,6 @@ myApp.onPageInit('customRoute', () => {
   });
 });
 
-
-myApp.onPageInit('routeDetail', () => {
-  $$('.back-force').on('click', function() {
-    mainView.router.back({ url: this.id, force: true });
-  });
-});
 
 myApp.onPageInit('itemDetail', (page) => {
 //  detect if this station have question to answered
