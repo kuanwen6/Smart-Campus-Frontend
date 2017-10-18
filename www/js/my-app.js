@@ -678,9 +678,9 @@ function modifyMoney(money, change) {
       },
       success = function(data) {
         data = JSON.parse(data);
-        console.log(data);
-        window.localStorage.setItem('coins', data.coins);
-        return data.coins;
+        console.log(data.data);
+        window.localStorage.setItem('coins', data.data.coins);
+        return parseInt(data.data.coins, 10);
       },
       error = function(data) {
         console.log("add fail");
@@ -693,6 +693,30 @@ function modifyMoney(money, change) {
   }
 }
 
+function experienceUp(experience_point) {
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_experience_point/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'experience_point': experience_point + 10,
+      },
+      success = function(data) {
+        data = JSON.parse(data);
+        console.log(data.data);
+        window.localStorage.setItem('experience_point', data.data.experience_point);
+        return parseInt(data.data.experience_point, 10);
+      },
+      error = function(data) {
+        console.log("add fail");
+        return experience_point;
+      }
+    );
+  } else {
+    window.localStorage.setItem('experience_point', experience_point + 10);
+    return experience_point + 10;
+  }
+}
 
 function isFavorite(id) {
   if ($.inArray(id, JSON.parse(window.localStorage.getItem('favorite_stations'))) === -1) {
@@ -758,12 +782,26 @@ function removeFavorite(favorite, id) {
 
 function itemDetailRemove(favorite, id) {
   $$('.detailHeart').removeClass('color-red').addClass('color-white');
+
+  $$(`.favorite-heart-${id}`).removeClass('color-red').addClass('color-white');
+  $(`#${id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+  myApp.swipeoutClose($$(`li.swipeout-${id}`));
+  myApp.swipeoutClose($$(`li.swipeout-search-${id}`));
+  $(`#${id}.swipeout-overswipe`).children('div').children('p').html('加入最愛');
+
   favorite = removeFavorite(favorite, id);
   $$('.detailHeart').attr("onclick",`itemDetailAdd(${favorite},${id})`);
 }
 
 function itemDetailAdd(favorite, id) {
   $$('.detailHeart').removeClass('color-white').addClass('color-red');
+
+  $$(`.favorite-heart-${id}`).removeClass('color-white').addClass('color-red');
+  $(`#${id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+  myApp.swipeoutClose($$(`li.swipeout-${id}`));
+  myApp.swipeoutClose($$(`li.swipeout-search-${id}`));
+  $(`#${id}.swipeout-overswipe`).children('div').children('p').html('移出最愛');
+
   favorite = addFavorite(favorite, id);
   $$('.detailHeart').attr("onclick",`itemDetailRemove(${favorite},${id})`);
 }
@@ -822,6 +860,10 @@ myApp.onPageInit('themeRoute', () => {
 });
 
 myApp.onPageInit('themeSite', () => {
+  $$('.back-force').on('click', function() {
+    mainView.router.back({ url: 'index.html', force: true });
+  });
+
   $$.ajax({
     url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
@@ -1087,17 +1129,16 @@ myApp.onPageInit('routeDetail', () => {
 });
 
 myApp.onPageInit('itemDetail', (page) => {
-  $$('.back-force').on('click', function() {
-    mainView.router.back({ url: page.context.previous, force: true });
-  });
-
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();
     const pOffset = $$('.custom-money-content').offset();
     const y = e.pageY - pOffset.top;
+    console.log(pHeight);
+    console.log(y);
     let money = parseInt(window.localStorage.getItem('coins'),10);
 
     if (y > pHeight * 0.5 && y <= pHeight) {
+      console.log('200');
       mainView.router.load({
         url: 'gamePage.html',
         context: {
@@ -1106,6 +1147,7 @@ myApp.onPageInit('itemDetail', (page) => {
         },
       });
     } else {
+      console.log('500');
       if (money < 500) {
         myApp.alert('擁有金幣不足!', '下注失敗');
       } else {
@@ -1119,19 +1161,28 @@ myApp.onPageInit('itemDetail', (page) => {
         });
       }
     }
+    $$('#money-select-modal').css('display', 'none');
   });
 });
 
 function answerQuestion(question, options, answer, question_id, gain) {
   let money = parseInt(window.localStorage.getItem('coins'),10);
+  let experience_point = parseInt(window.localStorage.getItem('experience_point'),10);
 
   $$('#questionTextArea').html(question);
   for (let i = 0; i < 4; i += 1) {
     $$(`#answer${i+1}`).html(options[i]);
   }
 
+  $$('.money_reward').html(gain);
+
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
+    console.log('money ' + money);
+    console.log('experience_point ' + experience_point);
+
+    money = modifyMoney(money, gain);
+    experience_point = experienceUp(experience_point);
 
     if (this.id === 'answer' + answer.toString()) {
       $$(`#${this.id}`).css('background', '#40bf79');
@@ -1143,12 +1194,30 @@ function answerQuestion(question, options, answer, question_id, gain) {
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">
-          <span style="font-size:6vw;font-weight:bold;">等級4</span><br><br>
+          <span style="font-size:6vw;font-weight:bold;">等級${experience_point / 50 + 1}</span><br><br>
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
-          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
-      money = modifyMoney(money, gain);
+
+      console.log('money ' + money);
+      console.log('experience_point ' + experience_point);
+
+      /*
+      if (window.localStorage.getItem('logged_in') !== null) {
+        $$.post(
+          url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
+          data = {
+            'question_id': question_id,
+            'email':  window.localStorage.getItem('email'),
+          },
+          success = function(data) {
+            console.log('add answered success');
+          },
+        );
+      }
+      */
+      
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
@@ -1163,7 +1232,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
-          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
     }
@@ -1194,7 +1263,7 @@ myApp.onPageInit('gamePage', (page) => {
       type: 'get',
       data: {
         'email': window.localStorage.getItem('email'),
-        'station_id': page.context.id,
+        'station_id': 32,//page.context.id,
       },
       success: (data) => {
         const questionData = JSON.parse(data);
@@ -1211,7 +1280,7 @@ myApp.onPageInit('gamePage', (page) => {
       type: 'get',
       data: {
         'email': 'visitMode@gmail.com',
-        'station_id': page.context.id,
+        'station_id': 32,//page.context.id,
       },
       success: (data) => {
         const questionData = JSON.parse(data);
