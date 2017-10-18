@@ -109,6 +109,13 @@
   max-width: 35%;
 }
 
+.marker-favorite {
+  position: absolute;
+  top: 27%;
+  right: 7%;
+  font-size: 25px !important;
+}
+
 .login-form-to-json {
   margin-top: 2vh;
   height: 8vh;
@@ -157,7 +164,6 @@
   vertical-align: middle;
   padding-left: 10px;
 }
-
 
 .collections {
   border: 1px solid;

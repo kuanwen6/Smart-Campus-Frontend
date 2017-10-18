@@ -180,6 +180,17 @@ myApp.onPageInit('map', (page) => {
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
+  $$('.marker-favorite').on('click', (e) => {
+    var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+    $$(e.currentTarget).toggleClass('color-red');
+
+    if ($$(e.currentTarget).hasClass('color-red')) {
+      favoriteSequence = addFavorite(favoriteSequence, e.currentTarget.id);
+    } else {
+      favoriteSequence = removeFavorite(favoriteSequence, e.currentTarget.id);
+    }
+  });
+
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'))['data'];
   var markers;
   var Latitude = undefined;
@@ -296,8 +307,10 @@ myApp.onPageInit('map', (page) => {
   function showMarkerInfo() {
     var station = stations.find(x => x.name === this.title);
     $$('#marker-img').attr('src', station['image']['primary']);
-    $$('#marker-category').html('/ '+station['category']+'主題 /');
-    $$('#marker-name').html(station['name'].replace('/','<br>/'));
+    $$('#marker-category').html('/ ' + station['category'] + '主題 /');
+    $$('#marker-name').html(station['name'].replace('/', '<br>/'));
+    $$('.marker-favorite').attr('id', station['id']);
+    $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
   }
 
