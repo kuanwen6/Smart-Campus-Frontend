@@ -1,7 +1,12 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href={{previous}} class="link back-force" id={{previous}}>
+      <a href={{previous}} class="link" id={{previous}} onclick="if ('{{previous}}' === 'themeRoute.html'){
+                                                                  mainView.hideToolbar();
+                                                                  mainView.router.back();
+                                                                 } else {
+                                                                  mainView.router.back({url: 'customRoute.html', force: true});
+                                                                 }">
                         <i class="f7-icons color-white">chevron_left</i> 
                         <span>Back</span>
                     </a>
@@ -24,7 +29,8 @@
                   <div class="item-title">預計時間: {{time}}分鐘</div>
                 </div></a>
             </li>
-            <li class="accordion-item" id="introduction"><a href="#" class="item-link">
+            {{#unless custom}}
+              <li class="accordion-item" id="introduction"><a href="#" class="item-link">
                 <div class="item-inner">
                   <div class="item-title">行程介紹</div>
                 </div></a>
@@ -34,6 +40,7 @@
                 </div>
               </div>
             </li>
+            {{/unless}}
             <li class="accordion-item" id="itemList"><a href="#" class="item-link">
                 <div class="item-inner">
                   <div class="item-title">景點列表</div>

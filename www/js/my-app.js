@@ -48,7 +48,10 @@ const welcomescreenSlides = [{
     text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
   },
 ];
-const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/'
+const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
+
+// experience per level
+const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
@@ -412,7 +415,7 @@ function createCards(data, callback) {
     $$('.big-card').append(`<div class="card" id="${data[i].id}">
                     <div href="#" class="card-content" style="height:15vh;">
                         <div class="row no-gutter">\
-                            <div class="col-35"><img src="${data[i].image}" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                            <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
                             <div class="col-60" style="padding:8px;">
                                 <div class="card-title"><span>${data[i].name}</span></div>
                                 <br>
@@ -441,7 +444,7 @@ function createFavoriteCards(favorite, lat, lng, callback) {
                         <div class="row no-gutter">
                             <img class="delete-route" id="${favorite[i].id}" src="img/error.png" style="height:18px; width:18px;position:absolute;right:5px; top:5px;">
                             <div class="col-50">
-                              <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                              <img src="${favorite[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                               <i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                             </div>
                             <div class="col-50" style="padding:8px;">
@@ -478,7 +481,7 @@ function createFavorite(favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${favorite[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${favorite[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${favorite[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -534,7 +537,7 @@ function createSites(sites, favorite, lat, lng, callback) {
           <div href="#" class="card-content" style="height:18vh;">
               <div class="row no-gutter">
                   <div class="col-50">
-                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                     <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                   </div>
                   <div class="col-50" style="padding:8px;">
@@ -563,7 +566,7 @@ function createSites(sites, favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${sites[i].id} f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -591,7 +594,7 @@ function createSites(sites, favorite, lat, lng, callback) {
           <div href="#" class="card-content" style="height:18vh;">
               <div class="row no-gutter">
                   <div class="col-50">
-                    <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                    <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                     <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                   </div>
                   <div class="col-50" style="padding:8px;">
@@ -620,7 +623,7 @@ function createSites(sites, favorite, lat, lng, callback) {
         <div href="#" class="card-content" style="height:18vh;">
             <div class="row no-gutter">
                 <div class="col-50">
-                  <img src="${sites[i].image.primary}" style="width:28vh;height:18vh;object-fit: cover;">
+                  <img src="${sites[i].image.primary}" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">
                   <i class="favorite-heart-${sites[i].id} f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>
                 </div>
                 <div class="col-50" style="padding:8px;">
@@ -671,7 +674,7 @@ function findStation(stations, id) {
 }
 
 function modifyMoney(money, change) {
-  if (localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_coins/',
       data = {
@@ -680,21 +683,39 @@ function modifyMoney(money, change) {
       },
       success = function(data) {
         data = JSON.parse(data);
-        console.log(data);
-        window.localStorage.setItem('coins', data.coins);
-        return data.coins;
+        window.localStorage.setItem('coins', data.data.coins);
       },
       error = function(data) {
         console.log("add fail");
-        return money;
       }
     );
   } else {
     window.localStorage.setItem('coins', money + change);
-    return money + change;
   }
+  return money + change;
 }
 
+function experienceUp(experiencePoint) {
+  if (window.localStorage.getItem("loggedIn") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_experience_point/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'experience_point': experiencePoint + 10,
+      },
+      success = function(data) {
+        data = JSON.parse(data);
+        window.localStorage.setItem('experiencePoint', data.data.experience_point);
+      },
+      error = function(data) {
+        console.log("add fail");
+      }
+    );
+  } else {
+    window.localStorage.setItem('experiencePoint', experiencePoint + 10);
+  }
+  return experiencePoint + 10;
+}
 
 function isFavorite(id) {
   if ($.inArray(id, JSON.parse(window.localStorage.getItem('favoriteStations'))) === -1) {
@@ -704,7 +725,9 @@ function isFavorite(id) {
 }
 
 function addFavorite(favorite, id) {
-  if (localStorage.getItem("loggedIn") !== null) {
+  favorite.push(id);
+
+  if (window.localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
       data = {
@@ -715,22 +738,25 @@ function addFavorite(favorite, id) {
         data = JSON.parse(data);
         console.log(data);
         window.localStorage.setItem('favoriteStations', JSON.stringify(data.stations));
-        return data.stations;
       },
       error = function(data) {
         console.log("add fail");
-        return favorite;
       }
     );
+    return favorite;
   } else {
-    favorite.push(id);
     window.localStorage.setItem('favoriteStations', JSON.stringify(favorite));
     return favorite;
   }
 }
 
 function removeFavorite(favorite, id) {
-  if (localStorage.getItem("loggedIn") !== null) {
+  const index = favorite.indexOf(id);
+  if (index > -1) {
+    favorite.splice(index, 1);
+  }
+
+  if (window.localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
       data = {
@@ -741,18 +767,13 @@ function removeFavorite(favorite, id) {
         data = JSON.parse(data);
         console.log(data);
         window.localStorage.setItem('favoriteStations', JSON.stringify(data.stations));
-        return data.stations;
       },
       error = function(data) {
         console.log("add fail");
-        return favorite;
       }
     );
+    return favorite;
   } else {
-    const index = favorite.indexOf(id);
-    if (index > -1) {
-      favorite.splice(index, 1);
-    }
     window.localStorage.setItem('favoriteStations', JSON.stringify(favorite));
     return favorite;
   }
@@ -760,14 +781,32 @@ function removeFavorite(favorite, id) {
 
 function itemDetailRemove(favorite, id) {
   $$('.detailHeart').removeClass('color-red').addClass('color-white');
+
+  $$(`.favorite-heart-${id}`).removeClass('color-red').addClass('color-white');
+  $(`#${id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+  myApp.swipeoutClose($$(`li.swipeout-${id}`));
+  myApp.swipeoutClose($$(`li.swipeout-search-${id}`));
+  $(`#${id}.swipeout-overswipe`).children('div').children('p').html('加入最愛');
+
   favorite = removeFavorite(favorite, id);
+
   $$('.detailHeart').attr("onclick", `itemDetailAdd(${favorite},${id})`);
+
 }
 
 function itemDetailAdd(favorite, id) {
   $$('.detailHeart').removeClass('color-white').addClass('color-red');
+
+  $$(`.favorite-heart-${id}`).removeClass('color-white').addClass('color-red');
+  $(`#${id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+  myApp.swipeoutClose($$(`li.swipeout-${id}`));
+  myApp.swipeoutClose($$(`li.swipeout-search-${id}`));
+  $(`#${id}.swipeout-overswipe`).children('div').children('p').html('移出最愛');
+
   favorite = addFavorite(favorite, id);
+
   $$('.detailHeart').attr("onclick", `itemDetailRemove(${favorite},${id})`);
+
 }
 
 function moneySelect() {
@@ -776,6 +815,9 @@ function moneySelect() {
 
 myApp.onPageInit('route', () => {
   mainView.hideToolbar();
+  $$('.back-force').on('click', function() {
+    mainView.router.back({ url: 'index.html', force: true });
+  });
 });
 
 myApp.onPageInit('themeRoute', () => {
@@ -792,6 +834,7 @@ myApp.onPageInit('themeRoute', () => {
           const plansObj = JSON.parse(plans).data;
 
           function cardOnclick() {
+            $$('img.lazy').trigger('lazy');
             $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
               const route = findRoute(plansObj, this.id);
               const itemList = findSequence(stationsObj, route.station_sequence);
@@ -801,6 +844,7 @@ myApp.onPageInit('themeRoute', () => {
                 context: {
                   title: route.name,
                   time: '10',
+                  custom: false,
                   previous: 'themeRoute.html',
                   introduction: route.description,
                   img: route.image,
@@ -824,6 +868,10 @@ myApp.onPageInit('themeRoute', () => {
 });
 
 myApp.onPageInit('themeSite', () => {
+  $$('.back-force').on('click', function() {
+    mainView.router.back({ url: 'index.html', force: true });
+  });
+
   $$.ajax({
     url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
     type: 'get',
@@ -833,6 +881,7 @@ myApp.onPageInit('themeSite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
@@ -840,8 +889,8 @@ myApp.onPageInit('themeSite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              isBeacon: false,
               favoriteSequence,
-              previous: 'themeSite.html',
               favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
@@ -855,8 +904,8 @@ myApp.onPageInit('themeSite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                isBeacon: false,
                 favoriteSequence,
-                previous: 'themeSite.html',
                 favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
@@ -870,8 +919,9 @@ myApp.onPageInit('themeSite', () => {
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
-
+            
             favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
+            console.log(favoriteSequence);
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
@@ -910,9 +960,13 @@ myApp.onPageInit('themeSite', () => {
   });
 });
 
-myApp.onPageInit('routeDetail', () => {
+myApp.onPageInit('routeDetail', (page) => {
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
-  myApp.accordionOpen($$('li#introduction'));
+  if (!page.context.custom) {
+    myApp.accordionOpen($$('li#introduction'));
+  } else {
+    myApp.accordionOpen($$('li#itemList'));
+  }
 });
 
 myApp.onPageInit('favorite', () => {
@@ -935,6 +989,7 @@ myApp.onPageInit('favorite', () => {
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('*[data-page="favorite"] li.swipeout').on('click', function() {
           const site = findStation(itemList, parseInt(this.id, 10));
           console.log(this);
@@ -942,8 +997,8 @@ myApp.onPageInit('favorite', () => {
             url: 'itemDetail.html',
             context: {
               site,
+              isBeacon: false,
               favoriteSequence,
-              previous: 'favorite.html',
               favorite: isFavorite(parseInt(this.id, 10)),
             },
           });
@@ -957,8 +1012,8 @@ myApp.onPageInit('favorite', () => {
               url: 'itemDetail.html',
               context: {
                 site,
+                isBeacon: false,
                 favoriteSequence,
-                previous: 'favorite.html',
                 favorite: isFavorite(parseInt(this.id, 10)),
               },
             });
@@ -1008,12 +1063,6 @@ myApp.onPageInit('favorite', () => {
 });
 
 myApp.onPageInit('customRoute', () => {
-  /* TODO
-  ajax get favorite
-  if is empty => no favorite
-    hide toolbar
-  else 
-  */
   $$('.back-force').on('click', () => {
     mainView.router.back({ url: 'route.html', force: true });
   });
@@ -1027,6 +1076,7 @@ myApp.onPageInit('customRoute', () => {
       let itemList = findSequence(stations, favoriteSequence);
 
       function deleteFunc() {
+        $$('img.lazy').trigger('lazy');
         $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
           myApp.swipeoutOpen($(`li#${this.id}`));
           myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
@@ -1056,6 +1106,7 @@ myApp.onPageInit('customRoute', () => {
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
+      mainView.showToolbar(); 
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
       $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
@@ -1069,6 +1120,7 @@ myApp.onPageInit('customRoute', () => {
             context: {
               title: '自訂行程',
               time: 'unknown',
+              custom: true,
               previous: 'customRoute.html',
               introduction: '自己想的好棒喔',
               img: itemList[0].image.primary,
@@ -1082,24 +1134,50 @@ myApp.onPageInit('customRoute', () => {
 });
 
 
-myApp.onPageInit('routeDetail', () => {
-  $$('.back-force').on('click', function() {
-    mainView.router.back({ url: this.id, force: true });
-  });
-});
-
 myApp.onPageInit('itemDetail', (page) => {
-  $$('.back-force').on('click', function() {
-    mainView.router.back({ url: page.context.previous, force: true });
-  });
+//  detect if this station have question to answered
+  if (page.context.isBeacon) {
+    if (localStorage.getItem("loggedIn") !== null) {
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': window.localStorage.getItem('email'),
+          'station_id': page.context.site.id,
+        },
+        success: (data) => {
+          const questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
+    } else {
+      mainView.showToolbar();
+      $$('.page-content').css('padding-bottom', '9.5vh');
+      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+      $$('.toolbar').on('click', moneySelect);
+    }
+  }
 
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();
     const pOffset = $$('.custom-money-content').offset();
     const y = e.pageY - pOffset.top;
+    console.log(pHeight);
+    console.log(y);
     let money = parseInt(window.localStorage.getItem('coins'), 10);
 
     if (y > pHeight * 0.5 && y <= pHeight) {
+      console.log('200');
       mainView.router.load({
         url: 'gamePage.html',
         context: {
@@ -1107,7 +1185,11 @@ myApp.onPageInit('itemDetail', (page) => {
           gain: 200,
         },
       });
+      $$('#money-select-modal').css('display', 'none');
+      mainView.hideToolbar();
+      $$('.page-content').css('padding-bottom', 0);
     } else {
+      console.log('500');
       if (money < 500) {
         myApp.alert('擁有金幣不足!', '下注失敗');
       } else {
@@ -1119,6 +1201,9 @@ myApp.onPageInit('itemDetail', (page) => {
             gain: 1000,
           },
         });
+        $$('#money-select-modal').css('display', 'none');
+        mainView.hideToolbar();
+        $$('.page-content').css('padding-bottom', 0);
       }
     }
   });
@@ -1126,16 +1211,28 @@ myApp.onPageInit('itemDetail', (page) => {
 
 function answerQuestion(question, options, answer, question_id, gain) {
   let money = parseInt(window.localStorage.getItem('coins'), 10);
+  let experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
 
   $$('#questionTextArea').html(question);
   for (let i = 0; i < 4; i += 1) {
     $$(`#answer${i+1}`).html(options[i]);
   }
 
+  console.log('money ' + money);
+  console.log('experiencePoint ' + experiencePoint);
+  console.log('progress '+ (experiencePoint % EXP_PER_LEVEL) * 2)
+
+  $$('.money_reward').html(gain);
+  myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
+
   $$('.answer').on('click', function answerClicked() {
     $$('.answer').off('click', answerClicked); // lock the button
 
     if (this.id === 'answer' + answer.toString()) {
+      money = modifyMoney(money, gain);
+      experiencePoint = experienceUp(experiencePoint);
+      myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2, 1300);
+
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
         <circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
@@ -1145,12 +1242,25 @@ function answerQuestion(question, options, answer, question_id, gain) {
       setTimeout(() => {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">
-          <span style="font-size:6vw;font-weight:bold;">等級4</span><br><br>
+          <span style="font-size:6vw;font-weight:bold;">等級${Math.floor(experiencePoint / EXP_PER_LEVEL + 1)}</span><br><br>
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
-          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
-      money = modifyMoney(money, gain);
+
+      if (window.localStorage.getItem('loggedIn') !== null) {
+        $$.post(
+          url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
+          data = {
+            'question_id': question_id,
+            'email':  window.localStorage.getItem('email'),
+          },
+          success = function(data) {
+            console.log('add answered success');
+          },
+        );
+      }   
+      
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
@@ -1165,7 +1275,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
         $$('#gameEnd-modal').css('display', 'block');
         $$('#gameEnd-modal').append(`<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">
           <img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;
-          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">1000</span>
+          <span style="font-size:9vw; font-weight:bold; vertical-align: middle;">${money}</span>
         </div>`);
       }, 1200);
     }
