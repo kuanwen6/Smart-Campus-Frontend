@@ -72,7 +72,7 @@ $$(document).on('deviceready', () => {
   if (window.localStorage.getItem('loggedIn')) {
     $$('#login-form').hide();
     $$('#register-btn').hide();
-    $$('.profile_pic').removeClass('hide');
+    $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
     $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
@@ -116,7 +116,7 @@ $$('.login-form-to-json').on('click', () => {
       console.log('login success');
       $$('#login-form').hide();
       $$('#register-btn').hide();
-      $$('.profile_pic').removeClass('hide');
+      $$('.profile-pic').removeClass('hide');
       $$('.nickname').removeClass('hide');
 
       data = JSON.parse(data);
@@ -166,17 +166,17 @@ $$('.register-form-to-json').on('click', () => {
 
 myApp.onPageInit('map', (page) => {
   $$('.open-filter').on('click', () => {
-    $$('#map_filter').css('display', 'block');
+    $$('#map-filter').css('display', 'block');
   });
 
   $$(window).on('click', (event) => {
-    if (event.target === $$('#map_filter')[0]) {
-      $$('#map_filter').css('display', 'none');
+    if (event.target === $$('#map-filter')[0]) {
+      $$('#map-filter').css('display', 'none');
     }
   });
 
-  $$('.filter_table div').on('click', (e) => {
-    $$(e.currentTarget).children('span').toggleClass('filter_added');
+  $$('.filter-table div').on('click', (e) => {
+    $$(e.currentTarget).children('span').toggleClass('filter-added');
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
@@ -295,14 +295,14 @@ myApp.onPageInit('map', (page) => {
 
   function showMarkerInfo() {
     var station = stations.find(x => x.name === this.title);
-    $$('#marker_img').attr('src', station['image']['primary']);
-    $$('#marker_category').html('/ '+station['category']+'主題 /');
-    $$('#marker_name').html(station['name'].replace('/','<br>/'));
-    $$('.marker_info').css('display', 'block');
+    $$('#marker-img').attr('src', station['image']['primary']);
+    $$('#marker-category').html('/ '+station['category']+'主題 /');
+    $$('#marker-name').html(station['name'].replace('/','<br>/'));
+    $$('.marker-info').css('display', 'block');
   }
 
   function hideMarkerInfo() {
-    $$('.marker_info').css('display', 'none');
+    $$('.marker-info').css('display', 'none');
   }
 
   function setGroupMarkerVisible(groupId) {
