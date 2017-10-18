@@ -1046,12 +1046,6 @@ myApp.onPageInit('favorite', () => {
 });
 
 myApp.onPageInit('customRoute', () => {
-  /* TODO
-  ajax get favorite
-  if is empty => no favorite
-    hide toolbar
-  else 
-  */
   $$('.back-force').on('click', () => {
     mainView.router.back({ url: 'route.html', force: true });
   });
@@ -1094,6 +1088,7 @@ myApp.onPageInit('customRoute', () => {
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
+      mainView.showToolbar(); 
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
       $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
@@ -1127,6 +1122,33 @@ myApp.onPageInit('routeDetail', () => {
 });
 
 myApp.onPageInit('itemDetail', (page) => {
+//  detect if this station have question to answered
+  if (localStorage.getItem("logged_in") !== null) {
+    $$.ajax({
+      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+      type: 'get',
+      data: {
+        'email': window.localStorage.getItem('email'),
+        'station_id': page.context.site.id,
+      },
+      success: (data) => {
+        const questionData = JSON.parse(data);
+        console.log(questionData);
+        if ($.isEmptyObject(questionData)) {
+          // hide tollbar
+          
+          console.log('empty');
+        } else {
+          mainView.showToolbar();
+          console.log('not');
+        }
+      },
+    });
+  }
+
+
+
+
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();
     const pOffset = $$('.custom-money-content').offset();
@@ -1262,7 +1284,7 @@ myApp.onPageInit('gamePage', (page) => {
       type: 'get',
       data: {
         'email': window.localStorage.getItem('email'),
-        'station_id': 32,//page.context.id,
+        'station_id': page.context.id,
       },
       success: (data) => {
         const questionData = JSON.parse(data);
@@ -1279,7 +1301,7 @@ myApp.onPageInit('gamePage', (page) => {
       type: 'get',
       data: {
         'email': 'visitMode@gmail.com',
-        'station_id': 32,//page.context.id,
+        'station_id': page.context.id,
       },
       success: (data) => {
         const questionData = JSON.parse(data);

@@ -1,7 +1,12 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href={{previous}} class="link back-force" id={{previous}}>
+      <a href={{previous}} class="link" id={{previous}} onclick="if ('{{previous}}' === 'themeRoute.html'){
+                                                                  mainView.hideToolbar();
+                                                                  mainView.router.back();
+                                                                 } else {
+                                                                  mainView.router.back({url: 'customRoute.html', force: true});
+                                                                 }">
                         <i class="f7-icons color-white">chevron_left</i> 
                         <span>Back</span>
                     </a>
