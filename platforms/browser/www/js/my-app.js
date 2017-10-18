@@ -720,6 +720,8 @@ function isFavorite(id) {
 }
 
 function addFavorite(favorite, id) {
+  favorite.push(id);
+
   if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
@@ -731,21 +733,24 @@ function addFavorite(favorite, id) {
         data = JSON.parse(data);
         console.log(data);
         window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
-        return data.stations;
       },
       error = function(data) {
         console.log("add fail");
-        return favorite;
       }
     );
+    return favorite;
   } else {
-    favorite.push(id);
     window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
     return favorite;
   }
 }
 
 function removeFavorite(favorite, id) {
+  const index = favorite.indexOf(id);
+  if (index > -1) {
+    favorite.splice(index, 1);
+  }
+
   if (window.localStorage.getItem("logged_in") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
@@ -757,18 +762,13 @@ function removeFavorite(favorite, id) {
         data = JSON.parse(data);
         console.log(data);
         window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
-        return data.stations;
       },
       error = function(data) {
         console.log("add fail");
-        return favorite;
       }
     );
+    return favorite;
   } else {
-    const index = favorite.indexOf(id);
-    if (index > -1) {
-      favorite.splice(index, 1);
-    }
     window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
     return favorite;
   }
@@ -909,6 +909,7 @@ myApp.onPageInit('themeSite', () => {
             console.log('add toggle');
             
             favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+            console.log(favoriteSequence);
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
