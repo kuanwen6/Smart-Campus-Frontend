@@ -104,7 +104,6 @@ $$(document).on('deviceready', () => {
   )
 });
 
-
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
   console.log(formData);
@@ -364,7 +363,7 @@ myApp.onPageInit('map', (page) => {
 
 
 myApp.onPageInit('info', (page) => {
-  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / 10);
+  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
@@ -915,11 +914,10 @@ myApp.onPageInit('themeSite', () => {
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="themeSite"] li.swipeout').off('click');
 
-
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
-            
+
             favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
             console.log(favoriteSequence);
 
@@ -1106,7 +1104,7 @@ myApp.onPageInit('customRoute', () => {
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
-      mainView.showToolbar(); 
+      mainView.showToolbar();
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
       $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
@@ -1135,7 +1133,7 @@ myApp.onPageInit('customRoute', () => {
 
 
 myApp.onPageInit('itemDetail', (page) => {
-//  detect if this station have question to answered
+  //  detect if this station have question to answered
   if (page.context.isBeacon) {
     if (localStorage.getItem("loggedIn") !== null) {
       $$.ajax({
@@ -1220,7 +1218,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
 
   console.log('money ' + money);
   console.log('experiencePoint ' + experiencePoint);
-  console.log('progress '+ (experiencePoint % EXP_PER_LEVEL) * 2)
+  console.log('progress ' + (experiencePoint % EXP_PER_LEVEL) * 2)
 
   $$('.money_reward').html(gain);
   myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
@@ -1253,14 +1251,13 @@ function answerQuestion(question, options, answer, question_id, gain) {
           url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
           data = {
             'question_id': question_id,
-            'email':  window.localStorage.getItem('email'),
+            'email': window.localStorage.getItem('email'),
           },
           success = function(data) {
             console.log('add answered success');
           },
         );
-      }   
-      
+      }
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
