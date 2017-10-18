@@ -57,9 +57,9 @@ $$(document).on('deviceready', () => {
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
     window.localStorage.setItem('nickname', 'Guest');
-    window.localStorage.setItem('experience_point', 0);
+    window.localStorage.setItem('experiencePoint', 0);
     window.localStorage.setItem('rewards', '[]');
-    window.localStorage.setItem('favorite_stations', '[]');
+    window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
     const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
@@ -69,7 +69,7 @@ $$(document).on('deviceready', () => {
     console.log('App has launched ' + ++localStorage.launchCount + ' times.');
   }
 
-  if (window.localStorage.getItem('logged_in')) {
+  if (window.localStorage.getItem('loggedIn')) {
     $$('#login-form').hide();
     $$('#register-btn').hide();
     $$('.profile_pic').removeClass('hide');
@@ -81,7 +81,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_rewards/',
     success = function(data) {
       console.log('get rewards info success');
-      window.sessionStorage.setItem('all_rewards_info', data);
+      window.sessionStorage.setItem('allRewardsInfo', data);
     },
     error = function(data) {
       console.log('get rewards info fail');
@@ -92,7 +92,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_stations/',
     success = function(data) {
       console.log('get stations info success');
-      window.sessionStorage.setItem('all_stations_info', data);
+      window.sessionStorage.setItem('allStationsInfo', data);
     },
     error = function(data) {
       console.log('get stations info fail');
@@ -121,13 +121,13 @@ $$('.login-form-to-json').on('click', () => {
 
       data = JSON.parse(data);
       console.log(data);
-      window.localStorage.setItem('logged_in', true);
+      window.localStorage.setItem('loggedIn', true);
       window.localStorage.setItem('email', formData['email']);
-      window.localStorage.setItem('experience_point', data['data']['experience_point']);
+      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
       window.localStorage.setItem('nickname', data['data']['nickname']);
       window.localStorage.setItem('coins', data['data']['coins']);
       window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
-      window.localStorage.setItem('favorite_stations', JSON.stringify(data['data']['favorite_stations']));
+      window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
       $$('.nickname>p').html(window.localStorage.getItem('nickname'));
     },
     error = function(data) {
@@ -180,7 +180,7 @@ myApp.onPageInit('map', (page) => {
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
-  const stations = JSON.parse(window.sessionStorage.getItem('all_stations_info'))['data'];
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'))['data'];
   var markers;
   var Latitude = undefined;
   var Longitude = undefined;
@@ -348,7 +348,7 @@ myApp.onPageInit('map', (page) => {
 
 
 myApp.onPageInit('info', (page) => {
-  var level = Math.floor(parseInt(window.localStorage.getItem('experience_point')) / 10);
+  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / 10);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
@@ -357,10 +357,10 @@ myApp.onPageInit('info', (page) => {
   }
 
   rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  all_rewards_info = JSON.parse(window.sessionStorage.getItem('all_rewards_info'));
+  allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
-    reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
-    $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
+    rewardImg = allRewardsInfo['data'].find(x => x.id === rewards[i])['image_url'];
+    $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 });
 
@@ -658,7 +658,7 @@ function findStation(stations, id) {
 }
 
 function modifyMoney(money, change) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_coins/',
       data = {
@@ -684,14 +684,14 @@ function modifyMoney(money, change) {
 
 
 function isFavorite(id) {
-  if ($.inArray(id, JSON.parse(window.localStorage.getItem('favorite_stations'))) === -1) {
+  if ($.inArray(id, JSON.parse(window.localStorage.getItem('favoriteStations'))) === -1) {
     return false;
   }
   return true;
 }
 
 function addFavorite(favorite, id) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
       data = {
@@ -701,7 +701,7 @@ function addFavorite(favorite, id) {
       success = function(data) {
         data = JSON.parse(data);
         console.log(data);
-        window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
+        window.localStorage.setItem('favoriteStations', JSON.stringify(data.stations));
         return data.stations;
       },
       error = function(data) {
@@ -711,13 +711,13 @@ function addFavorite(favorite, id) {
     );
   } else {
     favorite.push(id);
-    window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
+    window.localStorage.setItem('favoriteStations', JSON.stringify(favorite));
     return favorite;
   }
 }
 
 function removeFavorite(favorite, id) {
-  if (localStorage.getItem("logged_in") !== null) {
+  if (localStorage.getItem("loggedIn") !== null) {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
       data = {
@@ -727,7 +727,7 @@ function removeFavorite(favorite, id) {
       success = function(data) {
         data = JSON.parse(data);
         console.log(data);
-        window.localStorage.setItem('favorite_stations', JSON.stringify(data.stations));
+        window.localStorage.setItem('favoriteStations', JSON.stringify(data.stations));
         return data.stations;
       },
       error = function(data) {
@@ -740,7 +740,7 @@ function removeFavorite(favorite, id) {
     if (index > -1) {
       favorite.splice(index, 1);
     }
-    window.localStorage.setItem('favorite_stations', JSON.stringify(favorite));
+    window.localStorage.setItem('favoriteStations', JSON.stringify(favorite));
     return favorite;
   }
 }
@@ -816,7 +816,7 @@ myApp.onPageInit('themeSite', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      let favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
+      let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
 
       //  because haved to wait for appened fininshed
       function onclickFunc() {
@@ -914,7 +914,7 @@ myApp.onPageInit('favorite', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      let favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
+      let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
       let itemList = findSequence(stations, favoriteSequence);
 
       $$('*[data-page="favorite"] li.swipeout').off('click');
@@ -1010,7 +1010,7 @@ myApp.onPageInit('customRoute', () => {
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
-      const favoriteSequence = JSON.parse(window.localStorage.getItem('favorite_stations'));
+      const favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
       let itemList = findSequence(stations, favoriteSequence);
 
       function deleteFunc() {
@@ -1177,7 +1177,7 @@ myApp.onPageInit('gamePage', (page) => {
     }
   });
 
-  if (localStorage.getItem("logged_in") !== null) {
+  if (localStorage.getItem("loggedIn") !== null) {
     $$.ajax({
       url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
       type: 'get',
