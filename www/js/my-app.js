@@ -1185,8 +1185,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
     if (this.id === 'answer' + answer.toString()) {
       money = modifyMoney(money, gain);
       experience_point = experienceUp(experience_point);
-      console.log(money);
-      console.log(experience_point);
+      myApp.setProgressbar($$('#level-progress'), (experience_point % 50) * 2, 1300);
 
       $$(`#${this.id}`).css('background', '#40bf79');
       $$(`#${this.id}`).append(`<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
