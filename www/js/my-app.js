@@ -69,7 +69,7 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log('App has launched ' + ++localStorage.launchCount + ' times.');
+    console.log(`App has launched  ${++window.localStorage.launchCount} times.`);
   }
 
   if (window.localStorage.getItem('loggedIn')) {
@@ -84,7 +84,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_rewards/',
     success = function(data) {
       console.log('get rewards info success');
-      window.sessionStorage.setItem('allRewardsInfo', data);
+      window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
     },
     error = function(data) {
       console.log('get rewards info fail');
@@ -95,7 +95,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_stations/',
     success = function(data) {
       console.log('get stations info success');
-      window.sessionStorage.setItem('allStationsInfo', data);
+      window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
     },
     error = function(data) {
       console.log('get stations info fail');
@@ -193,7 +193,7 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'))['data'];
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var markers;
   var Latitude = undefined;
   var Longitude = undefined;
@@ -374,7 +374,7 @@ myApp.onPageInit('info', (page) => {
   rewards = JSON.parse(window.localStorage.getItem('rewards'));
   allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
-    rewardImg = allRewardsInfo['data'].find(x => x.id === rewards[i])['image_url'];
+    rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 });
@@ -871,11 +871,7 @@ myApp.onPageInit('themeSite', () => {
     mainView.router.back({ url: 'index.html', force: true });
   });
 
-  $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
-    type: 'get',
-    success: (data) => {
-      const stations = JSON.parse(data).data;
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
       let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
 
       //  because haved to wait for appened fininshed
@@ -951,11 +947,6 @@ myApp.onPageInit('themeSite', () => {
         createSites(stations, favoriteSequence, -1, -1, onclickFunc);
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    },
-    error: (data) => {
-      console.log(data);
-    },
-  });
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -980,6 +971,13 @@ myApp.onPageInit('favorite', () => {
     success: (data) => {
       const stations = JSON.parse(data).data;
       let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+
+      if (favoriteSequence.length === 0) {
+        myApp.alert('快去加入你所感興趣的站點吧!', '尚未有任何最愛站點', function() {
+          mainView.router.back();
+        });
+      }
+
       let itemList = findSequence(stations, favoriteSequence);
 
       $$('*[data-page="favorite"] li.swipeout').off('click');
@@ -1166,6 +1164,10 @@ myApp.onPageInit('itemDetail', (page) => {
     }
   }
 
+  const link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
+  $$('*[data-page="itemDetail"] #site-content  a').attr('onclick', `window.open('${link}', '_system')`);
+  $$('*[data-page="itemDetail"] #site-content  a').attr('href', '#');
+
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();
     const pOffset = $$('.custom-money-content').offset();
@@ -1180,6 +1182,7 @@ myApp.onPageInit('itemDetail', (page) => {
         url: 'gamePage.html',
         context: {
           id: page.context.site.id,
+          rewardID: page.context.site.rewards,
           gain: 200,
         },
       });
@@ -1196,6 +1199,7 @@ myApp.onPageInit('itemDetail', (page) => {
           url: 'gamePage.html',
           context: {
             id: page.context.site.id,
+            rewardID: page.context.site.rewards,
             gain: 1000,
           },
         });
@@ -1207,7 +1211,7 @@ myApp.onPageInit('itemDetail', (page) => {
   });
 });
 
-function answerQuestion(question, options, answer, question_id, gain) {
+function answerQuestion(question, options, answer, question_id, gain, rewardID) {
   let money = parseInt(window.localStorage.getItem('coins'), 10);
   let experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
 
@@ -1307,7 +1311,7 @@ myApp.onPageInit('gamePage', (page) => {
       },
       success: (data) => {
         const questionData = JSON.parse(data);
-        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain, page.context.rewardID);
       },
       error: (data) => {
         console.log(data);
@@ -1324,7 +1328,7 @@ myApp.onPageInit('gamePage', (page) => {
       },
       success: (data) => {
         const questionData = JSON.parse(data);
-        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain, page.context.rewardID);
       },
       error: (data) => {
         console.log("get question error");
