@@ -184,6 +184,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     {
       $$.ajax({
         url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations',
+        type: 'post',
         data: {
           'beacon_id': platformID,
         },
@@ -193,7 +194,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
           $$.ajax({
             url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
-            type: 'get',
+            type: 'post',
             success: (data) => {
               const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
 
