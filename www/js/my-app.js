@@ -1286,7 +1286,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
 }
 
 myApp.onPageInit('gamePage', (page) => {
-  beacon_util.stopScanForBeacons();
+  //beacon_util.stopScanForBeacons();
 
   setTimeout(() => {
     $$('#gameStart-modal').css('display', 'none');
@@ -1303,7 +1303,7 @@ myApp.onPageInit('gamePage', (page) => {
     if (y > pHeight * 0.78 && y <= pHeight) {
       mainView.router.back();
 
-      beacon_util.startScanForBeacons()
+      //beacon_util.startScanForBeacons()
     }
   });
 
