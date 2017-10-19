@@ -69,7 +69,7 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched  ${++window.localStorage.launchCount} times.`);
+    console.log(`App has launched ${++window.localStorage.launchCount} times.`);
   }
 
   if (window.localStorage.getItem('loggedIn')) {
@@ -81,7 +81,7 @@ $$(document).on('deviceready', () => {
   }
 
   $$.get(
-    url = HOOKURL + 'smart_campus/get_all_rewards/',
+    url = `${HOOKURL}smart_campus/get_all_rewards/`,
     success = function(data) {
       console.log('get rewards info success');
       window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
@@ -92,7 +92,7 @@ $$(document).on('deviceready', () => {
     }
   )
   $$.get(
-    url = HOOKURL + 'smart_campus/get_all_stations/',
+    url = `${HOOKURL}smart_campus/get_all_stations/`,
     success = function(data) {
       console.log('get stations info success');
       window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
@@ -109,7 +109,7 @@ $$('.login-form-to-json').on('click', () => {
   console.log(formData);
 
   $$.post(
-    url = HOOKURL + 'smart_campus/login/',
+    url = `${HOOKURL}smart_campus/login/`,
     data = {
       'email': formData['email'],
       'password': formData['password']
@@ -145,7 +145,7 @@ $$('.register-form-to-json').on('click', () => {
   console.log(formData);
 
   $$.post(
-    url = HOOKURL + 'smart_campus/signup/',
+    url = `${HOOKURL}smart_campus/signup/`,
     data = {
       'email': formData['email'],
       'password': formData['password'],
@@ -153,7 +153,7 @@ $$('.register-form-to-json').on('click', () => {
     },
     success = function(data) {
       console.log('register success');
-      myApp.alert('嗨! ' + formData['nickname'], '註冊成功!', function() {
+      myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
         myApp.closeModal();
       });
     },
@@ -273,9 +273,9 @@ myApp.onPageInit('map', (page) => {
           totalDistance += leg.distance.value;
           totalDuration += leg.duration.value;
         }
-        console.log(totalDistance + ' m, ' + totalDuration + ' s');
+        console.log(`${totalDistance} m, ${totalDuration} s`);
       } else
-        window.alert('Directions request failed due to ' + status);
+        console.log(`Directions request failed due to ${status}`);
     });
   }
 
@@ -309,7 +309,7 @@ myApp.onPageInit('map', (page) => {
   function showMarkerInfo() {
     var station = stations.find(x => x.name === this.title);
     $$('#marker-img').attr('src', station['image']['primary']);
-    $$('#marker-category').html('/ ' + station['category'] + '主題 /');
+    $$('#marker-category').html(`/ ${station['category']}主題 /`);
     $$('#marker-name').html(station['name'].replace('/', '<br>/'));
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
@@ -353,8 +353,7 @@ myApp.onPageInit('map', (page) => {
   };
 
   function onMapError(error) {
-    console.log('code: ' + error.code + '\n' +
-      'message: ' + error.message + '\n');
+    console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
   }
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
@@ -375,7 +374,7 @@ myApp.onPageInit('info', (page) => {
   allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
     rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
-    $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
+    $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
 });
 
