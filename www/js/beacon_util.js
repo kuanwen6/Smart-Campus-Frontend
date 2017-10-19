@@ -196,6 +196,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       beacon_util.recordDetection[key] = false;
     }
   });
+  myApp.alert(Object.keys(beacon_util.recordDetection));
 
   for (var i=0;i < pluginResult.beacons.length ; i++)
   {
@@ -224,9 +225,10 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
               type: 'post',
               success: (data) => {
                 const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
+                
                 myApp.addNotification({
-                  title: '接近站點',
-                  message: site.category + ' / ' + site.name,
+                  title: '接近'+site['category'],
+                  message: site['name'],
                   hold: 6000,
                   closeOnClick: true,
                   onClick: function () {
@@ -242,7 +244,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
                   }
                 });
                 
-                break; //break the loop, show the first station
               },
               error: (data) => {
                 console.log('get station data error');
