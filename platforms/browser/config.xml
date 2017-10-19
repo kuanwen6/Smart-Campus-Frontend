@@ -21,6 +21,6 @@
     <preference name="orientation" value="portrait" />
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="SplashScreenDelay" value="3000" />
-    <preference name="ShowSplashScreenSpinner" value="true" />
+    <preference name="SplashScreenDelay" value="2500" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
 </widget>

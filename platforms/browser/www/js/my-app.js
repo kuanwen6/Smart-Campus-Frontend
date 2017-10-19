@@ -62,6 +62,7 @@ $$(document).on('deviceready', () => {
 
   //iBeacon Setup
   beacon_util.init_beacon_detection();
+  beacon_util.startScanForBeacons();
 
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
@@ -74,13 +75,12 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('rewards', '[]');
     window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
-    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, onClosed: function(){beacon_util.startScanForBeacons();}});
+    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
     $$(document).on('click', '.welcome-close-btn', () => {
       welcomescreen.close();
     });
   } else {
     console.log(`App has launched ${++window.localStorage.launchCount} times.`);
-    beacon_util.startScanForBeacons();
   }
 
   $$.get(
