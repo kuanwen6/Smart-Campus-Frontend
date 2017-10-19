@@ -19,6 +19,8 @@
         <preference name="android-minSdkVersion" value="21" />
         <preference name="android-maxSdkVersion" value="26" />
         <preference name="android-targetSdkVersion" value="23" />
+        <preference name="SplashMaintainAspectRatio" value="false" />
+        <preference name="SplashShowOnlyFirstTime" value="false" />
         <icon src="res/android/icon/logo.png" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
@@ -27,6 +29,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="none" />
+        <preference name="target-device" value="handset" />
         <splash height="2208" src="res/ios/splash/Default-736h.png" width="1242" />
         <splash height="1242" src="res/ios/splash/2208x1242.png" width="2208" />
         <splash height="1334" src="res/ios/splash/Default-667h.png" width="750" />
@@ -57,7 +60,10 @@
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
     </config-file>
     <preference name="orientation" value="portrait" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="ShowSplashScreenSpinner" value="true" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
     <plugin name="com.unarin.cordova.beacon" spec="https://github.com/petermetz/cordova-plugin-ibeacon.git" />
