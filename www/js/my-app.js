@@ -75,7 +75,7 @@ $$(document).on('deviceready', () => {
   if (window.localStorage.getItem('loggedIn')) {
     $$('#login-form').hide();
     $$('#register-btn').hide();
-    $$('.profile_pic').removeClass('hide');
+    $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
     $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
@@ -84,16 +84,25 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_rewards/',
     success = function(data) {
       console.log('get rewards info success');
-      window.localStorage.setItem('all_rewards_info', data);
+      window.sessionStorage.setItem('allRewardsInfo', data);
     },
     error = function(data) {
       console.log('get rewards info fail');
       console.log(data);
     }
   )
-
+  $$.get(
+    url = HOOKURL + 'smart_campus/get_all_stations/',
+    success = function(data) {
+      console.log('get stations info success');
+      window.sessionStorage.setItem('allStationsInfo', data);
+    },
+    error = function(data) {
+      console.log('get stations info fail');
+      console.log(data);
+    }
+  )
 });
-
 
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
@@ -109,9 +118,8 @@ $$('.login-form-to-json').on('click', () => {
       console.log('login success');
       $$('#login-form').hide();
       $$('#register-btn').hide();
-      $$('.profile_pic').removeClass('hide');
+      $$('.profile-pic').removeClass('hide');
       $$('.nickname').removeClass('hide');
-
 
       data = JSON.parse(data);
       console.log(data);
@@ -157,44 +165,36 @@ $$('.register-form-to-json').on('click', () => {
   );
 });
 
-var monuments = [
-  ['Confucius Temple', 22.998279, 120.214809],
-  ['Chikan House', 22.998299, 120.216794],
-];
-
-var arts = [
-  ['Flutter', 22.998171, 120.216955],
-  ['Thinker', 23.000831, 120.215108],
-];
-
-var landscapes = [
-  ['Yung Park', 22.999003, 120.215434],
-  ['Lake', 22.99768339, 120.2157563],
-];
-
-var administrativeUnit = [
-  ['Post Office', 22.998166, 120.214360],
-  ['Cool', 22.998640, 120.217943],
-];
 
 myApp.onPageInit('map', (page) => {
-
   $$('.open-filter').on('click', () => {
-    $$('#map_filter').css('display', 'block');
+    $$('#map-filter').css('display', 'block');
   });
 
   $$(window).on('click', (event) => {
-    if (event.target === $$('#map_filter')[0]) {
-      $$('#map_filter').css('display', 'none');
+    if (event.target === $$('#map-filter')[0]) {
+      $$('#map-filter').css('display', 'none');
     }
   });
 
-  $$('.filter_table div').on('click', (e) => {
-    $$(e.currentTarget).children('span').toggleClass('filter_added');
+  $$('.filter-table div').on('click', (e) => {
+    $$(e.currentTarget).children('span').toggleClass('filter-added');
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
+  $$('.marker-favorite').on('click', (e) => {
+    var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+    $$(e.currentTarget).toggleClass('color-red');
 
+    if ($$(e.currentTarget).hasClass('color-red')) {
+      favoriteSequence = addFavorite(favoriteSequence, e.currentTarget.id);
+    } else {
+      favoriteSequence = removeFavorite(favoriteSequence, e.currentTarget.id);
+    }
+  });
+
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'))['data'];
+  var markers;
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
@@ -204,11 +204,18 @@ myApp.onPageInit('map', (page) => {
     origin: new google.maps.Point(0, 18),
     anchor: new google.maps.Point(11, 11)
   };
+  var map = new google.maps.Map($$('#map')[0], {
+    zoom: 16,
+    center: { lat: 22.998089, lng: 120.217441 },
+    disableDefaultUI: true,
+    clickableIcons: false,
+  });
   var locationMarker = new google.maps.Marker({
     clickable: false,
     icon: image,
     shadow: null,
     zIndex: 999,
+    map: map,
   });
   var locationCircle = new google.maps.Circle({
     fillColor: '#61a0bf',
@@ -216,28 +223,13 @@ myApp.onPageInit('map', (page) => {
     strokeColor: '#1bb6ff',
     strokeOpacity: 0.4,
     strokeWeight: 1,
+    map: map,
   });
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    center: { lat: 23, lng: 120.22 },
-    disableDefaultUI: true,
-    clickableIcons: false,
-  });
-
-
-  var markers = [monuments, arts, landscapes, administrativeUnit];
-  setMarkers(map);
-
-  locationMarker.setMap(map);
-  locationCircle.setMap(map);
-
-  map.addListener('click', hideMarkerInfo);
   var walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
     scale: 3
   };
-
   var walkingPathLine = {
     strokeColor: '#0eb7f6',
     strokeOpacity: 0,
@@ -249,9 +241,11 @@ myApp.onPageInit('map', (page) => {
     }],
   };
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
-  directionsDisplay.setMap(map);
+  map.addListener('click', hideMarkerInfo);
+  setMarkers(map);
+  //var directionsService = new google.maps.DirectionsService;
+  //var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+  //directionsDisplay.setMap(map);
 
   function calculateAndDisplayRoute(directionsService, directionsDisplay, origin) {
     var waypts = [];
@@ -286,39 +280,50 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    var icon = ['img/markers/marker_red.png', 'img/markers/marker_orange.png', 'img/markers/marker_green.png', 'img/markers/marker_blue.png'];
+    const icon = {
+      '古蹟': 'img/markers/marker_red.png',
+      '藝文': 'img/markers/marker_orange.png',
+      '景觀': 'img/markers/marker_green.png',
+      '行政單位': 'img/markers/marker_blue.png'
+    };
+    const scaledSize = new google.maps.Size(25, 36);
+    const anchor = new google.maps.Point(12.5, 36);
+    markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
 
-    for (var i = 0; i < markers.length; i++) {
-      for (var j = 0; j < markers[i].length; j++) {
-        var dot = markers[i][j];
-        var marker = new google.maps.Marker({
-          position: { lat: dot[1], lng: dot[2] },
-          title: dot[0],
-          map: map,
-          icon: {
-            url: icon[i],
-            scaledSize: new google.maps.Size(25, 36),
-            anchor: new google.maps.Point(12.5, 36),
-          },
-        });
-
-        marker.addListener('click', showMarkerInfo);
-        dot.push(marker);
-      }
+    for (const station of stations) {
+      var marker = new google.maps.Marker({
+        position: { lat: station['location'][1], lng: station['location'][0] },
+        title: station['name'],
+        map: map,
+        icon: {
+          url: icon[station['category']],
+          scaledSize: scaledSize,
+          anchor: anchor,
+        },
+      });
+      marker.addListener('click', showMarkerInfo);
+      markers[station['category']].push(marker);
     }
   }
 
   function showMarkerInfo() {
-    $$('.marker_info').css('display', 'block');
+    var station = stations.find(x => x.name === this.title);
+    $$('#marker-img').attr('src', station['image']['primary']);
+    $$('#marker-category').html('/ ' + station['category'] + '主題 /');
+    $$('#marker-name').html(station['name'].replace('/', '<br>/'));
+    $$('.marker-favorite').attr('id', station['id']);
+    $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
+    $$('.marker-info').css('display', 'block');
   }
 
   function hideMarkerInfo() {
-    $$('.marker_info').css('display', 'none');
+    $$('.marker-info').css('display', 'none');
   }
 
   function setGroupMarkerVisible(groupId) {
-    for (var i = 0; i < markers[groupId].length; i++) {
-      markers[groupId][i][3].setVisible(!markers[groupId][i][3].visible);
+    const category = ['古蹟', '藝文', '景觀', '行政單位'];
+    for (var marker of markers[category[groupId]]) {
+      marker.setVisible(!marker.visible);
     }
   }
 
@@ -326,28 +331,23 @@ myApp.onPageInit('map', (page) => {
     locationMarker.setPosition({ lat: latitude, lng: longitude });
     locationCircle.setCenter({ lat: latitude, lng: longitude });
     locationCircle.setRadius(accuracy);
-
-    console.log('added marker!');
-    //myApp.alert('lat:' + latitude + '\nlng:' + longitude + '\nacc:' + accuracy);
   }
 
   var onMapWatchSuccess = function(position) {
-
+    /*
     if (!onMapWatchSuccess.first) {
       calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
     }
     onMapWatchSuccess.first = true;
-
+    */
     var updatedLatitude = position.coords.latitude;
     var updatedLongitude = position.coords.longitude;
     var updatedAccuracy = position.coords.accuracy;
 
     if (updatedLatitude !== Latitude || updatedLongitude !== Longitude || updatedAccuracy !== Accuracy) {
-
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
       Accuracy = updatedAccuracy;
-
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
     }
   };
@@ -358,12 +358,12 @@ myApp.onPageInit('map', (page) => {
   }
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
-  calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
+  //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
 
 myApp.onPageInit('info', (page) => {
-  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / 10);
+  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
@@ -372,10 +372,10 @@ myApp.onPageInit('info', (page) => {
   }
 
   rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  all_rewards_info = JSON.parse(window.localStorage.getItem('all_rewards_info'));
+  allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
-    reward_img = all_rewards_info['data'].find(x => x.id === rewards[i]).image_url;
-    $$('.collections > div').eq(i).append('<img src="' + reward_img + '"/>');
+    rewardImg = allRewardsInfo['data'].find(x => x.id === rewards[i])['image_url'];
+    $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 });
 
@@ -789,7 +789,8 @@ function itemDetailRemove(favorite, id) {
 
   favorite = removeFavorite(favorite, id);
 
-  $$('.detailHeart').attr("onclick",`itemDetailAdd([${favorite}],${id})`);
+  $$('.detailHeart').attr("onclick", `itemDetailAdd(${favorite},${id})`);
+
 }
 
 function itemDetailAdd(favorite, id) {
@@ -803,7 +804,8 @@ function itemDetailAdd(favorite, id) {
 
   favorite = addFavorite(favorite, id);
 
-  $$('.detailHeart').attr("onclick",`itemDetailRemove([${favorite}],${id})`);
+  $$('.detailHeart').attr("onclick", `itemDetailRemove(${favorite},${id})`);
+
 }
 
 function moneySelect() {
@@ -879,7 +881,7 @@ myApp.onPageInit('themeSite', () => {
       //  because haved to wait for appened fininshed
       function onclickFunc() {
         $$('img.lazy').trigger('lazy');
-        $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
+        $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
           const site = findStation(stations, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -894,7 +896,7 @@ myApp.onPageInit('themeSite', () => {
         });
 
         $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="themeSite"] li.swipeout').on('click', function () {
+          $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
             const site = findStation(stations, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -911,13 +913,12 @@ myApp.onPageInit('themeSite', () => {
 
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="themeSite"] li.swipeout').off('click');
-          
 
           if ($$(this).hasClass('add-favorite')) {
             // add this.id to favorite
             console.log('add toggle');
-            
-            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+
+            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
             console.log(favoriteSequence);
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
@@ -929,7 +930,7 @@ myApp.onPageInit('themeSite', () => {
             // remove this.id to favorite
             console.log('remove toggle');
 
-            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
@@ -987,7 +988,7 @@ myApp.onPageInit('favorite', () => {
       //  because haved to wait for appened fininshed
       function onclickFunc() {
         $$('img.lazy').trigger('lazy');
-        $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+        $$('*[data-page="favorite"] li.swipeout').on('click', function() {
           const site = findStation(itemList, parseInt(this.id, 10));
           console.log(this);
           mainView.router.load({
@@ -1002,7 +1003,7 @@ myApp.onPageInit('favorite', () => {
         });
 
         $$('*[data-page="favorite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="favorite"] li.swipeout').on('click', function () {
+          $$('*[data-page="favorite"] li.swipeout').on('click', function() {
             const site = findStation(itemList, parseInt(this.id, 10));
             console.log(site);
             mainView.router.load({
@@ -1016,13 +1017,13 @@ myApp.onPageInit('favorite', () => {
             });
           });
         });
-        
+
         function favorites() { // if change to () => { , it will go wrong!
           $$('*[data-page="favorite"] li.swipeout').off('click');
           if ($$(this).hasClass('add-favorite')) {
             console.log('add toggle');
 
-            favoriteSequence = addFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
             $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
@@ -1031,7 +1032,7 @@ myApp.onPageInit('favorite', () => {
           } else {
             console.log('remove toggle');
 
-            favoriteSequence = removeFavorite(favoriteSequence ,parseInt(this.id, 10));
+            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
             $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
             $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
@@ -1085,7 +1086,7 @@ myApp.onPageInit('customRoute', () => {
           }
         });
 
-        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function () {
+        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function() {
           console.log(this.id);
           const index = favoriteSequence.indexOf(parseInt(this.id, 10));
           if (index > -1) {
@@ -1103,7 +1104,7 @@ myApp.onPageInit('customRoute', () => {
       }
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
-      mainView.showToolbar(); 
+      mainView.showToolbar();
       $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
 
       $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
@@ -1132,7 +1133,7 @@ myApp.onPageInit('customRoute', () => {
 
 
 myApp.onPageInit('itemDetail', (page) => {
-//  detect if this station have question to answered
+  //  detect if this station have question to answered
   if (page.context.isBeacon) {
     if (localStorage.getItem("loggedIn") !== null) {
       $$.ajax({
@@ -1171,7 +1172,7 @@ myApp.onPageInit('itemDetail', (page) => {
     const y = e.pageY - pOffset.top;
     console.log(pHeight);
     console.log(y);
-    let money = parseInt(window.localStorage.getItem('coins'),10);
+    let money = parseInt(window.localStorage.getItem('coins'), 10);
 
     if (y > pHeight * 0.5 && y <= pHeight) {
       console.log('200');
@@ -1207,8 +1208,8 @@ myApp.onPageInit('itemDetail', (page) => {
 });
 
 function answerQuestion(question, options, answer, question_id, gain) {
-  let money = parseInt(window.localStorage.getItem('coins'),10);
-  let experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'),10);
+  let money = parseInt(window.localStorage.getItem('coins'), 10);
+  let experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
 
   $$('#questionTextArea').html(question);
   for (let i = 0; i < 4; i += 1) {
@@ -1217,7 +1218,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
 
   console.log('money ' + money);
   console.log('experiencePoint ' + experiencePoint);
-  console.log('progress '+ (experiencePoint % EXP_PER_LEVEL) * 2)
+  console.log('progress ' + (experiencePoint % EXP_PER_LEVEL) * 2)
 
   $$('.money_reward').html(gain);
   myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
@@ -1250,14 +1251,13 @@ function answerQuestion(question, options, answer, question_id, gain) {
           url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
           data = {
             'question_id': question_id,
-            'email':  window.localStorage.getItem('email'),
+            'email': window.localStorage.getItem('email'),
           },
           success = function(data) {
             console.log('add answered success');
           },
         );
-      }   
-      
+      }
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
