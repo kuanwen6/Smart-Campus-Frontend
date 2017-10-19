@@ -682,7 +682,7 @@ function getRewards(rewards, rewardID) {
         'reward_id': rewardID,
       },
       success = function(data) {
-       // data = JSON.parse(data);
+        // data = JSON.parse(data);
         window.localStorage.setItem('rewards', JSON.stringify(rewards));
       },
       error = function(data) {
@@ -1262,7 +1262,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
         );
       }
 
-      let rewards =  JSON.parse(window.localStorage.getItem('rewards'));
+      let rewards = JSON.parse(window.localStorage.getItem('rewards'));
       console.log('rewardID');
       if (rewardID.length > 0) {
         console.log(rewardID);
