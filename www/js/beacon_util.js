@@ -182,7 +182,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
-      $$.post({
+      $$.ajax({
         url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations',
         data: {
           'beacon_id': platformID,
