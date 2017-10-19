@@ -13,8 +13,17 @@
         "cordova-plugin-console": {
             "PACKAGE_NAME": "com.phonegap.helloworld"
         },
+        "com.unarin.cordova.beacon": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
         "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-custom-config": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
     "dependent_plugins": {}

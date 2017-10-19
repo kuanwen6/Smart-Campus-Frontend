@@ -3,7 +3,7 @@
         <div class="left">
             <a href="index.html" class="link back">
                         <i class="f7-icons color-white">chevron_left</i> 
-                        <span>Back</span>
+                        <span>回上頁</span>
                     </a>
         </div>
         <div class="center">進行遊戲</div>
@@ -16,11 +16,11 @@
         <div class="page-content" style="background-color:rgba(115, 115, 115, 0.95);">
             <div class="content-block" style="margin: 10px 0;">
                 <div class="level" align="right">
-                    <p><span>等級 </span><span data-progress="50" class="progressbar"></span></p>
+                    <p><span>等級 </span><span id="level-progress" data-progress="60" class="progressbar"></span></p>
                 </div>
                 <div class="reward" style="text-align:center; margin-top: 2vh;">
                     <img src="img/coins.png" style="width:50px; vertical-align:middle;">
-                    <span style="font-size:35px; vertical-align:middle;">300</span>
+                    <span class="money_reward" style="font-size:35px; vertical-align:middle;"></span>
                 </div>
                 <div class="question row">
                     <div class="col-10" style="font-size:2.8vh; margin-left:8px;"><span>Q:</span></div>
@@ -39,13 +39,13 @@
         <!-- The Modals -->
         <div id="gameStart-modal" class="custom-start-modal">
             <div class="custom-start-modal-content row">
-                <div class="col-65">
-                    <span class="loading">前往遊戲<span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span></span>
-                    <i class="f7-icons color-white" style="-ms-transform: rotate(45deg); -webkit-transform: rotate(45deg); transform: rotate(45deg); position: relative;top: 1.5vw;left: -2vw;">navigation_fill</i></a>
+                <div class="col-70">
+                    <span class="loading">前往遊戲<span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span></span>
+                    <!--<i class="f7-icons color-white" style="-ms-transform: rotate(45deg); -webkit-transform: rotate(45deg); transform: rotate(45deg); position: relative;top: 1.5vw;left: -2vw;">navigation_fill</i></a>-->
                 </div>
                 <div class="col-30" style="text-align: center;margin: 0 auto; margin-top: -7vw;margin-left: 2vw;">
                     <img src="img/coins.png" style="width:11vw;">
-                    <p style="margin: 0;font-weight:bold;">1000</p>
+                    <p class="money_reward" style="margin: 0;font-weight:bold;"></p>
                 </div>
             </div>
         </div>
