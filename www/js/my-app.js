@@ -424,33 +424,74 @@ function distance(lat1, lng1, lat2, lng2) {
   return `${dist.toFixed(1)} 公里`;
 }
 
+function getLocationArray(idArray) {
+  const returnValue = [];
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+  let site;
 
-function createCards(data, callback) {
+  for (let i = 0; i < idArray.length; i++) {
+    site = findStation(stations, idArray[i]);
+    returnValue.push({ location: { lat: site.location[1], lng: site.location[0] } });
+  }
+
+  return returnValue;
+}
+
+
+function createCards(data, onclickCallback) {
   for (let i = 0; i < data.length; i += 1) {
     let description = data[i].description;
     if (data[i].description.length > 12) {
       description = `${description.substring(0, 12)}...`;
     }
+    const routeLocation = getLocationArray(data[i].station_sequence);
+    console.log(routeLocation);
 
-    $$('.big-card').append(`<div class="card" id="${data[i].id}">
-                    <div href="#" class="card-content" style="height:15vh;">
-                        <div class="row no-gutter">\
-                            <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
-                            <div class="col-60" style="padding:8px;">
-                                <div class="card-title"><span>${data[i].name}</span></div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-35"></div>
-                                    <div class="col-60"><span>${description}</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer"><span>預估時間: 10 分鐘</span></div>
-                </div>`);
+    if (routeLocation.length > 1) {
+      calculateAndDisplayRoute(
+        routeLocation[0].location,
+        routeLocation.slice(1),
+        display = false,
+        callback = function(d, t) {
+          $$('.big-card').append(`<div class="card" id="${data[i].id}">
+              <div href="#" class="card-content" style="height:15vh;">
+                  <div class="row no-gutter">\
+                      <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                      <div class="col-60" style="padding:8px;">
+                          <div class="card-title"><span>${data[i].name}</span></div>
+                          <br>
+                          <div class="row">
+                              <div class="col-35"></div>
+                              <div class="col-60"><span>${description}</span></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="card-footer"><span>預估時間: ${(t/60).toFixed(0)} 分鐘</span></div>
+          </div>`);
+          onclickCallback();
+        },
+      );
+    } else {
+      $$('.big-card').append(`<div class="card" id="${data[i].id}">
+          <div href="#" class="card-content" style="height:15vh;">
+              <div class="row no-gutter">\
+                  <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                  <div class="col-60" style="padding:8px;">
+                      <div class="card-title"><span>${data[i].name}</span></div>
+                      <br>
+                      <div class="row">
+                          <div class="col-35"></div>
+                          <div class="col-60"><span>${description}</span></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="card-footer"><span>預估時間: 0 分鐘</span></div>
+      </div>`);
+      onclickCallback();
+    }
   }
-
-  callback();
 }
 
 function createFavoriteCards(favorite, lat, lng, callback) {
@@ -876,12 +917,13 @@ myApp.onPageInit('themeRoute', () => {
         $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
           const route = findRoute(plansObj, this.id);
           const itemList = findSequence(stationsObj, route.station_sequence);
+          const time = $$(this).children('.card-footer').find('span').html();
 
           mainView.router.load({
             url: 'routeDetail.html',
             context: {
               title: route.name,
-              time: '10',
+              time,
               custom: false,
               previous: 'themeRoute.html',
               introduction: route.description,
@@ -1132,18 +1174,42 @@ myApp.onPageInit('customRoute', () => {
       myApp.alert('並沒有選擇任何站點喔!', '注意');
     } else {
       itemList = findSequence(stations, favoriteSequence);
-      mainView.router.load({
-        url: 'routeDetail.html',
-        context: {
-          title: '自訂行程',
-          time: 'unknown',
-          custom: true,
-          previous: 'customRoute.html',
-          introduction: '自己想的好棒喔',
-          img: itemList[0].image.primary,
-          itemList,
-        },
-      });
+      const routeLocation = getLocationArray(favoriteSequence);
+  
+      if (routeLocation.length > 1) {
+        calculateAndDisplayRoute(
+          routeLocation[0].location,
+          routeLocation.slice(1),
+          display = false,
+          callback = function(d, t) {
+            mainView.router.load({
+              url: 'routeDetail.html',
+              context: {
+                title: '自訂行程',
+                time: `預估時間: ${(t/60).toFixed(0)} 分鐘`,
+                custom: true,
+                previous: 'customRoute.html',
+                introduction: '自己想的好棒喔',
+                img: itemList[0].image.primary,
+                itemList,
+              },
+            });
+          },
+        );
+      } else {
+        mainView.router.load({
+          url: 'routeDetail.html',
+          context: {
+            title: '自訂行程',
+            time: `預估時間: 0 分鐘`,
+            custom: true,
+            previous: 'customRoute.html',
+            introduction: '自己想的好棒喔',
+            img: itemList[0].image.primary,
+            itemList,
+          },
+        });
+      }
     }
   });
 });
