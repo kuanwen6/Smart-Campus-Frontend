@@ -55,6 +55,8 @@ const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+  //iBeacon Setup
+  beacon_util.init_beacon_detection();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -103,9 +105,8 @@ $$(document).on('deviceready', () => {
     }
   )
 
-  //iBeacon Setup
-  beacon_util.init_beacon_detection()
-  beacon_util.startScanForBeacons()
+  
+  beacon_util.startScanForBeacons();
 });
 
 
