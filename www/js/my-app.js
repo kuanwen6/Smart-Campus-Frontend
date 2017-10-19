@@ -511,8 +511,10 @@ function createFavorite(favorite, lat, lng, callback) {
 }
 
 function createSites(sites, favorite, lat, lng, callback) {
+  console.log("creating site");
   let category;
   let distanceBetween;
+  console.log("creating site num"+sites.length);
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -955,16 +957,21 @@ myApp.onPageInit('themeSite', () => {
   }
 
   function onSuccess(position) {
+    console.log("themeSite onSuccess start")
     createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
+    console.log("themeSite onSuccess finish");
   }
 
   function onError() {
+    console.log("themeSite onSuccess start no loc")
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
+    console.log("themeSite onSuccess finish no loc");
   }
   navigator.geolocation.getCurrentPosition(onSuccess, onError);
 });
 
 myApp.onPageInit('routeDetail', (page) => {
+
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
   if (!page.context.custom) {
     myApp.accordionOpen($$('li#introduction'));
