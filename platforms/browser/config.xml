@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="tw.edu.ncku.csie.smartcampus" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>成大尋寶趣</name>
+    <name>成大藏奇圖</name>
     <description>
         成大智慧校園領航APP.
     </description>
@@ -18,5 +18,9 @@
     <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
     </config-file>
+    <preference name="orientation" value="portrait" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="ShowSplashScreenSpinner" value="true" />
 </widget>

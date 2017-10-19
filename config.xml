@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="tw.edu.ncku.csie.smartcampus" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>成大尋寶趣</name>
+    <name>成大藏奇圖</name>
     <description>
         成大智慧校園領航APP.
     </description>
@@ -19,15 +19,35 @@
         <preference name="android-minSdkVersion" value="21" />
         <preference name="android-maxSdkVersion" value="26" />
         <preference name="android-targetSdkVersion" value="23" />
+        <preference name="SplashMaintainAspectRatio" value="false" />
+        <preference name="SplashShowOnlyFirstTime" value="false" />
         <icon src="res/android/icon/logo.png" />
+        <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="none" />
+        <preference name="target-device" value="handset" />
+        <splash height="2208" src="res/ios/splash/Default-736h.png" width="1242" />
+        <splash height="1242" src="res/ios/splash/2208x1242.png" width="2208" />
+        <splash height="1334" src="res/ios/splash/Default-667h.png" width="750" />
+        <splash height="1136" src="res/ios/splash/Default-568h.png" width="640" />
+        <splash height="960" src="res/ios/splash/Default@2x~iphone.png" width="640" />
+        <splash height="480" src="res/ios/splash/Default~iphone.png" width="320" />
         <icon height="40" src="res/ios/icon/40x40.png" width="40" />
+        <icon height="50" src="res/ios/icon/50x50.png" width="50" />
         <icon height="80" src="res/ios/icon/80x80.png" width="80" />
+        <icon height="100" src="res/ios/icon/100x100.png" width="100" />
+        <icon height="57" src="res/ios/icon/57x57.png" width="57" />
+        <icon height="60" src="res/ios/icon/60x60.png" width="60" />
+        <icon height="72" src="res/ios/icon/72x72.png" width="72" />
+        <icon height="76" src="res/ios/icon/76x76.png" width="76" />
+        <icon height="144" src="res/ios/icon/144x144.png" width="144" />
+        <icon height="152" src="res/ios/icon/152x152.png" width="152" />
+        <icon height="167" src="res/ios/icon/167x167.png" width="167" />
+        <icon height="114" src="res/ios/icon/114x114.png" width="114" />
         <icon height="120" src="res/ios/icon/120x120.png" width="120" />
         <icon height="180" src="res/ios/icon/180x180.png" width="180" />
         <icon height="29" src="res/ios/icon/29x29.png" width="29" />
@@ -36,12 +56,18 @@
         <icon height="512" src="res/ios/icon/512x512.png" width="512" />
         <icon height="1024" src="res/ios/icon/1024x1024.png" width="1024" />
     </platform>
-    <config-file platform="ios" target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
+    <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
     </config-file>
+    <preference name="orientation" value="portrait" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashScreenDelay" value="2500" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
-    <plugin name="cordova-plugin-statusbar" spec="~1.0.1" />
     <plugin name="com.unarin.cordova.beacon" spec="https://github.com/petermetz/cordova-plugin-ibeacon.git" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.2.3" />
+    <plugin name="cordova-plugin-splashscreen" spec="~4.0.3" />
+    <plugin name="cordova-custom-config" spec="~4.0.2" />
 </widget>
