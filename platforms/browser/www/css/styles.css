@@ -116,6 +116,16 @@
   font-size: 25px !important;
 }
 
+#bluetooth-warn {
+  background-color: black;
+  background-image: none;
+}
+
+#bluetooth-warn span {
+  margin: 0 auto;
+  font-size: 14px;
+}
+
 .login-form-to-json {
   margin-top: 2vh;
   height: 8vh;

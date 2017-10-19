@@ -32,6 +32,7 @@ const welcomescreenSlides = [{
   {
     id: 'slide2',
     picture: '<img src="../img/intro/intro_3.png">',
+    text: '<a id="welcome-close-btn" href="#"><img src="../img/intro/start_btn.png"></a>',
   },
 ];
 
@@ -46,8 +47,8 @@ $$(document).on('deviceready', () => {
   console.log('Device is ready!');
 
   //iBeacon Setup
-  beacon_util.init_beacon_detection();
-  beacon_util.startScanForBeacons();
+  //beacon_util.init_beacon_detection();
+  //beacon_util.startScanForBeacons();
 
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
@@ -60,8 +61,8 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('rewards', '[]');
     window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
-    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, });
-    $$(document).on('click', '.welcome-close-btn', () => {
+    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: false, });
+    $$(document).on('click', '#welcome-close-btn', () => {
       welcomescreen.close();
     });
   } else {
@@ -94,14 +95,6 @@ $$(document).on('deviceready', () => {
 
 
 myApp.onPageInit('index', function(page) {
-  function loginInit() {
-    $$('#login-form').hide();
-    $$('#register-btn').hide();
-    $$('.profile-pic').removeClass('hide');
-    $$('.nickname').removeClass('hide');
-    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  }
-
   $$('.login-form-to-json').on('click', () => {
     const formData = myApp.formToJSON('#login-form');
     console.log(formData);
@@ -162,6 +155,14 @@ myApp.onPageInit('index', function(page) {
   if (window.localStorage.getItem('loggedIn')) {
     loginInit();
   }
+
+  function loginInit() {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+    $$('.profile-pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+  }
 }).trigger();
 
 
@@ -192,8 +193,9 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var markers;
+  var stations;
+  var waypts = [];
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
@@ -242,8 +244,26 @@ myApp.onPageInit('map', (page) => {
 
   map.addListener('click', hideMarkerInfo);
   setMarkers(map);
+  directionOrMapOverview(page.context.isDirection);
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
-  //directionsDisplay.setMap(map);
+  function directionOrMapOverview(isDirection) {
+    if (isDirection) {
+      console.log('Direction mode!');
+      $$('#page-title').html('導覽中');
+      $$('.open-filter').css('visibility', 'hidden');
+      directionsDisplay.setMap(map);
+
+      stations = page.context.stations;
+      for (const station of stations) {
+        waypts.push({ location: { lat: station['location'][1], lng: station['location'][0] } });
+      }
+    } else {
+      console.log('Map overview mode!');
+      $$('#bluetooth-warn').hide();
+      stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+    }
+  }
 
   function setMarkers(map) {
     const icon = {
@@ -306,12 +326,6 @@ myApp.onPageInit('map', (page) => {
   }
 
   function onMapWatchSuccess(position) {
-    /*
-    if (!onMapWatchSuccess.first) {
-      calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
-    }
-    onMapWatchSuccess.first = true;
-    */
     var updatedLatitude = position.coords.latitude;
     var updatedLongitude = position.coords.longitude;
     var updatedAccuracy = position.coords.accuracy;
@@ -320,27 +334,28 @@ myApp.onPageInit('map', (page) => {
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
       Accuracy = updatedAccuracy;
+
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
+      if (page.context.isDirection) {
+        calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
+          waypts,
+          display = true
+        );
+      }
     }
   };
 
   function onMapError(error) {
     console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
+    if (page.context.isDirection) {
+      var origin = waypts.pop();
+      myApp.alert('導覽無法進行定位', '未開啟GPS');
+      calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
+        waypts,
+        display = true
+      );
+    }
   }
-
-  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
-
-  calculateAndDisplayRoute({ lat: 22.996039, lng: 120.225126 }, [
-      { location: { lat: 22.997039, lng: 120.224126 } },
-      { location: { lat: 22.995039, lng: 120.224126 } }
-    ],
-    display = false,
-    callback = function(d, t) {
-      console.log(d, t);
-    },
-  );
-
-  //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
 
@@ -362,10 +377,7 @@ myApp.onPageInit('info', (page) => {
 });
 
 
-function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
-  var totalDistance = 0;
-  var totalDuration = 0;
-
+function calculateAndDisplayRoute(origin, waypts, display = false, callback = null) {
   directionsService.route({
     origin: origin,
     destination: origin,
@@ -375,21 +387,25 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
   }, function(response, status) {
     if (status === 'OK') {
       response.routes[0].legs = response.routes[0].legs.slice(0, -1);
-      //directionsDisplay.setDirections(response);
       console.log(response);
-      for (const leg of response.routes[0].legs) {
-        totalDistance += leg.distance.value;
-        totalDuration += leg.duration.value;
+      if (display) {
+        directionsDisplay.setDirections(response);
+      } else {
+        var totalDistance = 0;
+        var totalDuration = 0;
+        for (const leg of response.routes[0].legs) {
+          totalDistance += leg.distance.value;
+          totalDuration += leg.duration.value;
+        }
+        callback(totalDistance, totalDuration);
       }
-      console.log(`${totalDistance} m, ${totalDuration} s`);
-      callback(totalDistance, totalDuration);
-    } else
+    } else {
       console.log(`Directions request failed due to ${status}`);
+    }
   });
 }
 
 
-/*             wen                */
 function distance(lat1, lng1, lat2, lng2) {
   if (lat1 === -1 && lng1 === -1) {
     return '未開啟GPS';
@@ -1026,6 +1042,15 @@ myApp.onPageInit('routeDetail', (page) => {
   } else {
     myApp.accordionOpen($$('li#itemList'));
   }
+  $$('.toolbar').on('click', () => {
+    mainView.router.load({
+      url: 'map.html',
+      context: {
+        isDirection: true,
+        stations: page.context.itemList,
+      },
+    });
+  });
 });
 
 myApp.onPageInit('favorite', () => {
