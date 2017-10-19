@@ -957,13 +957,16 @@ myApp.onPageInit('themeSite', () => {
   }
 
   function onSuccess(position) {
+    console.log('success');
     createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
   }
 
   function onError() {
+    console.log('err');
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
   }
   navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  console.log('end of');
 });
 
 myApp.onPageInit('routeDetail', (page) => {
