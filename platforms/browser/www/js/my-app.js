@@ -55,16 +55,6 @@ const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
-  function onSuccess(position) {
-    console.log(position.coords.latitude);
-    console.log(position.coords.longitude);
-  }
-
-  function onError() {
-    console.log('err');
-  }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true });
-
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -518,7 +508,6 @@ function createFavorite(favorite, lat, lng, callback) {
 }
 
 function createSites(sites, favorite, lat, lng, callback) {
-  console.log('create sites');
   let category;
   let distanceBetween;
   for (let i = 0; i < sites.length; i += 1) {
@@ -890,16 +879,12 @@ myApp.onPageInit('themeRoute', () => {
 });
 
 myApp.onPageInit('themeSite', () => {
-  console.log('enter themeSite');
   $$('.back-force').on('click', function() {
     mainView.router.back({ url: 'index.html', force: true });
   });
 
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
-
-  console.log('station')
-  console.log(stations);
 
   //  because haved to wait for appened fininshed
   function onclickFunc() {
@@ -967,16 +952,13 @@ myApp.onPageInit('themeSite', () => {
   }
 
   function onSuccess(position) {
-    console.log('success');
     createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
   }
 
   function onError() {
-    console.log('err');
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true });
-  console.log('end of');
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -1077,7 +1059,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1118,7 +1100,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 10000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
