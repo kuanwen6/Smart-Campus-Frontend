@@ -55,6 +55,9 @@ const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+  //iBeacon Setup
+  //beacon_util.init_beacon_detection();
+  //beacon_util.startScanForBeacons();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -822,13 +825,13 @@ myApp.onPageInit('route', () => {
 
 myApp.onPageInit('themeRoute', () => {
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (stations) => {
       const stationsObj = JSON.parse(stations).data;
 
       $$.ajax({
-        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
+        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans/',
         type: 'get',
         success: (plans) => {
           const plansObj = JSON.parse(plans).data;
@@ -873,7 +876,7 @@ myApp.onPageInit('themeSite', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
@@ -977,7 +980,7 @@ myApp.onPageInit('favorite', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
@@ -1068,7 +1071,7 @@ myApp.onPageInit('customRoute', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
@@ -1283,6 +1286,8 @@ function answerQuestion(question, options, answer, question_id, gain) {
 }
 
 myApp.onPageInit('gamePage', (page) => {
+  //beacon_util.stopScanForBeacons();
+
   setTimeout(() => {
     $$('#gameStart-modal').css('display', 'none');
   }, 5000);
@@ -1297,6 +1302,8 @@ myApp.onPageInit('gamePage', (page) => {
 
     if (y > pHeight * 0.78 && y <= pHeight) {
       mainView.router.back();
+
+      //beacon_util.startScanForBeacons()
     }
   });
 
