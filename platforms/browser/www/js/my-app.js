@@ -72,14 +72,6 @@ $$(document).on('deviceready', () => {
     console.log(`App has launched ${++window.localStorage.launchCount} times.`);
   }
 
-  if (window.localStorage.getItem('loggedIn')) {
-    $$('#login-form').hide();
-    $$('#register-btn').hide();
-    $$('.profile-pic').removeClass('hide');
-    $$('.nickname').removeClass('hide');
-    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  }
-
   $$.get(
     url = `${HOOKURL}smart_campus/get_all_rewards/`,
     success = function(data) {
@@ -104,66 +96,77 @@ $$(document).on('deviceready', () => {
   )
 });
 
-$$('.login-form-to-json').on('click', () => {
-  const formData = myApp.formToJSON('#login-form');
-  console.log(formData);
 
-  $$.post(
-    url = `${HOOKURL}smart_campus/login/`,
-    data = {
-      'email': formData['email'],
-      'password': formData['password']
-    },
-    success = function(data) {
-      console.log('login success');
-      $$('#login-form').hide();
-      $$('#register-btn').hide();
-      $$('.profile-pic').removeClass('hide');
-      $$('.nickname').removeClass('hide');
+myApp.onPageInit('index', function(page) {
+  function loginInit() {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+    $$('.profile-pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+  }
 
-      data = JSON.parse(data);
-      console.log(data);
-      window.localStorage.setItem('loggedIn', true);
-      window.localStorage.setItem('email', formData['email']);
-      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
-      window.localStorage.setItem('nickname', data['data']['nickname']);
-      window.localStorage.setItem('coins', data['data']['coins']);
-      window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
-      window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
-      $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-    },
-    error = function(data) {
-      console.log('login fail');
-      console.log(data);
-      myApp.alert('', '登入失敗，請重新輸入');
-    }
-  );
-});
+  $$('.login-form-to-json').on('click', () => {
+    const formData = myApp.formToJSON('#login-form');
+    console.log(formData);
 
-$$('.register-form-to-json').on('click', () => {
-  const formData = myApp.formToJSON('#register-form');
-  console.log(formData);
+    $$.post(
+      url = `${HOOKURL}smart_campus/login/`,
+      data = {
+        'email': formData['email'],
+        'password': formData['password']
+      },
+      success = function(data) {
+        console.log('login success');
+        data = JSON.parse(data);
+        console.log(data);
+        window.localStorage.setItem('loggedIn', true);
+        window.localStorage.setItem('email', formData['email']);
+        window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
+        window.localStorage.setItem('nickname', data['data']['nickname']);
+        window.localStorage.setItem('coins', data['data']['coins']);
+        window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
+        window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
+        loginInit();
+      },
+      error = function(data) {
+        console.log('login fail');
+        console.log(data);
+        myApp.alert('', '登入失敗，請重新輸入');
+      }
+    );
+  });
 
-  $$.post(
-    url = `${HOOKURL}smart_campus/signup/`,
-    data = {
-      'email': formData['email'],
-      'password': formData['password'],
-      'nickname': formData['nickname']
-    },
-    success = function(data) {
-      console.log('register success');
-      myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
-        myApp.closeModal();
-      });
-    },
-    error = function(data) {
-      console.log('register fail');
-      console.log(data);
-      myApp.alert(data['responseText'], '註冊失敗');
-    }
-  );
-});
+  $$('.register-form-to-json').on('click', () => {
+    const formData = myApp.formToJSON('#register-form');
+    console.log(formData);
+
+    $$.post(
+      url = `${HOOKURL}smart_campus/signup/`,
+      data = {
+        'email': formData['email'],
+        'password': formData['password'],
+        'nickname': formData['nickname']
+      },
+      success = function(data) {
+        console.log('register success');
+        myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
+          myApp.closeModal();
+        });
+
+      },
+      error = function(data) {
+        console.log('register fail');
+        console.log(data);
+        myApp.alert(data['responseText'], '註冊失敗');
+      }
+    );
+  });
+
+  if (window.localStorage.getItem('loggedIn')) {
+    loginInit();
+  }
+}).trigger();
 
 
 myApp.onPageInit('map', (page) => {
