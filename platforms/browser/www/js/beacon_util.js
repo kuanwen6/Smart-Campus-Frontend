@@ -1,4 +1,7 @@
 /* Beacon Util
+  Beacon detection setup:
+    beacon_util.init_beacon_detection()
+    
   Start Scanning for Beacons by:
     beacon_util.startScanForBeacons()
   Stop:
@@ -20,8 +23,6 @@ beacon_util.beaconRegions =
 	}
 ];
 
-// Record the received collections (Only for Tests, use local storage instead)
-beacon_util.collections = {}
 
 beacon_util.init_beacon_detection = function()
 {
@@ -29,7 +30,9 @@ beacon_util.init_beacon_detection = function()
 	// has the iBeacon functions.
 	window.locationManager = cordova.plugins.locationManager;
 
-  if(device.platform == 'Android'){
+  beacon_util.setIBeaconCallback();
+  
+  if(myApp.device.os == 'android'){
     locationManager.isBluetoothEnabled()
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
@@ -51,15 +54,7 @@ beacon_util.init_beacon_detection = function()
       closeOnClick: true,
     });
   }
-
-  //Retrieve Collection Record from local storage
   
-  for(var i = 0; i < ftd.length; i++)
-  {
-    var collection = 'Collection' + i.toString() + '2';
-    beacon_util.collections[collection] = window.localStorage.getItem(collection);
-  }
-  beacon_util.setIBeaconCallback();
 }
 
 
@@ -75,7 +70,7 @@ beacon_util.setIBeaconCallback = function()
 	
 	delegate.didEnterRegion = function(pluginResult)
 	{
-		
+
 	}
 
 	delegate.didExitRegion = function(pluginResult)
@@ -172,6 +167,8 @@ beacon_util.mappingShortUUID = function(UUID)
   
 }
 
+beacon_util.recordDetection = {}
+
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 { 
@@ -181,49 +178,89 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     return;
   }
 
+  Object.keys(beacon_util.recordDetection).forEach(function(key,index) {
+    // key: the name of the object key
+    // index: the ordinal position of the key within the object
+    var beaconStillInRange = false;
+    for (var i=0;i < pluginResult.beacons.length ; i++)
+    {
+      var beacon = pluginResult.beacons[i];
+      var platformID = beacon_util.transformToPlatformID(beacon);
+
+      if( key == 'B'+platformID){
+        beaconStillInRange = true;
+        break;
+      }
+    }
+
+    if(!beaconStillInRange)
+    {
+      beacon_util.recordDetection[key] = false;
+    }
+  });
+
+
   for (var i=0;i < pluginResult.beacons.length ; i++)
   {
     var beacon = pluginResult.beacons[i];
 
-    var platformID = beacon_util.transformToPlatformID(beacon)
+    var platformID = beacon_util.transformToPlatformID(beacon);
 
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
-      $$.ajax({
-        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations',
-        type: 'post',
-        data: {
-          'beacon_id': platformID,
-        },
-        success: (stations) => {
-          const stationsObj = JSON.parse(stations).data;
-          console.log(stationsObj); // array
 
-          $$.ajax({
-            url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
-            type: 'get',
-            success: (data) => {
-              const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
+      if( !beacon_util.recordDetection['B'+platformID] )
+      {
+        beacon_util.recordDetection['B'+platformID] = true;
+        $$.ajax({
+          url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
+          type: 'post',
+          data: {
+            'beacon_id': platformID,
+          },
+          success: (stations) => {
+            const stationsObj = JSON.parse(stations).data;
+            console.log(stationsObj); // array
 
-              mainView.router.load({
-                url: 'itemDetail.html',
-                context: {
-                  site,
-                  isBeacon: true,
-                  favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                  favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                },
-              });
-            },
-            error: (data) => {
-              console.log('get station data error');
-            },
-          });
-        },
-        error: (data) => {
-          console.log(data);
-        },
-      });
+            $$.ajax({
+              url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
+              type: 'post',
+              success: (data) => {
+                const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
+                
+                myApp.addNotification({
+                  title: '接近'+site['category'],
+                  message: site['name'],
+                  hold: 6000,
+                  closeOnClick: true,
+                  onClick: function () {
+                    mainView.router.load({
+                      url: 'itemDetail.html',
+                      context: {
+                        site,
+                        isBeacon: true,
+                        favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                        favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                      },
+                    });
+                  }
+                });
+                
+              },
+              error: (data) => {
+                console.log('get station data error');
+              },
+            });
+          },
+          error: (data) => {
+            console.log(data);
+          },
+        });
+      }  
+    }
+    else
+    {
+      beacon_util.recordDetection['B'+platformID] = false;
     }
   }
   return 

@@ -59,6 +59,11 @@ const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+
+  //iBeacon Setup
+  beacon_util.init_beacon_detection();
+  beacon_util.startScanForBeacons();
+
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
 
@@ -529,8 +534,10 @@ function createFavorite(favorite, lat, lng, callback) {
 }
 
 function createSites(sites, favorite, lat, lng, callback) {
+  console.log("creating site");
   let category;
   let distanceBetween;
+  console.log("creating site num"+sites.length);
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -973,11 +980,15 @@ myApp.onPageInit('themeSite', () => {
   }
 
   function onSuccess(position) {
+    console.log("themeSite onSuccess start")
     createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
+    console.log("themeSite onSuccess finish");
   }
 
   function onError() {
+    console.log("themeSite onSuccess start no loc")
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
+    console.log("themeSite onSuccess finish no loc");
   }
   navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
@@ -998,6 +1009,7 @@ myApp.onPageInit('favorite', () => {
   $$('.back-force').on('click', () => {
     mainView.router.back({ url: 'themeSite.html', force: true });
   });
+
 
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
@@ -1326,6 +1338,8 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
 }
 
 myApp.onPageInit('gamePage', (page) => {
+  //beacon_util.stopScanForBeacons();
+
   setTimeout(() => {
     $$('#gameStart-modal').css('display', 'none');
   }, 5000);
@@ -1340,6 +1354,8 @@ myApp.onPageInit('gamePage', (page) => {
 
     if (y > pHeight * 0.78 && y <= pHeight) {
       mainView.router.back();
+
+      //beacon_util.startScanForBeacons()
     }
   });
 
