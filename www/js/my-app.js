@@ -56,8 +56,8 @@ const EXP_PER_LEVEL = 50;
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
   //iBeacon Setup
-  beacon_util.init_beacon_detection();
-  beacon_util.startScanForBeacons();
+  //beacon_util.init_beacon_detection();
+  //beacon_util.startScanForBeacons();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -1071,7 +1071,7 @@ myApp.onPageInit('customRoute', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
