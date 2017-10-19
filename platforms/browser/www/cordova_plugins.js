@@ -49,6 +49,20 @@ module.exports = [
         "id": "com.unarin.cordova.beacon.BeaconRegion",
         "pluginId": "com.unarin.cordova.beacon",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "id": "cordova-plugin-statusbar.statusbar",
+        "pluginId": "cordova-plugin-statusbar",
+        "clobbers": [
+            "window.StatusBar"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/src/browser/StatusBarProxy.js",
+        "id": "cordova-plugin-statusbar.StatusBarProxy",
+        "pluginId": "cordova-plugin-statusbar",
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -56,7 +70,8 @@ module.exports.metadata =
 {
     "cordova-plugin-whitelist": "1.2.2",
     "cordova-plugin-console": "1.0.7",
-    "com.unarin.cordova.beacon": "3.5.2"
+    "com.unarin.cordova.beacon": "3.5.2",
+    "cordova-plugin-statusbar": "2.2.3"
 }
 // BOTTOM OF METADATA
 });

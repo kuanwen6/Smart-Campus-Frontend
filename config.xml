@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="tw.edu.ncku.csie.smartcampus" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>成大尋寶趣</name>
+    <name>成大藏奇圖</name>
     <description>
         成大智慧校園領航APP.
     </description>
@@ -39,8 +39,10 @@
     <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
     </config-file>
+    <preference name="orientation" value="portrait" />
     <preference name="DisallowOverscroll" value="true" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
     <plugin name="com.unarin.cordova.beacon" spec="https://github.com/petermetz/cordova-plugin-ibeacon.git" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.2.3" />
 </widget>

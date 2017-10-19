@@ -57,7 +57,7 @@ $$(document).on('deviceready', () => {
   console.log('Device is ready!');
   //iBeacon Setup
   beacon_util.init_beacon_detection();
-  //beacon_util.startScanForBeacons();
+  beacon_util.startScanForBeacons();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -511,8 +511,10 @@ function createFavorite(favorite, lat, lng, callback) {
 }
 
 function createSites(sites, favorite, lat, lng, callback) {
+  console.log("creating site");
   let category;
   let distanceBetween;
+  console.log("creating site num"+sites.length);
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -955,11 +957,15 @@ myApp.onPageInit('themeSite', () => {
   }
 
   function onSuccess(position) {
+    console.log("themeSite onSuccess start")
     createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
+    console.log("themeSite onSuccess finish");
   }
 
   function onError() {
+    console.log("themeSite onSuccess start no loc")
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
+    console.log("themeSite onSuccess finish no loc");
   }
   navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
