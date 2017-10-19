@@ -48,13 +48,19 @@ const welcomescreenSlides = [{
     text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
   },
 ];
+
+
 const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
+var directionsService;
+var directionsDisplay;
 
 // experience per level
 const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+  directionsService = new google.maps.DirectionsService;
+  directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -69,19 +75,11 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched  ${++window.localStorage.launchCount} times.`);
-  }
-
-  if (window.localStorage.getItem('loggedIn')) {
-    $$('#login-form').hide();
-    $$('#register-btn').hide();
-    $$('.profile-pic').removeClass('hide');
-    $$('.nickname').removeClass('hide');
-    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+    console.log(`App has launched ${++window.localStorage.launchCount} times.`);
   }
 
   $$.get(
-    url = HOOKURL + 'smart_campus/get_all_rewards/',
+    url = `${HOOKURL}smart_campus/get_all_rewards/`,
     success = function(data) {
       console.log('get rewards info success');
       window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
@@ -92,7 +90,7 @@ $$(document).on('deviceready', () => {
     }
   )
   $$.get(
-    url = HOOKURL + 'smart_campus/get_all_stations/',
+    url = `${HOOKURL}smart_campus/get_all_stations/`,
     success = function(data) {
       console.log('get stations info success');
       window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
@@ -104,66 +102,77 @@ $$(document).on('deviceready', () => {
   )
 });
 
-$$('.login-form-to-json').on('click', () => {
-  const formData = myApp.formToJSON('#login-form');
-  console.log(formData);
 
-  $$.post(
-    url = HOOKURL + 'smart_campus/login/',
-    data = {
-      'email': formData['email'],
-      'password': formData['password']
-    },
-    success = function(data) {
-      console.log('login success');
-      $$('#login-form').hide();
-      $$('#register-btn').hide();
-      $$('.profile-pic').removeClass('hide');
-      $$('.nickname').removeClass('hide');
+myApp.onPageInit('index', function(page) {
+  function loginInit() {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+    $$('.profile-pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+  }
 
-      data = JSON.parse(data);
-      console.log(data);
-      window.localStorage.setItem('loggedIn', true);
-      window.localStorage.setItem('email', formData['email']);
-      window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
-      window.localStorage.setItem('nickname', data['data']['nickname']);
-      window.localStorage.setItem('coins', data['data']['coins']);
-      window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
-      window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
-      $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-    },
-    error = function(data) {
-      console.log('login fail');
-      console.log(data);
-      myApp.alert('', '登入失敗，請重新輸入');
-    }
-  );
-});
+  $$('.login-form-to-json').on('click', () => {
+    const formData = myApp.formToJSON('#login-form');
+    console.log(formData);
 
-$$('.register-form-to-json').on('click', () => {
-  const formData = myApp.formToJSON('#register-form');
-  console.log(formData);
+    $$.post(
+      url = `${HOOKURL}smart_campus/login/`,
+      data = {
+        'email': formData['email'],
+        'password': formData['password']
+      },
+      success = function(data) {
+        console.log('login success');
+        data = JSON.parse(data);
+        console.log(data);
+        window.localStorage.setItem('loggedIn', true);
+        window.localStorage.setItem('email', formData['email']);
+        window.localStorage.setItem('experiencePoint', data['data']['experience_point']);
+        window.localStorage.setItem('nickname', data['data']['nickname']);
+        window.localStorage.setItem('coins', data['data']['coins']);
+        window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
+        window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
+        loginInit();
+      },
+      error = function(data) {
+        console.log('login fail');
+        console.log(data);
+        myApp.alert('', '登入失敗，請重新輸入');
+      }
+    );
+  });
 
-  $$.post(
-    url = HOOKURL + 'smart_campus/signup/',
-    data = {
-      'email': formData['email'],
-      'password': formData['password'],
-      'nickname': formData['nickname']
-    },
-    success = function(data) {
-      console.log('register success');
-      myApp.alert('嗨! ' + formData['nickname'], '註冊成功!', function() {
-        myApp.closeModal();
-      });
-    },
-    error = function(data) {
-      console.log('register fail');
-      console.log(data);
-      myApp.alert(data['responseText'], '註冊失敗');
-    }
-  );
-});
+  $$('.register-form-to-json').on('click', () => {
+    const formData = myApp.formToJSON('#register-form');
+    console.log(formData);
+
+    $$.post(
+      url = `${HOOKURL}smart_campus/signup/`,
+      data = {
+        'email': formData['email'],
+        'password': formData['password'],
+        'nickname': formData['nickname']
+      },
+      success = function(data) {
+        console.log('register success');
+        myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
+          myApp.closeModal();
+        });
+
+      },
+      error = function(data) {
+        console.log('register fail');
+        console.log(data);
+        myApp.alert(data['responseText'], '註冊失敗');
+      }
+    );
+  });
+
+  if (window.localStorage.getItem('loggedIn')) {
+    loginInit();
+  }
+}).trigger();
 
 
 myApp.onPageInit('map', (page) => {
@@ -243,41 +252,8 @@ myApp.onPageInit('map', (page) => {
 
   map.addListener('click', hideMarkerInfo);
   setMarkers(map);
-  //var directionsService = new google.maps.DirectionsService;
-  //var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+
   //directionsDisplay.setMap(map);
-
-  function calculateAndDisplayRoute(directionsService, directionsDisplay, origin) {
-    var waypts = [];
-    var totalDistance = 0;
-    var totalDuration = 0;
-
-    for (const markerGroup of markers) {
-      for (const marker of markerGroup) {
-        waypts.push({ location: { lat: marker[1], lng: marker[2] } });
-      }
-    }
-
-    directionsService.route({
-      origin: origin,
-      destination: origin,
-      waypoints: waypts,
-      optimizeWaypoints: true,
-      travelMode: 'WALKING'
-    }, function(response, status) {
-      if (status === 'OK') {
-        response.routes[0].legs = response.routes[0].legs.slice(0, -1);
-        directionsDisplay.setDirections(response);
-        console.log(response);
-        for (const leg of response.routes[0].legs) {
-          totalDistance += leg.distance.value;
-          totalDuration += leg.duration.value;
-        }
-        console.log(totalDistance + ' m, ' + totalDuration + ' s');
-      } else
-        window.alert('Directions request failed due to ' + status);
-    });
-  }
 
   function setMarkers(map) {
     const icon = {
@@ -308,9 +284,15 @@ myApp.onPageInit('map', (page) => {
 
   function showMarkerInfo() {
     var station = stations.find(x => x.name === this.title);
+    var _distance = '';
+    if (Latitude !== undefined && Longitude !== undefined) {
+      _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
+    }
+
     $$('#marker-img').attr('src', station['image']['primary']);
-    $$('#marker-category').html('/ ' + station['category'] + '主題 /');
+    $$('#marker-category').html(`/ ${station['category']}主題 /`);
     $$('#marker-name').html(station['name'].replace('/', '<br>/'));
+    $$('#marker-distance').html(_distance);
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
@@ -333,7 +315,7 @@ myApp.onPageInit('map', (page) => {
     locationCircle.setRadius(accuracy);
   }
 
-  var onMapWatchSuccess = function(position) {
+  function onMapWatchSuccess(position) {
     /*
     if (!onMapWatchSuccess.first) {
       calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
@@ -353,11 +335,23 @@ myApp.onPageInit('map', (page) => {
   };
 
   function onMapError(error) {
-    console.log('code: ' + error.code + '\n' +
-      'message: ' + error.message + '\n');
+    console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
   }
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+
+  calculateAndDisplayRoute(
+    { lat: 22.996039, lng: 120.225126 },
+    [
+      { location: { lat: 22.997039, lng: 120.224126 } },
+      { location: { lat: 22.995039, lng: 120.224126 } }
+    ],
+    display = false,
+    callback = function(d, t) {
+      console.log(d, t);
+    },
+  );
+
   //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
@@ -375,9 +369,36 @@ myApp.onPageInit('info', (page) => {
   allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
     rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
-    $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
+    $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
 });
+
+
+function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
+  var totalDistance = 0;
+  var totalDuration = 0;
+
+  directionsService.route({
+    origin: origin,
+    destination: origin,
+    waypoints: waypts,
+    optimizeWaypoints: true,
+    travelMode: 'WALKING'
+  }, function(response, status) {
+    if (status === 'OK') {
+      response.routes[0].legs = response.routes[0].legs.slice(0, -1);
+      //directionsDisplay.setDirections(response);
+      console.log(response);
+      for (const leg of response.routes[0].legs) {
+        totalDistance += leg.distance.value;
+        totalDuration += leg.duration.value;
+      }
+      console.log(`${totalDistance} m, ${totalDuration} s`);
+      callback(totalDistance, totalDuration);
+    } else
+      console.log(`Directions request failed due to ${status}`);
+  });
+}
 
 
 /*             wen                */
