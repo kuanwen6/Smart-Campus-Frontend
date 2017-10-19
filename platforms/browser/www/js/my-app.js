@@ -965,7 +965,7 @@ myApp.onPageInit('themeSite', () => {
     console.log('err');
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: true });
   console.log('end of');
 });
 
@@ -1067,7 +1067,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: true });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1108,7 +1108,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
