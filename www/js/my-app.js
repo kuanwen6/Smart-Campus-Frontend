@@ -967,11 +967,11 @@ myApp.onPageInit('themeSite', () => {
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
     console.log("themeSite onSuccess finish no loc");
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('routeDetail', (page) => {
-
+  $$('.toolbar').off('click');
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');
   if (!page.context.custom) {
     myApp.accordionOpen($$('li#introduction'));
@@ -1069,7 +1069,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1110,7 +1110,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
@@ -1139,38 +1139,39 @@ myApp.onPageInit('customRoute', () => {
 
 
 myApp.onPageInit('itemDetail', (page) => {
+  $$('.toolbar').off('click');
   //  detect if this station have question to answered
-  //if (page.context.isBeacon) {
-  if (localStorage.getItem("loggedIn") !== null) {
-    $$.ajax({
-      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-      type: 'get',
-      data: {
-        'email': window.localStorage.getItem('email'),
-        'station_id': page.context.site.id,
-      },
-      success: (data) => {
-        const questionData = JSON.parse(data);
-        console.log(questionData);
-        if ($.isEmptyObject(questionData)) {
-          mainView.hideToolbar();
-          console.log('empty');
-        } else {
-          mainView.showToolbar();
-          $$('.page-content').css('padding-bottom', '9.5vh');
-          $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-          $$('.toolbar').on('click', moneySelect);
-          console.log('not');
-        }
-      },
-    });
-  } else {
-    mainView.showToolbar();
-    $$('.page-content').css('padding-bottom', '9.5vh');
-    $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-    $$('.toolbar').on('click', moneySelect);
+  if (page.context.isBeacon) {
+    if (localStorage.getItem("loggedIn") !== null) {
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': window.localStorage.getItem('email'),
+          'station_id': page.context.site.id,
+        },
+        success: (data) => {
+          const questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
+    } else {
+      mainView.showToolbar();
+      $$('.page-content').css('padding-bottom', '9.5vh');
+      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+      $$('.toolbar').on('click', moneySelect);
+    }
   }
-  //}
 
   const link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
   $$('*[data-page="itemDetail"] #site-content  a').attr('onclick', `window.open('${link}', '_system')`);
@@ -1274,17 +1275,19 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
       let rewards = JSON.parse(window.localStorage.getItem('rewards'));
       console.log('rewardID');
       if (rewardID.length > 0) {
-        console.log(rewardID[0]);
-        if ($.inArray(parseInt(rewardID[0], 10), rewards) === -1) {
-          rewards = getRewards(rewards, parseInt(rewardID[0], 10));
+        console.log(rewardID);
+        console.log(rewards);
 
+        if($.inArray(rewardID[0], rewards ) === -1) {
+          rewards = getRewards(rewards,rewardID[0]);
+  
           const rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
-          const rewardInfo = findStation(rewardsInfo, parseInt(rewardID[0], 10));
+          const rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
           myApp.addNotification({
             title: '成大尋寶趣',
             message: `您已獲得收藏品:  「${rewardInfo.name}」`,
-            media: rewardInfo.image_url,
+            media: `<img width="44" height="44" style="border-radius:100%" src="${rewardInfo.image_url}">`,
             hold: 8000,
             closeOnClick: true,
           });
