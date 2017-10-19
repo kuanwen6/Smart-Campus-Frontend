@@ -3,7 +3,7 @@
     <div class="left">
       <a href="#" class="link back" onclick="mainView.hideToolbar();$$('.page-content').css('padding-bottom', 0);">
         <i class="f7-icons color-white">chevron_left</i> 
-                        <span>Back</span>
+        <span>回上頁</span>
                     </a>
     </div>
     <div class="center">{{site.name}}</div>
@@ -24,9 +24,9 @@
         </div>
         <div class="content-block" style="margin: 5px 0;">
             <div class="content-block-inner">
-                <p>{{site.name}}</p>
+                <p style="font-size: 18px;font-weight: bold;">{{site.name}}</p>
             </div>
-            <div class="content-block-inner">
+            <div class="content-block-inner" id="site-content">
                 {{site.content}}
             </div>
         </div>

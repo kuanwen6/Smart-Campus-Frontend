@@ -72,7 +72,7 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log('App has launched ' + ++localStorage.launchCount + ' times.');
+    console.log(`App has launched  ${++window.localStorage.launchCount} times.`);
   }
 
   if (window.localStorage.getItem('loggedIn')) {
@@ -87,7 +87,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_rewards/',
     success = function(data) {
       console.log('get rewards info success');
-      window.sessionStorage.setItem('allRewardsInfo', data);
+      window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
     },
     error = function(data) {
       console.log('get rewards info fail');
@@ -98,7 +98,7 @@ $$(document).on('deviceready', () => {
     url = HOOKURL + 'smart_campus/get_all_stations/',
     success = function(data) {
       console.log('get stations info success');
-      window.sessionStorage.setItem('allStationsInfo', data);
+      window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
     },
     error = function(data) {
       console.log('get stations info fail');
@@ -106,7 +106,6 @@ $$(document).on('deviceready', () => {
     }
   )
 });
-
 
 $$('.login-form-to-json').on('click', () => {
   const formData = myApp.formToJSON('#login-form');
@@ -197,7 +196,7 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'))['data'];
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var markers;
   var Latitude = undefined;
   var Longitude = undefined;
@@ -367,7 +366,7 @@ myApp.onPageInit('map', (page) => {
 
 
 myApp.onPageInit('info', (page) => {
-  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / 10);
+  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
@@ -378,7 +377,7 @@ myApp.onPageInit('info', (page) => {
   rewards = JSON.parse(window.localStorage.getItem('rewards'));
   allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (var i = 0; i < rewards.length; i++) {
-    rewardImg = allRewardsInfo['data'].find(x => x.id === rewards[i])['image_url'];
+    rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 });
@@ -676,6 +675,29 @@ function findStation(stations, id) {
   return stations.filter((entry) => { return entry.id === id; })[0];
 }
 
+function getRewards(rewards, rewardID) {
+  rewards.push(rewardID);
+  if (window.localStorage.getItem("loggedIn") !== null) {
+    $$.post(
+      url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_reward/',
+      data = {
+        'email': window.localStorage.getItem('email'),
+        'reward_id': rewardID,
+      },
+      success = function(data) {
+        // data = JSON.parse(data);
+        window.localStorage.setItem('rewards', JSON.stringify(rewards));
+      },
+      error = function(data) {
+        console.log("add fail");
+      }
+    );
+  } else {
+    window.localStorage.setItem('rewards', JSON.stringify(rewards));
+  }
+  return rewards;
+}
+
 function modifyMoney(money, change) {
   if (window.localStorage.getItem("loggedIn") !== null) {
     $$.post(
@@ -824,45 +846,34 @@ myApp.onPageInit('route', () => {
 });
 
 myApp.onPageInit('themeRoute', () => {
+  const stationsObj = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
+    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
     type: 'get',
-    success: (stations) => {
-      const stationsObj = JSON.parse(stations).data;
+    success: (plans) => {
+      const plansObj = JSON.parse(plans).data;
 
-      $$.ajax({
-        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans/',
-        type: 'get',
-        success: (plans) => {
-          const plansObj = JSON.parse(plans).data;
+      function cardOnclick() {
+        $$('img.lazy').trigger('lazy');
+        $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
+          const route = findRoute(plansObj, this.id);
+          const itemList = findSequence(stationsObj, route.station_sequence);
 
-          function cardOnclick() {
-            $$('img.lazy').trigger('lazy');
-            $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
-              const route = findRoute(plansObj, this.id);
-              const itemList = findSequence(stationsObj, route.station_sequence);
-
-              mainView.router.load({
-                url: 'routeDetail.html',
-                context: {
-                  title: route.name,
-                  time: '10',
-                  custom: false,
-                  previous: 'themeRoute.html',
-                  introduction: route.description,
-                  img: route.image,
-                  itemList,
-                },
-              });
-            });
-          }
-
-          createCards(plansObj, cardOnclick);
-        },
-        error: (data) => {
-          console.log(data);
-        },
-      });
+          mainView.router.load({
+            url: 'routeDetail.html',
+            context: {
+              title: route.name,
+              time: '10',
+              custom: false,
+              previous: 'themeRoute.html',
+              introduction: route.description,
+              img: route.image,
+              itemList,
+            },
+          });
+        });
+      }
+      createCards(plansObj, cardOnclick);
     },
     error: (data) => {
       console.log(data);
@@ -875,92 +886,82 @@ myApp.onPageInit('themeSite', () => {
     mainView.router.back({ url: 'index.html', force: true });
   });
 
-  $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
-    type: 'get',
-    success: (data) => {
-      const stations = JSON.parse(data).data;
-      let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+  let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
 
-      //  because haved to wait for appened fininshed
-      function onclickFunc() {
-        $$('img.lazy').trigger('lazy');
-        $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
-          const site = findStation(stations, parseInt(this.id, 10));
-          console.log(this);
-          mainView.router.load({
-            url: 'itemDetail.html',
-            context: {
-              site,
-              isBeacon: false,
-              favoriteSequence,
-              favorite: isFavorite(parseInt(this.id, 10)),
-            },
-          });
+  //  because haved to wait for appened fininshed
+  function onclickFunc() {
+    $$('img.lazy').trigger('lazy');
+    $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
+      const site = findStation(stations, parseInt(this.id, 10));
+      console.log(this);
+      mainView.router.load({
+        url: 'itemDetail.html',
+        context: {
+          site,
+          isBeacon: false,
+          favoriteSequence,
+          favorite: isFavorite(parseInt(this.id, 10)),
+        },
+      });
+    });
+
+    $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', () => {
+      $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
+        const site = findStation(stations, parseInt(this.id, 10));
+        console.log(site);
+        mainView.router.load({
+          url: 'itemDetail.html',
+          context: {
+            site,
+            isBeacon: false,
+            favoriteSequence,
+            favorite: isFavorite(parseInt(this.id, 10)),
+          },
         });
+      });
+    });
 
-        $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
-            const site = findStation(stations, parseInt(this.id, 10));
-            console.log(site);
-            mainView.router.load({
-              url: 'itemDetail.html',
-              context: {
-                site,
-                isBeacon: false,
-                favoriteSequence,
-                favorite: isFavorite(parseInt(this.id, 10)),
-              },
-            });
-          });
-        });
+    function favorites() { // if change to () => { , it will go wrong!
+      $$('*[data-page="themeSite"] li.swipeout').off('click');
 
-        function favorites() { // if change to () => { , it will go wrong!
-          $$('*[data-page="themeSite"] li.swipeout').off('click');
+      if ($$(this).hasClass('add-favorite')) {
+        // add this.id to favorite
+        console.log('add toggle');
 
+        favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
+        console.log(favoriteSequence);
 
-          if ($$(this).hasClass('add-favorite')) {
-            // add this.id to favorite
-            console.log('add toggle');
-            
-            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
-            console.log(favoriteSequence);
+        $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+        $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+        myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+        myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+        $$(this).children('div').children('p').html('移出最愛');
+      } else {
+        // remove this.id to favorite
+        console.log('remove toggle');
 
-            $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-            $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
-            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-            $$(this).children('div').children('p').html('移出最愛');
-          } else {
-            // remove this.id to favorite
-            console.log('remove toggle');
+        favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
-            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
-
-            $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-            $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
-            myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
-            myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
-            $$(this).children('div').children('p').html('加入最愛');
-          }
-        }
-
-        $$('*[data-page="themeSite"] .swipeout-overswipe').on('click', favorites);
+        $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+        $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+        myApp.swipeoutClose($$(`li.swipeout-${this.id}`));
+        myApp.swipeoutClose($$(`li.swipeout-search-${this.id}`));
+        $$(this).children('div').children('p').html('加入最愛');
       }
+    }
 
-      function onSuccess(position) {
-        createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
-      }
+    $$('*[data-page="themeSite"] .swipeout-overswipe').on('click', favorites);
+  }
 
-      function onError() {
-        createSites(stations, favoriteSequence, -1, -1, onclickFunc);
-      }
-      navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    },
-    error: (data) => {
-      console.log(data);
-    },
-  });
+  function onSuccess(position) {
+    createSites(stations, favoriteSequence, position.coords.latitude, position.coords.longitude, onclickFunc);
+  }
+
+  function onError() {
+    createSites(stations, favoriteSequence, -1, -1, onclickFunc);
+  }
+  navigator.geolocation.getCurrentPosition(onSuccess, onError);
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -979,90 +980,89 @@ myApp.onPageInit('favorite', () => {
     mainView.router.back({ url: 'themeSite.html', force: true });
   });
 
-  $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
-    type: 'get',
-    success: (data) => {
-      const stations = JSON.parse(data).data;
-      let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
-      let itemList = findSequence(stations, favoriteSequence);
 
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+  let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+
+  if (favoriteSequence.length === 0) {
+    myApp.alert('快去加入你所感興趣的站點吧!', '尚未有任何最愛站點', function() {
+      mainView.router.back();
+    });
+  }
+
+  let itemList = findSequence(stations, favoriteSequence);
+
+  $$('*[data-page="favorite"] li.swipeout').off('click');
+  $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
+
+  //  because haved to wait for appened fininshed
+  function onclickFunc() {
+    $$('img.lazy').trigger('lazy');
+    $$('*[data-page="favorite"] li.swipeout').on('click', function() {
+      const site = findStation(itemList, parseInt(this.id, 10));
+      console.log(this);
+      mainView.router.load({
+        url: 'itemDetail.html',
+        context: {
+          site,
+          isBeacon: false,
+          favoriteSequence,
+          favorite: isFavorite(parseInt(this.id, 10)),
+        },
+      });
+    });
+
+    $$('*[data-page="favorite"] .swipeout').on('swipeout:closed', () => {
+      $$('*[data-page="favorite"] li.swipeout').on('click', function() {
+        const site = findStation(itemList, parseInt(this.id, 10));
+        console.log(site);
+        mainView.router.load({
+          url: 'itemDetail.html',
+          context: {
+            site,
+            isBeacon: false,
+            favoriteSequence,
+            favorite: isFavorite(parseInt(this.id, 10)),
+          },
+        });
+      });
+    });
+
+    function favorites() { // if change to () => { , it will go wrong!
       $$('*[data-page="favorite"] li.swipeout').off('click');
-      $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
+      if ($$(this).hasClass('add-favorite')) {
+        console.log('add toggle');
 
-      //  because haved to wait for appened fininshed
-      function onclickFunc() {
-        $$('img.lazy').trigger('lazy');
-        $$('*[data-page="favorite"] li.swipeout').on('click', function() {
-          const site = findStation(itemList, parseInt(this.id, 10));
-          console.log(this);
-          mainView.router.load({
-            url: 'itemDetail.html',
-            context: {
-              site,
-              isBeacon: false,
-              favoriteSequence,
-              favorite: isFavorite(parseInt(this.id, 10)),
-            },
-          });
-        });
+        favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
 
-        $$('*[data-page="favorite"] .swipeout').on('swipeout:closed', () => {
-          $$('*[data-page="favorite"] li.swipeout').on('click', function() {
-            const site = findStation(itemList, parseInt(this.id, 10));
-            console.log(site);
-            mainView.router.load({
-              url: 'itemDetail.html',
-              context: {
-                site,
-                isBeacon: false,
-                favoriteSequence,
-                favorite: isFavorite(parseInt(this.id, 10)),
-              },
-            });
-          });
-        });
+        $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
+        $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
+        myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
+        $$(this).children('div').children('p').html('移出最愛');
+      } else {
+        console.log('remove toggle');
 
-        function favorites() { // if change to () => { , it will go wrong!
-          $$('*[data-page="favorite"] li.swipeout').off('click');
-          if ($$(this).hasClass('add-favorite')) {
-            console.log('add toggle');
+        favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
 
-            favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
-
-            $$(`.favorite-heart-${this.id}`).removeClass('color-white').addClass('color-red');
-            $(`#${this.id}.add-favorite`).removeClass('add-favorite').addClass('remove-favorite');
-            myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
-            $$(this).children('div').children('p').html('移出最愛');
-          } else {
-            console.log('remove toggle');
-
-            favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
-
-            $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
-            $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
-            myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
-            $$(this).children('div').children('p').html('加入最愛');
-          }
-        }
-
-        $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
-        $$('*[data-page="favorite"] .swipeout-overswipe').on('click', favorites);
+        $$(`.favorite-heart-${this.id}`).removeClass('color-red').addClass('color-white');
+        $(`#${this.id}.remove-favorite`).removeClass('remove-favorite').addClass('add-favorite');
+        myApp.swipeoutClose($$(`li.swipeout-favorite-${this.id}`));
+        $$(this).children('div').children('p').html('加入最愛');
       }
+    }
 
-      function onSuccess(position) {
-        createFavorite(itemList, position.coords.latitude, position.coords.longitude, onclickFunc);
-      }
+    $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
+    $$('*[data-page="favorite"] .swipeout-overswipe').on('click', favorites);
+  }
 
-      function onError() {
-        createFavorite(itemList, -1, -1, onclickFunc);
-      }
-      navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    },
-    error: (data) => {
-      console.log(data);
-    },
-  });
+  function onSuccess(position) {
+    createFavorite(itemList, position.coords.latitude, position.coords.longitude, onclickFunc);
+  }
+
+  function onError() {
+    createFavorite(itemList, -1, -1, onclickFunc);
+  }
+  navigator.geolocation.getCurrentPosition(onSuccess, onError);
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1070,106 +1070,104 @@ myApp.onPageInit('customRoute', () => {
     mainView.router.back({ url: 'route.html', force: true });
   });
 
-  $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
-    type: 'get',
-    success: (data) => {
-      const stations = JSON.parse(data).data;
-      const favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
-      let itemList = findSequence(stations, favoriteSequence);
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+  const favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+  let itemList = findSequence(stations, favoriteSequence);
 
-      function deleteFunc() {
-        $$('img.lazy').trigger('lazy');
-        $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
-          myApp.swipeoutOpen($(`li#${this.id}`));
-          myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
-          myApp.swipeoutDelete($(`li#${this.id}`));
+  function deleteFunc() {
+    $$('img.lazy').trigger('lazy');
+    $$('.delete-route').on('click', function() { // if change to () => { , it will go wrong!
+      myApp.swipeoutOpen($(`li#${this.id}`));
+      myApp.alert('將從此次自訂行程中刪去，但並不會從我的最愛刪去喔!', '注意!');
+      myApp.swipeoutDelete($(`li#${this.id}`));
 
-          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
-          if (index > -1) {
-            favoriteSequence.splice(index, 1);
-          }
-        });
-
-        $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function() {
-          console.log(this.id);
-          const index = favoriteSequence.indexOf(parseInt(this.id, 10));
-          if (index > -1) {
-            favoriteSequence.splice(index, 1);
-          }
-        });
+      const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+      if (index > -1) {
+        favoriteSequence.splice(index, 1);
       }
+    });
 
-      function onSuccess(position) {
-        createFavoriteCards(itemList, position.coords.latitude, position.coords.longitude, deleteFunc);
+    $$('*[data-page="customRoute"] .swipeout-overswipe').on('click', function() {
+      console.log(this.id);
+      const index = favoriteSequence.indexOf(parseInt(this.id, 10));
+      if (index > -1) {
+        favoriteSequence.splice(index, 1);
       }
+    });
+  }
 
-      function onError() {
-        createFavoriteCards(itemList, -1, -1, deleteFunc);
-      }
-      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  function onSuccess(position) {
+    createFavoriteCards(itemList, position.coords.latitude, position.coords.longitude, deleteFunc);
+  }
 
-      mainView.showToolbar(); 
-      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
+  function onError() {
+    createFavoriteCards(itemList, -1, -1, deleteFunc);
+  }
+  navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
-      $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
-      $$('.toolbar').on('click', () => {
-        if (favoriteSequence.length === 0) {
-          myApp.alert('並沒有選擇任何站點喔!', '注意');
-        } else {
-          itemList = findSequence(stations, favoriteSequence);
-          mainView.router.load({
-            url: 'routeDetail.html',
-            context: {
-              title: '自訂行程',
-              time: 'unknown',
-              custom: true,
-              previous: 'customRoute.html',
-              introduction: '自己想的好棒喔',
-              img: itemList[0].image.primary,
-              itemList,
-            },
-          });
-        }
+  mainView.showToolbar();
+  $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
+
+  $$('.toolbar').off('click'); // avoid append multiple onclicked on toolbar
+  $$('.toolbar').on('click', () => {
+    if (favoriteSequence.length === 0) {
+      myApp.alert('並沒有選擇任何站點喔!', '注意');
+    } else {
+      itemList = findSequence(stations, favoriteSequence);
+      mainView.router.load({
+        url: 'routeDetail.html',
+        context: {
+          title: '自訂行程',
+          time: 'unknown',
+          custom: true,
+          previous: 'customRoute.html',
+          introduction: '自己想的好棒喔',
+          img: itemList[0].image.primary,
+          itemList,
+        },
       });
-    },
+    }
   });
 });
 
 
 myApp.onPageInit('itemDetail', (page) => {
-//  detect if this station have question to answered
-  if (page.context.isBeacon) {
-    if (localStorage.getItem("loggedIn") !== null) {
-      $$.ajax({
-        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-        type: 'get',
-        data: {
-          'email': window.localStorage.getItem('email'),
-          'station_id': page.context.site.id,
-        },
-        success: (data) => {
-          const questionData = JSON.parse(data);
-          console.log(questionData);
-          if ($.isEmptyObject(questionData)) {
-            mainView.hideToolbar();
-            console.log('empty');
-          } else {
-            mainView.showToolbar();
-            $$('.page-content').css('padding-bottom', '9.5vh');
-            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-            $$('.toolbar').on('click', moneySelect);
-            console.log('not');
-          }
-        },
-      });
-    } else {
-      mainView.showToolbar();
-      $$('.page-content').css('padding-bottom', '9.5vh');
-      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-      $$('.toolbar').on('click', moneySelect);
-    }
+  //  detect if this station have question to answered
+  //if (page.context.isBeacon) {
+  if (localStorage.getItem("loggedIn") !== null) {
+    $$.ajax({
+      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+      type: 'get',
+      data: {
+        'email': window.localStorage.getItem('email'),
+        'station_id': page.context.site.id,
+      },
+      success: (data) => {
+        const questionData = JSON.parse(data);
+        console.log(questionData);
+        if ($.isEmptyObject(questionData)) {
+          mainView.hideToolbar();
+          console.log('empty');
+        } else {
+          mainView.showToolbar();
+          $$('.page-content').css('padding-bottom', '9.5vh');
+          $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+          $$('.toolbar').on('click', moneySelect);
+          console.log('not');
+        }
+      },
+    });
+  } else {
+    mainView.showToolbar();
+    $$('.page-content').css('padding-bottom', '9.5vh');
+    $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+    $$('.toolbar').on('click', moneySelect);
   }
+  //}
+
+  const link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
+  $$('*[data-page="itemDetail"] #site-content  a').attr('onclick', `window.open('${link}', '_system')`);
+  $$('*[data-page="itemDetail"] #site-content  a').attr('href', '#');
 
   $$('.custom-money-content').on('click', (e) => {
     const pHeight = $$('.custom-money-content').height();
@@ -1185,6 +1183,7 @@ myApp.onPageInit('itemDetail', (page) => {
         url: 'gamePage.html',
         context: {
           id: page.context.site.id,
+          rewardID: page.context.site.rewards,
           gain: 200,
         },
       });
@@ -1201,6 +1200,7 @@ myApp.onPageInit('itemDetail', (page) => {
           url: 'gamePage.html',
           context: {
             id: page.context.site.id,
+            rewardID: page.context.site.rewards,
             gain: 1000,
           },
         });
@@ -1212,7 +1212,7 @@ myApp.onPageInit('itemDetail', (page) => {
   });
 });
 
-function answerQuestion(question, options, answer, question_id, gain) {
+function answerQuestion(question, options, answer, question_id, gain, rewardID) {
   let money = parseInt(window.localStorage.getItem('coins'), 10);
   let experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
 
@@ -1223,7 +1223,7 @@ function answerQuestion(question, options, answer, question_id, gain) {
 
   console.log('money ' + money);
   console.log('experiencePoint ' + experiencePoint);
-  console.log('progress '+ (experiencePoint % EXP_PER_LEVEL) * 2)
+  console.log('progress ' + (experiencePoint % EXP_PER_LEVEL) * 2)
 
   $$('.money_reward').html(gain);
   myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
@@ -1256,14 +1256,33 @@ function answerQuestion(question, options, answer, question_id, gain) {
           url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
           data = {
             'question_id': question_id,
-            'email':  window.localStorage.getItem('email'),
+            'email': window.localStorage.getItem('email'),
           },
           success = function(data) {
             console.log('add answered success');
           },
         );
-      }   
-      
+      }
+
+      let rewards = JSON.parse(window.localStorage.getItem('rewards'));
+      console.log('rewardID');
+      if (rewardID.length > 0) {
+        console.log(rewardID[0]);
+        if ($.inArray(parseInt(rewardID[0], 10), rewards) === -1) {
+          rewards = getRewards(rewards, parseInt(rewardID[0], 10));
+
+          const rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
+          const rewardInfo = findStation(rewardsInfo, parseInt(rewardID[0], 10));
+
+          myApp.addNotification({
+            title: '成大尋寶趣',
+            message: `您已獲得收藏品:  「${rewardInfo.name}」`,
+            media: rewardInfo.image_url,
+            hold: 8000,
+            closeOnClick: true,
+          });
+        }
+      }
     } else {
       console.log('fail');
       $$(`#${this.id}`).css('background', '#ff4d4d');
@@ -1317,7 +1336,7 @@ myApp.onPageInit('gamePage', (page) => {
       },
       success: (data) => {
         const questionData = JSON.parse(data);
-        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain, page.context.rewardID);
       },
       error: (data) => {
         console.log(data);
@@ -1334,7 +1353,7 @@ myApp.onPageInit('gamePage', (page) => {
       },
       success: (data) => {
         const questionData = JSON.parse(data);
-        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain);
+        answerQuestion(questionData.content, questionData.choices, questionData.answer, questionData.question_id, page.context.gain, page.context.rewardID);
       },
       error: (data) => {
         console.log("get question error");
