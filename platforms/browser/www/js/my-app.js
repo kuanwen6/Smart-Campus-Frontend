@@ -508,6 +508,7 @@ function createFavorite(favorite, lat, lng, callback) {
 }
 
 function createSites(sites, favorite, lat, lng, callback) {
+  console.log('create sites');
   let category;
   let distanceBetween;
   for (let i = 0; i < sites.length; i += 1) {
@@ -879,12 +880,16 @@ myApp.onPageInit('themeRoute', () => {
 });
 
 myApp.onPageInit('themeSite', () => {
+  console.log('enter themeSite');
   $$('.back-force').on('click', function() {
     mainView.router.back({ url: 'index.html', force: true });
   });
 
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+
+  console.log('station')
+  console.log(stations);
 
   //  because haved to wait for appened fininshed
   function onclickFunc() {
