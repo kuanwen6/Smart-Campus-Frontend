@@ -63,12 +63,12 @@ beacon_util.setIBeaconCallback = function()
 
 	delegate.didRangeBeaconsInRegion = function(pluginResult)
 	{
-		beacon_util.didRangeBeaconsInRegion(pluginResult);
+		//beacon_util.didRangeBeaconsInRegion(pluginResult);
 	}
 	
 	delegate.didEnterRegion = function(pluginResult)
 	{
-		
+		beacon_util.didEnterRegion(pluginResult);
 	}
 
 	delegate.didExitRegion = function(pluginResult)
@@ -253,3 +253,71 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
   }
   return 
 }
+
+beacon_util.didEnterRegion = function(pluginResult)
+{ 
+  // There must be a beacon within range.
+  if (0 == pluginResult.beacons.length)
+  {
+    return;
+  }
+
+
+  for (var i=0;i < pluginResult.beacons.length ; i++)
+  {
+    var beacon = pluginResult.beacons[i];
+
+    var platformID = beacon_util.transformToPlatformID(beacon);
+
+    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
+    {
+
+      //if( !beacon_util.recordDetection['B'+platformID] )
+      //{
+      //  beacon_util.recordDetection['B'+platformID] = true;
+        $$.ajax({
+          url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
+          type: 'post',
+          data: {
+            'beacon_id': platformID,
+          },
+          success: (stations) => {
+            const stationsObj = JSON.parse(stations).data;
+            console.log(stationsObj); // array
+
+            $$.ajax({
+              url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
+              type: 'post',
+              success: (data) => {
+                const site = findStation(JSON.parse(data).data, parseInt(stationsObj[0], 10));
+
+                mainView.router.load({
+                  url: 'itemDetail.html',
+                  context: {
+                    site,
+                    isBeacon: true,
+                    favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                    favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                  },
+                });
+              },
+              error: (data) => {
+                console.log('get station data error');
+              },
+            });
+          },
+          error: (data) => {
+            console.log(data);
+          },
+        });
+      //}  
+    }
+    // else
+    // {
+    //   beacon_util.recordDetection['B'+platformID] = false;
+    // }
+  }
+  return 
+}
+
+
