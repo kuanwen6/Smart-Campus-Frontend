@@ -308,9 +308,15 @@ myApp.onPageInit('map', (page) => {
 
   function showMarkerInfo() {
     var station = stations.find(x => x.name === this.title);
+    var _distance = '';
+    if (Latitude !== undefined && Longitude !== undefined) {
+      _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
+    }
+
     $$('#marker-img').attr('src', station['image']['primary']);
     $$('#marker-category').html(`/ ${station['category']}主題 /`);
     $$('#marker-name').html(station['name'].replace('/', '<br>/'));
+    $$('#marker-distance').html(_distance);
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
