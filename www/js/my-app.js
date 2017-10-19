@@ -825,13 +825,13 @@ myApp.onPageInit('route', () => {
 
 myApp.onPageInit('themeRoute', () => {
   $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (stations) => {
       const stationsObj = JSON.parse(stations).data;
 
       $$.ajax({
-        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
+        url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans/',
         type: 'get',
         success: (plans) => {
           const plansObj = JSON.parse(plans).data;
@@ -876,7 +876,7 @@ myApp.onPageInit('themeSite', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
@@ -980,7 +980,7 @@ myApp.onPageInit('favorite', () => {
   });
 
   $$.ajax({
-    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations',
+    url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_stations/',
     type: 'get',
     success: (data) => {
       const stations = JSON.parse(data).data;
