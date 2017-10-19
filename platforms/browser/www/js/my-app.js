@@ -682,7 +682,7 @@ function getRewards(rewards, rewardID) {
         'reward_id': rewardID,
       },
       success = function(data) {
-       // data = JSON.parse(data);
+        // data = JSON.parse(data);
         window.localStorage.setItem('rewards', JSON.stringify(rewards));
       },
       error = function(data) {
@@ -1130,35 +1130,35 @@ myApp.onPageInit('customRoute', () => {
 myApp.onPageInit('itemDetail', (page) => {
   //  detect if this station have question to answered
   //if (page.context.isBeacon) {
-    if (localStorage.getItem("loggedIn") !== null) {
-      $$.ajax({
-        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-        type: 'get',
-        data: {
-          'email': window.localStorage.getItem('email'),
-          'station_id': page.context.site.id,
-        },
-        success: (data) => {
-          const questionData = JSON.parse(data);
-          console.log(questionData);
-          if ($.isEmptyObject(questionData)) {
-            mainView.hideToolbar();
-            console.log('empty');
-          } else {
-            mainView.showToolbar();
-            $$('.page-content').css('padding-bottom', '9.5vh');
-            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-            $$('.toolbar').on('click', moneySelect);
-            console.log('not');
-          }
-        },
-      });
-    } else {
-      mainView.showToolbar();
-      $$('.page-content').css('padding-bottom', '9.5vh');
-      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-      $$('.toolbar').on('click', moneySelect);
-    }
+  if (localStorage.getItem("loggedIn") !== null) {
+    $$.ajax({
+      url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+      type: 'get',
+      data: {
+        'email': window.localStorage.getItem('email'),
+        'station_id': page.context.site.id,
+      },
+      success: (data) => {
+        const questionData = JSON.parse(data);
+        console.log(questionData);
+        if ($.isEmptyObject(questionData)) {
+          mainView.hideToolbar();
+          console.log('empty');
+        } else {
+          mainView.showToolbar();
+          $$('.page-content').css('padding-bottom', '9.5vh');
+          $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+          $$('.toolbar').on('click', moneySelect);
+          console.log('not');
+        }
+      },
+    });
+  } else {
+    mainView.showToolbar();
+    $$('.page-content').css('padding-bottom', '9.5vh');
+    $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+    $$('.toolbar').on('click', moneySelect);
+  }
   //}
 
   const link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
@@ -1260,16 +1260,16 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
         );
       }
 
-      let rewards =  JSON.parse(window.localStorage.getItem('rewards'));
+      let rewards = JSON.parse(window.localStorage.getItem('rewards'));
       console.log('rewardID');
       if (rewardID.length > 0) {
         console.log(rewardID[0]);
-        if($.inArray(parseInt(rewardID[0], 10), rewards ) === -1) {
+        if ($.inArray(parseInt(rewardID[0], 10), rewards) === -1) {
           rewards = getRewards(rewards, parseInt(rewardID[0], 10));
-  
+
           const rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
           const rewardInfo = findStation(rewardsInfo, parseInt(rewardID[0], 10));
-  
+
           myApp.addNotification({
             title: '成大尋寶趣',
             message: `您已獲得收藏品:  「${rewardInfo.name}」`,
