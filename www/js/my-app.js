@@ -57,7 +57,7 @@ $$(document).on('deviceready', () => {
   console.log('Device is ready!');
   //iBeacon Setup
   beacon_util.init_beacon_detection();
-  //beacon_util.startScanForBeacons();
+  beacon_util.startScanForBeacons();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
