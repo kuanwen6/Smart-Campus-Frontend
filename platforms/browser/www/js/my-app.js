@@ -48,13 +48,19 @@ const welcomescreenSlides = [{
     text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
   },
 ];
+
+
 const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
+var directionsService;
+var directionsDisplay;
 
 // experience per level
 const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+  directionsService = new google.maps.DirectionsService;
+  directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -246,41 +252,8 @@ myApp.onPageInit('map', (page) => {
 
   map.addListener('click', hideMarkerInfo);
   setMarkers(map);
-  //var directionsService = new google.maps.DirectionsService;
-  //var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+
   //directionsDisplay.setMap(map);
-
-  function calculateAndDisplayRoute(directionsService, directionsDisplay, origin) {
-    var waypts = [];
-    var totalDistance = 0;
-    var totalDuration = 0;
-
-    for (const markerGroup of markers) {
-      for (const marker of markerGroup) {
-        waypts.push({ location: { lat: marker[1], lng: marker[2] } });
-      }
-    }
-
-    directionsService.route({
-      origin: origin,
-      destination: origin,
-      waypoints: waypts,
-      optimizeWaypoints: true,
-      travelMode: 'WALKING'
-    }, function(response, status) {
-      if (status === 'OK') {
-        response.routes[0].legs = response.routes[0].legs.slice(0, -1);
-        directionsDisplay.setDirections(response);
-        console.log(response);
-        for (const leg of response.routes[0].legs) {
-          totalDistance += leg.distance.value;
-          totalDuration += leg.duration.value;
-        }
-        console.log(`${totalDistance} m, ${totalDuration} s`);
-      } else
-        console.log(`Directions request failed due to ${status}`);
-    });
-  }
 
   function setMarkers(map) {
     const icon = {
@@ -342,7 +315,7 @@ myApp.onPageInit('map', (page) => {
     locationCircle.setRadius(accuracy);
   }
 
-  var onMapWatchSuccess = function(position) {
+  function onMapWatchSuccess(position) {
     /*
     if (!onMapWatchSuccess.first) {
       calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
@@ -366,6 +339,19 @@ myApp.onPageInit('map', (page) => {
   }
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+
+  calculateAndDisplayRoute(
+    { lat: 22.996039, lng: 120.225126 },
+    [
+      { location: { lat: 22.997039, lng: 120.224126 } },
+      { location: { lat: 22.995039, lng: 120.224126 } }
+    ],
+    display = false,
+    callback = function(d, t) {
+      console.log(d, t);
+    },
+  );
+
   //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
@@ -386,6 +372,33 @@ myApp.onPageInit('info', (page) => {
     $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
 });
+
+
+function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
+  var totalDistance = 0;
+  var totalDuration = 0;
+
+  directionsService.route({
+    origin: origin,
+    destination: origin,
+    waypoints: waypts,
+    optimizeWaypoints: true,
+    travelMode: 'WALKING'
+  }, function(response, status) {
+    if (status === 'OK') {
+      response.routes[0].legs = response.routes[0].legs.slice(0, -1);
+      //directionsDisplay.setDirections(response);
+      console.log(response);
+      for (const leg of response.routes[0].legs) {
+        totalDistance += leg.distance.value;
+        totalDuration += leg.duration.value;
+      }
+      console.log(`${totalDistance} m, ${totalDuration} s`);
+      callback(totalDistance, totalDuration);
+    } else
+      console.log(`Directions request failed due to ${status}`);
+  });
+}
 
 
 /*             wen                */
