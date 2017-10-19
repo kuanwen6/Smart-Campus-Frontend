@@ -57,6 +57,7 @@ $$(document).on('deviceready', () => {
   console.log('Device is ready!');
   //iBeacon Setup
   beacon_util.init_beacon_detection();
+  beacon_util.startScanForBeacons();
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
@@ -104,9 +105,6 @@ $$(document).on('deviceready', () => {
       console.log(data);
     }
   )
-
-  
-  beacon_util.startScanForBeacons();
 });
 
 
@@ -1288,6 +1286,8 @@ function answerQuestion(question, options, answer, question_id, gain) {
 }
 
 myApp.onPageInit('gamePage', (page) => {
+  beacon_util.stopScanForBeacons();
+
   setTimeout(() => {
     $$('#gameStart-modal').css('display', 'none');
   }, 5000);
@@ -1302,6 +1302,8 @@ myApp.onPageInit('gamePage', (page) => {
 
     if (y > pHeight * 0.78 && y <= pHeight) {
       mainView.router.back();
+
+      beacon_util.startScanForBeacons()
     }
   });
 
