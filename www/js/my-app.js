@@ -1,21 +1,16 @@
-// Initialize your app
 const myApp = new Framework7({
   template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
   swipeBackPage: false,
 });
 
-// Export selectors engine
 const $$ = Dom7;
 
-// Add view
 const mainView = myApp.addView('.view-main', {
   // Because we use fixed-through navbar we can enable dynamic navbar
   dynamicNavbar: true,
 });
 
-// Callbacks to run specific code for specific pages, for example for About page:
 $$(document).on('page:init', (e) => {
-  // Page Data contains all required information about loaded and initialized page 
   const page = e.detail.page;
   console.log(page);
 });
@@ -28,27 +23,17 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src="../img/welcome_page1.png">',
+    picture: '<img src="../img/intro/intro_1.png">',
   },
   {
     id: 'slide1',
-    title: 'Slide 1', // optional
-    picture: '<div class="tutorialicon">✲</div>',
-    text: 'This is slide 2',
+    picture: '<img src="../img/intro/intro_2.png">',
   },
   {
     id: 'slide2',
-    title: 'Slide 2', // optional
-    picture: '<div class="tutorialicon">♫</div>',
-    text: 'This is slide 3',
-  },
-  {
-    id: 'slide3',
-    picture: '<div class="tutorialicon">☆</div>',
-    text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
+    picture: '<img src="../img/intro/intro_3.png">',
   },
 ];
-
 
 const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
 var directionsService;
@@ -345,9 +330,7 @@ myApp.onPageInit('map', (page) => {
 
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
-  calculateAndDisplayRoute(
-    { lat: 22.996039, lng: 120.225126 },
-    [
+  calculateAndDisplayRoute({ lat: 22.996039, lng: 120.225126 }, [
       { location: { lat: 22.997039, lng: 120.224126 } },
       { location: { lat: 22.995039, lng: 120.224126 } }
     ],
@@ -578,7 +561,7 @@ function createSites(sites, favorite, lat, lng, callback) {
   console.log("creating site");
   let category;
   let distanceBetween;
-  console.log("creating site num"+sites.length);
+  console.log("creating site num" + sites.length);
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -1032,7 +1015,7 @@ myApp.onPageInit('themeSite', () => {
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
     console.log("themeSite onSuccess finish no loc");
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -1134,7 +1117,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1175,7 +1158,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
@@ -1187,7 +1170,7 @@ myApp.onPageInit('customRoute', () => {
     } else {
       itemList = findSequence(stations, favoriteSequence);
       const routeLocation = getLocationArray(favoriteSequence);
-  
+
       if (routeLocation.length > 1) {
         calculateAndDisplayRoute(
           routeLocation[0].location,
@@ -1367,9 +1350,9 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
         console.log(rewardID);
         console.log(rewards);
 
-        if($.inArray(rewardID[0], rewards ) === -1) {
-          rewards = getRewards(rewards,rewardID[0]);
-  
+        if ($.inArray(rewardID[0], rewards) === -1) {
+          rewards = getRewards(rewards, rewardID[0]);
+
           const rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
           const rewardInfo = findStation(rewardsInfo, rewardID[0]);
 

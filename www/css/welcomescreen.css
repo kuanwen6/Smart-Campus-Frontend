@@ -30,7 +30,7 @@
 .welcomescreen-title {
     width: 100%;
     text-align: center;
-    margin-top: 20%;
+    margin-top: 10%;
 }
 
 .welcomescreen-picture {
@@ -40,7 +40,7 @@
 }
 
 .welcomescreen-picture img {
-    max-width: 90%;
+    max-width: 80%;
     height: auto;    
 }
 
