@@ -229,6 +229,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
               title: '接近'+site['category']+'站點',
               message: site['name'],
               hold: 6000,
+              media: '<img src="./img/icon.png">',
               closeOnClick: true,
               onClick: function () {
                 mainView.router.load({
