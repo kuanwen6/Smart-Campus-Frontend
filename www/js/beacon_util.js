@@ -196,7 +196,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       beacon_util.recordDetection[key] = false;
     }
   });
-  myApp.alert(Object.keys(beacon_util.recordDetection));
+
 
   for (var i=0;i < pluginResult.beacons.length ; i++)
   {
