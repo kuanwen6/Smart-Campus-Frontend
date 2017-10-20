@@ -11,15 +11,12 @@ $$(document).on('page:init', (e) => {
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
 
-  //iBeacon Setup
-  beacon_util.init_beacon_detection();
-
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
   const applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
-    window.localStorage.setItem('launchCount', 1);
+    window.localStorage.setItem('launchCount', true);
     window.localStorage.setItem('nickname', 'Guest');
     window.localStorage.setItem('experiencePoint', 0);
     window.localStorage.setItem('rewards', '[]');
@@ -29,6 +26,8 @@ $$(document).on('deviceready', () => {
       welcomescreenSlides, {
         closeButton: false,
         onClosed: function() {
+          //iBeacon Setup
+          beacon_util.init_beacon_detection();
           beacon_util.startScanForBeacons();
         },
       }
@@ -37,7 +36,9 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched ${++window.localStorage.launchCount} times.`);
+    console.log(`App has launched: ${window.localStorage.launchCount}`);
+    //iBeacon Setup
+    beacon_util.init_beacon_detection();
     beacon_util.startScanForBeacons();
   }
 
