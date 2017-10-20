@@ -11,6 +11,9 @@ $$(document).on('page:init', (e) => {
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
+
+  //iBeacon Setup
+  beacon_util.init_beacon_detection();
   
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
@@ -28,7 +31,6 @@ $$(document).on('deviceready', () => {
       {
         closeButton: false, 
         onClosed: function(){
-          beacon_util.init_beacon_detection();
           beacon_util.startScanForBeacons();
         }
       }
@@ -38,7 +40,6 @@ $$(document).on('deviceready', () => {
     });
   } else {
     console.log(`App has launched ${++window.localStorage.launchCount} times.`);
-    beacon_util.init_beacon_detection();
     beacon_util.startScanForBeacons();
   }
 
