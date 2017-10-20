@@ -310,7 +310,7 @@ myApp.onPageInit('map', (page) => {
       if (page.context.isDirection) {
         calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
           waypts,
-          display = true,
+          display = true
         );
       }
     }
@@ -323,7 +323,7 @@ myApp.onPageInit('map', (page) => {
       myApp.alert('導覽無法進行定位', '未開啟GPS');
       calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
         waypts,
-        display = true,
+        display = true
       );
     }
   }
