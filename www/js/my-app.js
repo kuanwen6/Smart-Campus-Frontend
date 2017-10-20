@@ -1119,7 +1119,18 @@ myApp.onPageInit('favorite', () => {
   navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 });
 
+function backChoice(previous) {
+  if ('previous' === 'themeRoute.html'){
+    mainView.hideToolbar();
+    mainView.router.back();
+   } else {
+     console.log('aa');
+     mainView.router.back({url: 'customRoute.html', force: true});
+   }
+}
+
 myApp.onPageInit('customRoute', () => {
+  mainView.showToolbar();
   $$('.back-force').on('click', () => {
     mainView.router.back({ url: 'route.html', force: true });
   });
