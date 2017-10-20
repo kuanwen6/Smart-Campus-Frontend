@@ -8,18 +8,41 @@ $$(document).on('page:init', (e) => {
   console.log(page);
 });
 
+$$(document).on('backbutton', function() {
+  var view = myApp.getCurrentView();
+  var page = view.activePage; 
+
+  if(page.name=="index"){
+    var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
+      navigator.app.clearHistory();
+      navigator.app.exitApp();
+    });   
+  }else{
+      view.router.back();
+  }
+});
+
+$$(document).on('pause', function() {
+  beacon_util.stopScanForBeacons();
+
+  console.log("pause");
+});
+
+$$(document).on('resume', function() {
+  beacon_util.startScanForBeacons();
+
+  console.log("resume");
+});
+
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
-
-  //iBeacon Setup
-  beacon_util.init_beacon_detection();
 
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
   const applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
-    window.localStorage.setItem('launchCount', 1);
+    window.localStorage.setItem('launchCount', true);
     window.localStorage.setItem('nickname', 'Guest');
     window.localStorage.setItem('experiencePoint', 0);
     window.localStorage.setItem('rewards', '[]');
@@ -29,6 +52,8 @@ $$(document).on('deviceready', () => {
       welcomescreenSlides, {
         closeButton: false,
         onClosed: function() {
+          //iBeacon Setup
+          beacon_util.init_beacon_detection();
           beacon_util.startScanForBeacons();
         },
       }
@@ -37,7 +62,9 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched ${++window.localStorage.launchCount} times.`);
+    console.log(`App has launched: ${window.localStorage.launchCount}`);
+    //iBeacon Setup
+    beacon_util.init_beacon_detection();
     beacon_util.startScanForBeacons();
   }
 
@@ -309,7 +336,7 @@ myApp.onPageInit('map', (page) => {
       if (page.context.isDirection) {
         calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
           waypts,
-          display = true,
+          display = true
         );
       }
     }
@@ -322,7 +349,7 @@ myApp.onPageInit('map', (page) => {
       myApp.alert('導覽無法進行定位', '未開啟GPS');
       calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
         waypts,
-        display = true,
+        display = true
       );
     }
   }
@@ -440,7 +467,7 @@ function createCards(data, onclickCallback) {
               <div class="card-footer"><span>預估時間: ${(t/60).toFixed(0)} 分鐘</span></div>
           </div>`);
           onclickCallback();
-        },
+        }
       );
     } else {
       $$('.big-card').append(`<div class="card" id="${data[i].id}">
@@ -1190,7 +1217,7 @@ myApp.onPageInit('customRoute', () => {
                 itemList,
               },
             });
-          },
+          }
         );
       } else {
         mainView.router.load({
@@ -1340,7 +1367,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           },
           success = function(data) {
             console.log('add answered success');
-          },
+          }
         );
       }
 
