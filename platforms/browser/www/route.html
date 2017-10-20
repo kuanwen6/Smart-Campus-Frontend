@@ -1,41 +1,38 @@
-
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="left">
-                    <a href="index.html" class="link back-force">
-                        <!--<i class="f7-icons color-white">chevron_left</i> -->
-                        <i class="f7-icons color-white">home_fill</i>
-                    </a>
-                </div>
-                <div class="center" >推薦行程</div>
-            </div>
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left">
+      <a href="index.html" class="link back-force icon-only">
+        <i class="f7-icons color-white">home_fill</i>
+      </a>
+    </div>
+    <div class="center">推薦行程</div>
+  </div>
+</div>
+<div class="pages">
+  <div data-page="route" class="page no-toolbar">
+    <div class="page-content">
+      <div class="content-block" style="margin: 0; padding: 0;background-color: white; height: 100%; width: 100%; display: table;">
+        <div class="themePark">
+          <div><img id="themeImg" src="img/park.png" style="width:100%;height:auto;"></div>
         </div>
-        <div class="pages">
-          <div data-page="route" class="page no-toolbar">
-            <!-- Scrollable page content-->
-            <div class="page-content">
-              <div class="content-block" style="margin: 0; padding: 0;background-color: white; height: 100%; width: 100%; display: table;">
-                <div class="themePark">
-                  <div><img id="themeImg" src="img/park.png" style="width:100%;height:auto;"></div>
-                </div>
-                <div class="routeButtonList">
-                  <div id="themeRouteBtn" onclick="mainView.router.load({ url: 'themeRoute.html' });">
-                    <div>
-                        <img class="heartIcon" src="img/hand_heart.png"><span style="margin-left: 8vw;">讓我推薦你</span>
-                    </div>
-                  </div>
-                  <div id="customRouteBtn" style="margin-top: 2px;" onclick="mainView.router.load({ url: 'customRoute.html',ignoreCache: true });">
-                    <div>
-                      <img class="heartIcon" src="img/heart.png"><span style="margin-left: 8vw; margin-right: 6vw;">自訂行程</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+        <div class="routeButtonList">
+          <div id="themeRouteBtn" onclick="mainView.router.load({ url: 'themeRoute.html' });">
+            <div>
+              <img class="heartIcon" src="img/hand_heart.png">
+              <span style="margin-left: 8vw;">讓我推薦你</span>
+            </div>
+          </div>
+          <div id="customRouteBtn" style="margin-top: 2px;" onclick="mainView.router.load({ url: 'customRoute.html',ignoreCache: true });">
+            <div>
+              <img class="heartIcon" src="img/heart.png">
+              <span style="margin-left: 8vw; margin-right: 6vw;">自訂行程</span>
             </div>
           </div>
         </div>
-        <div class="toolbar">
-          <div class="toolbar-inner"><a href="#" class="link"></a></div>
-        </div>
-
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toolbar">
+  <div class="toolbar-inner"><a href="#" class="link"></a></div>
+</div>

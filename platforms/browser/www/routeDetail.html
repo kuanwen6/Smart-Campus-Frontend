@@ -7,33 +7,35 @@
                                                                  } else {
                                                                   mainView.router.back({url: 'customRoute.html', force: true});
                                                                  }">
-                                                                 <i class="f7-icons color-white">chevron_left</i> 
-                                                                 <span>回上頁</span>
-                    </a>
+        <i class="f7-icons color-white">chevron_left</i>
+        <span>回上頁</span>
+      </a>
     </div>
     <div class="center">{{title}}</div>
     <div class="right"></div>
   </div>
 </div>
-
 <div class="pages navbar-through toolbar-fixed">
   <div data-page="routeDetail" class="page">
-    <!-- Scrollable page content-->
     <div class="page-content" style="padding-bottom: 9.5vh;">
       <div class="content-block" style="padding: 0px; margin: 0px;">
         <img src={{img}} class="title-img">
         <div class="list-block accordion-list" style="margin: 0px; margin-top: -5px;">
           <ul>
-            <li class="accordion-item" id="time"><a href="#" class="item-content">
+            <li class="accordion-item" id="time">
+              <a href="#" class="item-content">
                 <div class="item-inner">
                   <div class="item-title">{{time}}</div>
-                </div></a>
+                </div>
+              </a>
             </li>
             {{#unless custom}}
-              <li class="accordion-item" id="introduction"><a href="#" class="item-link">
+            <li class="accordion-item" id="introduction">
+              <a href="#" class="item-link">
                 <div class="item-inner">
                   <div class="item-title">行程介紹</div>
-                </div></a>
+                </div>
+              </a>
               <div class="accordion-item-content">
                 <div class="content-block">
                   <p>{{introduction}}</p>
@@ -41,29 +43,29 @@
               </div>
             </li>
             {{/unless}}
-            <li class="accordion-item" id="itemList"><a href="#" class="item-link">
+            <li class="accordion-item" id="itemList">
+              <a href="#" class="item-link">
                 <div class="item-inner">
                   <div class="item-title">景點列表</div>
-                </div></a>
+                </div>
+              </a>
               <div class="accordion-item-content">
                 <div class="content-block" style="padding: 0px;">
                   {{#each itemList}}
                   <div class="content-block" style="padding: 0px;">
-                      <div class="content-block-inner">
-                          <div class="row no-gutter" style="margin-left:10px;">
-                              <div class="col-45">
-                                <img src="{{image.primary}}" style="width:24vh;height:15vh; object-fit: cover;">
-                              </div>
-                              <div class="col-55" style="padding:8px;">
-                                  <span style="font-size: 3vh;font-weight: bold;">{{name}}</span>
-                              </div>
-                          </div>
-                        
+                    <div class="content-block-inner">
+                      <div class="row no-gutter" style="margin-left:10px;">
+                        <div class="col-45">
+                          <img src="{{image.primary}}" style="width:24vh;height:15vh; object-fit: cover;">
+                        </div>
+                        <div class="col-55" style="padding:8px;">
+                          <span style="font-size: 3vh;font-weight: bold;">{{name}}</span>
+                        </div>
                       </div>
+                    </div>
                   </div>
                   {{/each}}
                 </div>
-                
               </div>
             </li>
           </ul>
@@ -73,5 +75,7 @@
   </div>
 </div>
 <div class="toolbar">
-  <div class="toolbar-inner"><a href="#" class="button button-big" style="text-align:center; margin:0 auto;">開始參觀</a></div>
+  <div class="toolbar-inner">
+    <a href="#" class="button button-big" style="text-align:center; margin:0 auto;">開始參觀</a>
+  </div>
 </div>

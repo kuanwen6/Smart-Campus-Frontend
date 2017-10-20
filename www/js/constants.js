@@ -29,7 +29,7 @@ const welcomescreenSlides = [{
   },
 ];
 
-// hookurl of smart campus server 
+// hookurl of smart campus server
 const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
 
 // experience per level

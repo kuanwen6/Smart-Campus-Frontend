@@ -1,14 +1,12 @@
+var directionsService;
+var directionsDisplay;
+
+mainView.hideToolbar();
+
 $$(document).on('page:init', (e) => {
   const page = e.detail.page;
   console.log(page);
 });
-
-mainView.hideToolbar();
-
-
-var directionsService;
-var directionsDisplay;
-
 
 
 $$(document).on('deviceready', () => {
