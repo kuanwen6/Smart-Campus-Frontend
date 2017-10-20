@@ -1138,6 +1138,7 @@ myApp.onPageInit('favorite', () => {
 });
 
 function backChoice(previous) {
+  console.log(previous);
   if (previous === 'themeRoute.html') {
     mainView.hideToolbar();
     mainView.router.back();
