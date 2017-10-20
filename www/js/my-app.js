@@ -1341,7 +1341,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           },
           success = function(data) {
             console.log('add answered success');
-          },
+          }
         );
       }
 
