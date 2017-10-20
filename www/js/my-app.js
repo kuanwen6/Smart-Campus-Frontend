@@ -441,7 +441,7 @@ function createCards(data, onclickCallback) {
               <div class="card-footer"><span>預估時間: ${(t/60).toFixed(0)} 分鐘</span></div>
           </div>`);
           onclickCallback();
-        },
+        }
       );
     } else {
       $$('.big-card').append(`<div class="card" id="${data[i].id}">
@@ -1191,7 +1191,7 @@ myApp.onPageInit('customRoute', () => {
                 itemList,
               },
             });
-          },
+          }
         );
       } else {
         mainView.router.load({
