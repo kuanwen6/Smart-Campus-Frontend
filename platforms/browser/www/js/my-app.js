@@ -1,5 +1,5 @@
-var directionsService;
-var directionsDisplay;
+let directionsService;
+let directionsDisplay;
 
 mainView.hideToolbar();
 
@@ -15,9 +15,9 @@ $$(document).on('deviceready', () => {
   beacon_util.init_beacon_detection();
 
   directionsService = new google.maps.DirectionsService;
-  directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
+  directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
-  var applaunchCount = window.localStorage.getItem('launchCount');
+  const applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', 1);
     window.localStorage.setItem('nickname', 'Guest');
@@ -153,7 +153,7 @@ myApp.onPageInit('map', (page) => {
   });
 
   $$('.marker-favorite').on('click', (e) => {
-    var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+    let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
     $$(e.currentTarget).toggleClass('color-red');
 
     if ($$(e.currentTarget).hasClass('color-red')) {
@@ -163,32 +163,32 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  var markers;
-  var stations;
-  var waypts = [];
-  var Latitude = undefined;
-  var Longitude = undefined;
-  var Accuracy = undefined;
-  var image = {
+  let markers;
+  let stations;
+  let waypts = [];
+  let Latitude = undefined;
+  let Longitude = undefined;
+  let Accuracy = undefined;
+  const image = {
     url: './icon/mobileimgs2.png',
     size: new google.maps.Size(22, 22),
     origin: new google.maps.Point(0, 18),
     anchor: new google.maps.Point(11, 11)
   };
-  var map = new google.maps.Map($$('#map')[0], {
+  const map = new google.maps.Map($$('#map')[0], {
     zoom: 16,
     center: { lat: 22.998089, lng: 120.217441 },
     disableDefaultUI: true,
     clickableIcons: false,
   });
-  var locationMarker = new google.maps.Marker({
+  const locationMarker = new google.maps.Marker({
     clickable: false,
     icon: image,
     shadow: null,
     zIndex: 999,
     map: map,
   });
-  var locationCircle = new google.maps.Circle({
+  const locationCircle = new google.maps.Circle({
     fillColor: '#61a0bf',
     fillOpacity: 0.4,
     strokeColor: '#1bb6ff',
@@ -196,12 +196,12 @@ myApp.onPageInit('map', (page) => {
     strokeWeight: 1,
     map: map,
   });
-  var walkingLineSymbol = {
+  const walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
     scale: 3
   };
-  var walkingPathLine = {
+  const walkingPathLine = {
     strokeColor: '#0eb7f6',
     strokeOpacity: 0,
     fillOpacity: 0,
@@ -247,7 +247,7 @@ myApp.onPageInit('map', (page) => {
     markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
 
     for (const station of stations) {
-      var marker = new google.maps.Marker({
+      const marker = new google.maps.Marker({
         position: { lat: station['location'][1], lng: station['location'][0] },
         title: station['name'],
         map: map,
@@ -263,8 +263,8 @@ myApp.onPageInit('map', (page) => {
   }
 
   function showMarkerInfo() {
-    var station = stations.find(x => x.name === this.title);
-    var _distance = '';
+    const station = stations.find(x => x.name === this.title);
+    let _distance = '';
     if (Latitude !== undefined && Longitude !== undefined) {
       _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
     }
@@ -284,7 +284,7 @@ myApp.onPageInit('map', (page) => {
 
   function setGroupMarkerVisible(groupId) {
     const category = ['古蹟', '藝文', '景觀', '行政單位'];
-    for (var marker of markers[category[groupId]]) {
+    for (const marker of markers[category[groupId]]) {
       marker.setVisible(!marker.visible);
     }
   }
@@ -296,9 +296,9 @@ myApp.onPageInit('map', (page) => {
   }
 
   function onMapWatchSuccess(position) {
-    var updatedLatitude = position.coords.latitude;
-    var updatedLongitude = position.coords.longitude;
-    var updatedAccuracy = position.coords.accuracy;
+    let updatedLatitude = position.coords.latitude;
+    let updatedLongitude = position.coords.longitude;
+    let updatedAccuracy = position.coords.accuracy;
 
     if (updatedLatitude !== Latitude || updatedLongitude !== Longitude || updatedAccuracy !== Accuracy) {
       Latitude = updatedLatitude;
@@ -318,7 +318,7 @@ myApp.onPageInit('map', (page) => {
   function onMapError(error) {
     console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
     if (page.context.isDirection) {
-      var origin = waypts.pop();
+      const origin = waypts.pop();
       myApp.alert('導覽無法進行定位', '未開啟GPS');
       calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
         waypts,
@@ -329,18 +329,18 @@ myApp.onPageInit('map', (page) => {
 });
 
 myApp.onPageInit('info', (page) => {
-  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
+  const level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  for (var i = 0; i < 16; i++) {
+  for (let i = 0; i < 16; i++) {
     $$('.collections').append('<div></div>');
   }
 
-  rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
-  for (var i = 0; i < rewards.length; i++) {
-    rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
+  const rewards = JSON.parse(window.localStorage.getItem('rewards'));
+  const allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
+  for (let i = 0; i < rewards.length; i++) {
+    const rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
     $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
 });
@@ -359,8 +359,8 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback = nu
       if (display) {
         directionsDisplay.setDirections(response);
       } else {
-        var totalDistance = 0;
-        var totalDuration = 0;
+        let totalDistance = 0;
+        let totalDuration = 0;
         for (const leg of response.routes[0].legs) {
           totalDistance += leg.distance.value;
           totalDuration += leg.duration.value;
