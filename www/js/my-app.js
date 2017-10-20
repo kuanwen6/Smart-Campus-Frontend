@@ -30,7 +30,7 @@ $$(document).on('deviceready', () => {
         closeButton: false,
         onClosed: function() {
           beacon_util.startScanForBeacons();
-        }
+        },
       }
     );
     $$(document).on('click', '#welcome-close-btn', () => {
@@ -74,7 +74,7 @@ myApp.onPageInit('index', function(page) {
       url = `${HOOKURL}smart_campus/login/`,
       data = {
         'email': formData['email'],
-        'password': formData['password']
+        'password': formData['password'],
       },
       success = function(data) {
         console.log('login success');
@@ -106,7 +106,7 @@ myApp.onPageInit('index', function(page) {
       data = {
         'email': formData['email'],
         'password': formData['password'],
-        'nickname': formData['nickname']
+        'nickname': formData['nickname'],
       },
       success = function(data) {
         console.log('register success');
@@ -173,7 +173,7 @@ myApp.onPageInit('map', (page) => {
     url: './icon/mobileimgs2.png',
     size: new google.maps.Size(22, 22),
     origin: new google.maps.Point(0, 18),
-    anchor: new google.maps.Point(11, 11)
+    anchor: new google.maps.Point(11, 11),
   };
   const map = new google.maps.Map($$('#map')[0], {
     zoom: 16,
@@ -199,7 +199,7 @@ myApp.onPageInit('map', (page) => {
   const walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
-    scale: 3
+    scale: 3,
   };
   const walkingPathLine = {
     strokeColor: '#0eb7f6',
@@ -208,7 +208,7 @@ myApp.onPageInit('map', (page) => {
     icons: [{
       icon: walkingLineSymbol,
       offset: '0',
-      repeat: '10px'
+      repeat: '10px',
     }],
   };
 
@@ -240,7 +240,7 @@ myApp.onPageInit('map', (page) => {
       '古蹟': 'img/markers/marker_red.png',
       '藝文': 'img/markers/marker_orange.png',
       '景觀': 'img/markers/marker_green.png',
-      '行政單位': 'img/markers/marker_blue.png'
+      '行政單位': 'img/markers/marker_blue.png',
     };
     const scaledSize = new google.maps.Size(25, 36);
     const anchor = new google.maps.Point(12.5, 36);
@@ -309,7 +309,7 @@ myApp.onPageInit('map', (page) => {
       if (page.context.isDirection) {
         calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
           waypts,
-          display = true
+          display = true,
         );
       }
     }
@@ -322,7 +322,7 @@ myApp.onPageInit('map', (page) => {
       myApp.alert('導覽無法進行定位', '未開啟GPS');
       calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
         waypts,
-        display = true
+        display = true,
       );
     }
   }
@@ -351,7 +351,7 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback = nu
     destination: origin,
     waypoints: waypts,
     optimizeWaypoints: true,
-    travelMode: 'WALKING'
+    travelMode: 'WALKING',
   }, function(response, status) {
     if (status === 'OK') {
       response.routes[0].legs = response.routes[0].legs.slice(0, -1);
