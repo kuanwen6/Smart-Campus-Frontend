@@ -1357,7 +1357,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           const rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
           myApp.addNotification({
-            title: '成大尋寶趣',
+            title: '成大藏奇圖',
             message: `您已獲得收藏品:  「${rewardInfo.name}」`,
             media: `<img width="44" height="44" style="border-radius:100%" src="${rewardInfo.image_url}">`,
             hold: 8000,
