@@ -8,6 +8,32 @@ $$(document).on('page:init', (e) => {
   console.log(page);
 });
 
+$$(document).on('backbutton', function() {
+  var view = myApp.getCurrentView();
+  var page = view.activePage; 
+
+  if(page.name=="index"){
+    var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
+      navigator.app.clearHistory();
+      navigator.app.exitApp();
+    });   
+  }else{
+      view.router.back();
+  }
+});
+
+$$(document).on('pause', function() {
+  beacon_util.stopScanForBeacons();
+
+  console.log("pause");
+});
+
+$$(document).on('resume', function() {
+  beacon_util.startScanForBeacons();
+
+  console.log("resume");
+});
+
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
 
