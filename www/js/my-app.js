@@ -1111,7 +1111,7 @@ myApp.onPageInit('favorite', () => {
 });
 
 function backChoice(previous) {
-  if ('previous' === 'themeRoute.html') {
+  if (previous === 'themeRoute.html') {
     mainView.hideToolbar();
     mainView.router.back();
   } else {
