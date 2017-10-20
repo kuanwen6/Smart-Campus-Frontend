@@ -8,13 +8,12 @@ $$(document).on('page:init', (e) => {
   console.log(page);
 });
 
-
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
 
   //iBeacon Setup
   beacon_util.init_beacon_detection();
-  
+
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
 
@@ -27,10 +26,9 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
     const welcomescreen = myApp.welcomescreen(
-      welcomescreenSlides,
-      {
-        closeButton: false, 
-        onClosed: function(){
+      welcomescreenSlides, {
+        closeButton: false,
+        onClosed: function() {
           beacon_util.startScanForBeacons();
         }
       }
@@ -66,7 +64,6 @@ $$(document).on('deviceready', () => {
     }
   )
 });
-
 
 myApp.onPageInit('index', function(page) {
   $$('.login-form-to-json').on('click', () => {
@@ -139,7 +136,6 @@ myApp.onPageInit('index', function(page) {
   }
 }).trigger();
 
-
 myApp.onPageInit('map', (page) => {
   $$('.open-filter').on('click', () => {
     $$('#map-filter').css('display', 'block');
@@ -161,9 +157,9 @@ myApp.onPageInit('map', (page) => {
     $$(e.currentTarget).toggleClass('color-red');
 
     if ($$(e.currentTarget).hasClass('color-red')) {
-      favoriteSequence = addFavorite(favoriteSequence, e.currentTarget.id);
+      favoriteSequence = addFavorite(favoriteSequence, parseInt(e.currentTarget.id));
     } else {
-      favoriteSequence = removeFavorite(favoriteSequence, e.currentTarget.id);
+      favoriteSequence = removeFavorite(favoriteSequence, parseInt(e.currentTarget.id));
     }
   });
 
@@ -332,7 +328,6 @@ myApp.onPageInit('map', (page) => {
   }
 });
 
-
 myApp.onPageInit('info', (page) => {
   var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
@@ -349,7 +344,6 @@ myApp.onPageInit('info', (page) => {
     $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
 });
-
 
 function calculateAndDisplayRoute(origin, waypts, display = false, callback = null) {
   directionsService.route({
@@ -378,7 +372,6 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback = nu
     }
   });
 }
-
 
 function distance(lat1, lng1, lat2, lng2) {
   if (lat1 === -1 && lng1 === -1) {
@@ -414,7 +407,6 @@ function getLocationArray(idArray) {
 
   return returnValue;
 }
-
 
 function createCards(data, onclickCallback) {
   for (let i = 0; i < data.length; i += 1) {
@@ -1034,7 +1026,6 @@ myApp.onPageInit('favorite', () => {
     mainView.router.back({ url: 'themeSite.html', force: true });
   });
 
-
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
 
@@ -1120,13 +1111,13 @@ myApp.onPageInit('favorite', () => {
 });
 
 function backChoice(previous) {
-  if ('previous' === 'themeRoute.html'){
+  if ('previous' === 'themeRoute.html') {
     mainView.hideToolbar();
     mainView.router.back();
-   } else {
-     console.log('aa');
-     mainView.router.back({url: 'customRoute.html', force: true});
-   }
+  } else {
+    console.log('aa');
+    mainView.router.back({ url: 'customRoute.html', force: true });
+  }
 }
 
 myApp.onPageInit('customRoute', () => {
@@ -1218,7 +1209,6 @@ myApp.onPageInit('customRoute', () => {
     }
   });
 });
-
 
 myApp.onPageInit('itemDetail', (page) => {
   $$('.toolbar').off('click');

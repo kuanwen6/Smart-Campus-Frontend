@@ -16,16 +16,16 @@ const mySwiper = myApp.swiper('.swiper-container', {
 
 const welcomescreenSlides = [{
     id: 'slide0',
-    picture: '<img src="../img/intro/intro_1.png">',
+    picture: '<img src="./img/intro/intro_1.png">',
   },
   {
     id: 'slide1',
-    picture: '<img src="../img/intro/intro_2.png">',
+    picture: '<img src="./img/intro/intro_2.png">',
   },
   {
     id: 'slide2',
-    picture: '<img src="../img/intro/intro_3.png">',
-    text: '<a id="welcome-close-btn" href="#"><img src="../img/intro/start_btn.png"></a>',
+    picture: '<img src="./img/intro/intro_3.png">',
+    text: '<a id="welcome-close-btn" href="#"><img src="./img/intro/start_btn.png"></a>',
   },
 ];
 
