@@ -1,16 +1,16 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href="index.html" class="link back-force">
+      <a href="index.html" class="link back-force icon-only">
         <i class="f7-icons color-white">home_fill</i>
-                          </a>
+      </a>
     </div>
     <div class="center">主題站點</div>
     <div class="right">
-        <a href="favorite.html" class="link">
-                                <i class="f7-icons color-white">heart_fill</i> 
-                            </a>
-      </div>
+      <a href="favorite.html" class="link icon-only">
+        <i class="f7-icons color-white">heart_fill</i>
+      </a>
+    </div>
     <div class="subnavbar">
       <div class="buttons-row">
         <a href="#history-tab" class="button active tab-link" style="width: 90%;">古蹟</a>
@@ -24,68 +24,60 @@
 </div>
 <div class="pages navbar-fixed">
   <div data-page="themeSite" class="page with-subnavbar no-toolbar">
-    <!-- Scrollable page content-->
     <div class="page-content" style="background: white;">
-
-      
-        <div class="tabs" style="height: 100%;">
-          <div id="history-tab" class="page-content tab active">
-            <div class="content-block">
-                <div class="list-block favorite-cards">
-                  <ul class="swipe-list history-list" style="position:initial;background:none;">
-                  </ul>
-                </div>
-            </div>
-          </div>
-          <div id="art-tab" class="page-content tab">
-            <div class="content-block">
-                <div class="list-block favorite-cards">
-                    <ul class="swipe-list art-list" style="position:initial;background:none;">
-                    </ul>
-                  </div>
-            </div>
-          </div>
-          <div id="nature-tab" class="page-content tab">
-            <div class="content-block">
-                <div class="list-block favorite-cards">
-                    <ul class="swipe-list nature-list" style="position:initial;background:none;">
-                    </ul>
-                  </div>
-            </div>
-          </div>
-          <div id="business-tab" class="page-content tab">
-            <div class="content-block">
-                <div class="list-block favorite-cards">
-                    <ul class="swipe-list business-list" style="position:initial;background:none;">
-                    </ul>
-                  </div>
-            </div>
-          </div>
-          <div id="search-tab" class="page-content tab">
-            <div class="content-block">
-                <form data-search-list=".list-block-search" data-search-in=".card-title" class="searchbar searchbar-init">
-                    <div class="searchbar-input">
-                      <input type="search" placeholder="Search"><a href="#" class="searchbar-clear"></a>
-                    </div><a href="#" class="searchbar-cancel">Cancel</a>
-                  </form>
-                 
-                  <!-- Search Bar overlay -->
-                  <div class="searchbar-overlay"></div>
-                 
-                  <div class="page-content" style="padding: 0;">
-                    <!-- This block will be displayed if nothing found -->
-                    <div class="content-block searchbar-not-found">
-                      <div class="content-block-inner">查無資料</div>
-                    </div>
-                 
-                    <!-- This block will be displayed if anything found, and this list block is used a searbar target -->
-                    <div class="list-block list-block-search searchbar-found favorite-cards">
-                      <ul class="swipe-list search-all-list" style="position:initial;background:none;">
-                      </ul>
-                    </div>
-                  </div>
+      <div class="tabs" style="height: 100%;">
+        <div id="history-tab" class="page-content tab active">
+          <div class="content-block">
+            <div class="list-block favorite-cards">
+              <ul class="swipe-list history-list" style="position:initial;background:none;"></ul>
             </div>
           </div>
         </div>
+        <div id="art-tab" class="page-content tab">
+          <div class="content-block">
+            <div class="list-block favorite-cards">
+              <ul class="swipe-list art-list" style="position:initial;background:none;"></ul>
+            </div>
+          </div>
+        </div>
+        <div id="nature-tab" class="page-content tab">
+          <div class="content-block">
+            <div class="list-block favorite-cards">
+              <ul class="swipe-list nature-list" style="position:initial;background:none;"></ul>
+            </div>
+          </div>
+        </div>
+        <div id="business-tab" class="page-content tab">
+          <div class="content-block">
+            <div class="list-block favorite-cards">
+              <ul class="swipe-list business-list" style="position:initial;background:none;"></ul>
+            </div>
+          </div>
+        </div>
+        <div id="search-tab" class="page-content tab">
+          <div class="content-block">
+            <form data-search-list=".list-block-search" data-search-in=".card-title" class="searchbar searchbar-init">
+              <div class="searchbar-input">
+                <input type="search" placeholder="Search">
+                <a href="#" class="searchbar-clear"></a>
+              </div>
+              <a href="#" class="searchbar-cancel">Cancel</a>
+            </form>
+            <!-- Search Bar overlay -->
+            <div class="searchbar-overlay"></div>
+            <div class="page-content" style="padding: 0;">
+              <!-- This block will be displayed if nothing found -->
+              <div class="content-block searchbar-not-found">
+                <div class="content-block-inner">查無資料</div>
+              </div>
+              <!-- This block will be displayed if anything found, and this list block is used a searbar target -->
+              <div class="list-block list-block-search searchbar-found favorite-cards">
+                <ul class="swipe-list search-all-list" style="position:initial;background:none;"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>

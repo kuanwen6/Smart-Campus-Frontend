@@ -1,67 +1,20 @@
-// Initialize your app
-const myApp = new Framework7({
-  template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
-  swipeBackPage: false,
-});
+var directionsService;
+var directionsDisplay;
 
-// Export selectors engine
-const $$ = Dom7;
+mainView.hideToolbar();
 
-// Add view
-const mainView = myApp.addView('.view-main', {
-  // Because we use fixed-through navbar we can enable dynamic navbar
-  dynamicNavbar: true,
-});
-
-// Callbacks to run specific code for specific pages, for example for About page:
 $$(document).on('page:init', (e) => {
-  // Page Data contains all required information about loaded and initialized page 
   const page = e.detail.page;
   console.log(page);
 });
 
-mainView.hideToolbar();
-
-const mySwiper = myApp.swiper('.swiper-container', {
-  pagination: '.swiper-pagination',
-});
-
-const welcomescreenSlides = [{
-    id: 'slide0',
-    picture: '<img src="../img/welcome_page1.png">',
-  },
-  {
-    id: 'slide1',
-    title: 'Slide 1', // optional
-    picture: '<div class="tutorialicon">✲</div>',
-    text: 'This is slide 2',
-  },
-  {
-    id: 'slide2',
-    title: 'Slide 2', // optional
-    picture: '<div class="tutorialicon">♫</div>',
-    text: 'This is slide 3',
-  },
-  {
-    id: 'slide3',
-    picture: '<div class="tutorialicon">☆</div>',
-    text: 'Thanks for reading! .<br><br><a class="welcome-close-btn" href="#">End Tutorial</a>',
-  },
-];
-
-
-const HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
-var directionsService;
-var directionsDisplay;
-
-// experience per level
-const EXP_PER_LEVEL = 50;
 
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
 
   //iBeacon Setup
-  beacon_util.init_beacon_detection();
+  //beacon_util.init_beacon_detection();
+  //beacon_util.startScanForBeacons();
 
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, });
@@ -74,13 +27,12 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('rewards', '[]');
     window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
-    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: true, onClosed: function(){beacon_util.startScanForBeacons();}});
-    $$(document).on('click', '.welcome-close-btn', () => {
+    const welcomescreen = myApp.welcomescreen(welcomescreenSlides, { closeButton: false, });
+    $$(document).on('click', '#welcome-close-btn', () => {
       welcomescreen.close();
     });
   } else {
     console.log(`App has launched ${++window.localStorage.launchCount} times.`);
-    beacon_util.startScanForBeacons();
   }
 
   $$.get(
@@ -109,14 +61,6 @@ $$(document).on('deviceready', () => {
 
 
 myApp.onPageInit('index', function(page) {
-  function loginInit() {
-    $$('#login-form').hide();
-    $$('#register-btn').hide();
-    $$('.profile-pic').removeClass('hide');
-    $$('.nickname').removeClass('hide');
-    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  }
-
   $$('.login-form-to-json').on('click', () => {
     const formData = myApp.formToJSON('#login-form');
     console.log(formData);
@@ -177,6 +121,14 @@ myApp.onPageInit('index', function(page) {
   if (window.localStorage.getItem('loggedIn')) {
     loginInit();
   }
+
+  function loginInit() {
+    $$('#login-form').hide();
+    $$('#register-btn').hide();
+    $$('.profile-pic').removeClass('hide');
+    $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+  }
 }).trigger();
 
 
@@ -207,8 +159,9 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var markers;
+  var stations;
+  var waypts = [];
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
@@ -256,9 +209,27 @@ myApp.onPageInit('map', (page) => {
   };
 
   map.addListener('click', hideMarkerInfo);
+  directionOrMapOverview(page.context.isDirection);
   setMarkers(map);
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
-  //directionsDisplay.setMap(map);
+  function directionOrMapOverview(isDirection) {
+    if (isDirection) {
+      console.log('Direction mode!');
+      $$('#page-title').html('導覽中');
+      $$('.open-filter').css('visibility', 'hidden');
+      directionsDisplay.setMap(map);
+
+      stations = page.context.stations;
+      for (const station of stations) {
+        waypts.push({ location: { lat: station['location'][1], lng: station['location'][0] } });
+      }
+    } else {
+      console.log('Map overview mode!');
+      $$('#bluetooth-warn').hide();
+      stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+    }
+  }
 
   function setMarkers(map) {
     const icon = {
@@ -321,12 +292,6 @@ myApp.onPageInit('map', (page) => {
   }
 
   function onMapWatchSuccess(position) {
-    /*
-    if (!onMapWatchSuccess.first) {
-      calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: position.coords.latitude, lng: position.coords.longitude });
-    }
-    onMapWatchSuccess.first = true;
-    */
     var updatedLatitude = position.coords.latitude;
     var updatedLongitude = position.coords.longitude;
     var updatedAccuracy = position.coords.accuracy;
@@ -335,29 +300,28 @@ myApp.onPageInit('map', (page) => {
       Latitude = updatedLatitude;
       Longitude = updatedLongitude;
       Accuracy = updatedAccuracy;
+
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
+      if (page.context.isDirection) {
+        calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
+          waypts,
+          display = true
+        );
+      }
     }
   };
 
   function onMapError(error) {
     console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
+    if (page.context.isDirection) {
+      var origin = waypts.pop();
+      myApp.alert('導覽無法進行定位', '未開啟GPS');
+      calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
+        waypts,
+        display = true
+      );
+    }
   }
-
-  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
-
-  calculateAndDisplayRoute(
-    { lat: 22.996039, lng: 120.225126 },
-    [
-      { location: { lat: 22.997039, lng: 120.224126 } },
-      { location: { lat: 22.995039, lng: 120.224126 } }
-    ],
-    display = false,
-    callback = function(d, t) {
-      console.log(d, t);
-    },
-  );
-
-  //calculateAndDisplayRoute(directionsService, directionsDisplay, { lat: 22.995267, lng: 120.220237 });
 });
 
 
@@ -379,10 +343,7 @@ myApp.onPageInit('info', (page) => {
 });
 
 
-function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
-  var totalDistance = 0;
-  var totalDuration = 0;
-
+function calculateAndDisplayRoute(origin, waypts, display = false, callback = null) {
   directionsService.route({
     origin: origin,
     destination: origin,
@@ -392,21 +353,25 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback) {
   }, function(response, status) {
     if (status === 'OK') {
       response.routes[0].legs = response.routes[0].legs.slice(0, -1);
-      //directionsDisplay.setDirections(response);
       console.log(response);
-      for (const leg of response.routes[0].legs) {
-        totalDistance += leg.distance.value;
-        totalDuration += leg.duration.value;
+      if (display) {
+        directionsDisplay.setDirections(response);
+      } else {
+        var totalDistance = 0;
+        var totalDuration = 0;
+        for (const leg of response.routes[0].legs) {
+          totalDistance += leg.distance.value;
+          totalDuration += leg.duration.value;
+        }
+        callback(totalDistance, totalDuration);
       }
-      console.log(`${totalDistance} m, ${totalDuration} s`);
-      callback(totalDistance, totalDuration);
-    } else
+    } else {
       console.log(`Directions request failed due to ${status}`);
+    }
   });
 }
 
 
-/*             wen                */
 function distance(lat1, lng1, lat2, lng2) {
   if (lat1 === -1 && lng1 === -1) {
     return '未開啟GPS';
@@ -429,33 +394,74 @@ function distance(lat1, lng1, lat2, lng2) {
   return `${dist.toFixed(1)} 公里`;
 }
 
+function getLocationArray(idArray) {
+  const returnValue = [];
+  const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+  let site;
 
-function createCards(data, callback) {
+  for (let i = 0; i < idArray.length; i++) {
+    site = findStation(stations, idArray[i]);
+    returnValue.push({ location: { lat: site.location[1], lng: site.location[0] } });
+  }
+
+  return returnValue;
+}
+
+
+function createCards(data, onclickCallback) {
   for (let i = 0; i < data.length; i += 1) {
     let description = data[i].description;
     if (data[i].description.length > 12) {
       description = `${description.substring(0, 12)}...`;
     }
+    const routeLocation = getLocationArray(data[i].station_sequence);
+    console.log(routeLocation);
 
-    $$('.big-card').append(`<div class="card" id="${data[i].id}">
-                    <div href="#" class="card-content" style="height:15vh;">
-                        <div class="row no-gutter">\
-                            <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
-                            <div class="col-60" style="padding:8px;">
-                                <div class="card-title"><span>${data[i].name}</span></div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-35"></div>
-                                    <div class="col-60"><span>${description}</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer"><span>預估時間: 10 分鐘</span></div>
-                </div>`);
+    if (routeLocation.length > 1) {
+      calculateAndDisplayRoute(
+        routeLocation[0].location,
+        routeLocation.slice(1),
+        display = false,
+        callback = function(d, t) {
+          $$('.big-card').append(`<div class="card" id="${data[i].id}">
+              <div href="#" class="card-content" style="height:15vh;">
+                  <div class="row no-gutter">\
+                      <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                      <div class="col-60" style="padding:8px;">
+                          <div class="card-title"><span>${data[i].name}</span></div>
+                          <br>
+                          <div class="row">
+                              <div class="col-35"></div>
+                              <div class="col-60"><span>${description}</span></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="card-footer"><span>預估時間: ${(t/60).toFixed(0)} 分鐘</span></div>
+          </div>`);
+          onclickCallback();
+        },
+      );
+    } else {
+      $$('.big-card').append(`<div class="card" id="${data[i].id}">
+          <div href="#" class="card-content" style="height:15vh;">
+              <div class="row no-gutter">\
+                  <div class="col-35"><img src="${data[i].image}" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>
+                  <div class="col-60" style="padding:8px;">
+                      <div class="card-title"><span>${data[i].name}</span></div>
+                      <br>
+                      <div class="row">
+                          <div class="col-35"></div>
+                          <div class="col-60"><span>${description}</span></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="card-footer"><span>預估時間: 0 分鐘</span></div>
+      </div>`);
+      onclickCallback();
+    }
   }
-
-  callback();
 }
 
 function createFavoriteCards(favorite, lat, lng, callback) {
@@ -537,7 +543,7 @@ function createSites(sites, favorite, lat, lng, callback) {
   console.log("creating site");
   let category;
   let distanceBetween;
-  console.log("creating site num"+sites.length);
+  console.log("creating site num" + sites.length);
   for (let i = 0; i < sites.length; i += 1) {
     switch (sites[i].category) {
       case '藝文':
@@ -883,12 +889,13 @@ myApp.onPageInit('themeRoute', () => {
         $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
           const route = findRoute(plansObj, this.id);
           const itemList = findSequence(stationsObj, route.station_sequence);
+          const time = $$(this).children('.card-footer').find('span').html();
 
           mainView.router.load({
             url: 'routeDetail.html',
             context: {
               title: route.name,
-              time: '10',
+              time,
               custom: false,
               previous: 'themeRoute.html',
               introduction: route.description,
@@ -990,7 +997,7 @@ myApp.onPageInit('themeSite', () => {
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
     console.log("themeSite onSuccess finish no loc");
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -1001,6 +1008,15 @@ myApp.onPageInit('routeDetail', (page) => {
   } else {
     myApp.accordionOpen($$('li#itemList'));
   }
+  $$('.toolbar').on('click', () => {
+    mainView.router.load({
+      url: 'map.html',
+      context: {
+        isDirection: true,
+        stations: page.context.itemList,
+      },
+    });
+  });
 });
 
 myApp.onPageInit('favorite', () => {
@@ -1092,7 +1108,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 });
 
 myApp.onPageInit('customRoute', () => {
@@ -1133,7 +1149,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, {timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
@@ -1144,18 +1160,42 @@ myApp.onPageInit('customRoute', () => {
       myApp.alert('並沒有選擇任何站點喔!', '注意');
     } else {
       itemList = findSequence(stations, favoriteSequence);
-      mainView.router.load({
-        url: 'routeDetail.html',
-        context: {
-          title: '自訂行程',
-          time: 'unknown',
-          custom: true,
-          previous: 'customRoute.html',
-          introduction: '自己想的好棒喔',
-          img: itemList[0].image.primary,
-          itemList,
-        },
-      });
+      const routeLocation = getLocationArray(favoriteSequence);
+
+      if (routeLocation.length > 1) {
+        calculateAndDisplayRoute(
+          routeLocation[0].location,
+          routeLocation.slice(1),
+          display = false,
+          callback = function(d, t) {
+            mainView.router.load({
+              url: 'routeDetail.html',
+              context: {
+                title: '自訂行程',
+                time: `預估時間: ${(t/60).toFixed(0)} 分鐘`,
+                custom: true,
+                previous: 'customRoute.html',
+                introduction: '自己想的好棒喔',
+                img: itemList[0].image.primary,
+                itemList,
+              },
+            });
+          },
+        );
+      } else {
+        mainView.router.load({
+          url: 'routeDetail.html',
+          context: {
+            title: '自訂行程',
+            time: `預估時間: 0 分鐘`,
+            custom: true,
+            previous: 'customRoute.html',
+            introduction: '自己想的好棒喔',
+            img: itemList[0].image.primary,
+            itemList,
+          },
+        });
+      }
     }
   });
 });
@@ -1301,9 +1341,9 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
         console.log(rewardID);
         console.log(rewards);
 
-        if($.inArray(rewardID[0], rewards ) === -1) {
-          rewards = getRewards(rewards,rewardID[0]);
-  
+        if ($.inArray(rewardID[0], rewards) === -1) {
+          rewards = getRewards(rewards, rewardID[0]);
+
           const rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
           const rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
