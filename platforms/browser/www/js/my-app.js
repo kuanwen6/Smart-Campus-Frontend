@@ -10,15 +10,15 @@ $$(document).on('page:init', (e) => {
 
 $$(document).on('backbutton', function() {
   var view = myApp.getCurrentView();
-  var page = view.activePage; 
+  var page = view.activePage;
 
-  if(page.name=="index"){
+  if (page.name == "index") {
     var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
-    });   
-  }else{
-      view.router.back();
+    });
+  } else {
+    view.router.back();
   }
 });
 
@@ -368,13 +368,19 @@ myApp.onPageInit('info', (page) => {
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 12; i++) {
     $$('.collections').append('<div></div>');
   }
 
   const rewards = JSON.parse(window.localStorage.getItem('rewards'));
   const allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
   for (let i = 0; i < rewards.length; i++) {
+    if (i > 11 && i % 4 === 0) {
+      for (let j = 0; j < 4; j++) {
+        $$('.collections').append('<div></div>');
+      }
+    }
+
     const rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
     $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
   }
