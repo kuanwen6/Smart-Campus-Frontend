@@ -94,6 +94,8 @@ $$(document).on('deviceready', () => {
 
 myApp.onPageInit('index', function(page) {
   $$('.login-form-to-json').on('click', () => {
+    myApp.showPreloader();
+
     const formData = myApp.formToJSON('#login-form');
     console.log(formData);
 
@@ -114,17 +116,21 @@ myApp.onPageInit('index', function(page) {
         window.localStorage.setItem('coins', data['data']['coins']);
         window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
         window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
+        myApp.hidePreloader();
         loginInit();
       },
       error = function(data) {
         console.log('login fail');
         console.log(data);
+        myApp.hidePreloader();
         myApp.alert('', '登入失敗，請重新輸入');
       }
     );
   });
 
   $$('.register-form-to-json').on('click', () => {
+    myApp.showPreloader();
+
     const formData = myApp.formToJSON('#register-form');
     console.log(formData);
 
@@ -137,7 +143,8 @@ myApp.onPageInit('index', function(page) {
       },
       success = function(data) {
         console.log('register success');
-        myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
+        myApp.hidePreloader();
+        myApp.alert(`嗨! ${formData['nickname']}<br>請至註冊之信箱收取認證信件！`, '註冊成功!', function() {
           myApp.closeModal();
         });
 
@@ -145,6 +152,7 @@ myApp.onPageInit('index', function(page) {
       error = function(data) {
         console.log('register fail');
         console.log(data);
+        myApp.hidePreloader();
         myApp.alert(data['responseText'], '註冊失敗');
       }
     );

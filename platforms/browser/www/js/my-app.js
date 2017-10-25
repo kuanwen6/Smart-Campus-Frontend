@@ -8,18 +8,41 @@ $$(document).on('page:init', (e) => {
   console.log(page);
 });
 
+$$(document).on('backbutton', function() {
+  var view = myApp.getCurrentView();
+  var page = view.activePage; 
+
+  if(page.name=="index"){
+    var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
+      navigator.app.clearHistory();
+      navigator.app.exitApp();
+    });   
+  }else{
+      view.router.back();
+  }
+});
+
+$$(document).on('pause', function() {
+  beacon_util.stopScanForBeacons();
+
+  console.log("pause");
+});
+
+$$(document).on('resume', function() {
+  beacon_util.startScanForBeacons();
+
+  console.log("resume");
+});
+
 $$(document).on('deviceready', () => {
   console.log('Device is ready!');
-
-  //iBeacon Setup
-  beacon_util.init_beacon_detection();
 
   directionsService = new google.maps.DirectionsService;
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
   const applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
-    window.localStorage.setItem('launchCount', 1);
+    window.localStorage.setItem('launchCount', true);
     window.localStorage.setItem('nickname', 'Guest');
     window.localStorage.setItem('experiencePoint', 0);
     window.localStorage.setItem('rewards', '[]');
@@ -29,6 +52,8 @@ $$(document).on('deviceready', () => {
       welcomescreenSlides, {
         closeButton: false,
         onClosed: function() {
+          //iBeacon Setup
+          beacon_util.init_beacon_detection();
           beacon_util.startScanForBeacons();
         },
       }
@@ -37,7 +62,9 @@ $$(document).on('deviceready', () => {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched ${++window.localStorage.launchCount} times.`);
+    console.log(`App has launched: ${window.localStorage.launchCount}`);
+    //iBeacon Setup
+    beacon_util.init_beacon_detection();
     beacon_util.startScanForBeacons();
   }
 
@@ -67,6 +94,8 @@ $$(document).on('deviceready', () => {
 
 myApp.onPageInit('index', function(page) {
   $$('.login-form-to-json').on('click', () => {
+    myApp.showPreloader();
+
     const formData = myApp.formToJSON('#login-form');
     console.log(formData);
 
@@ -87,17 +116,21 @@ myApp.onPageInit('index', function(page) {
         window.localStorage.setItem('coins', data['data']['coins']);
         window.localStorage.setItem('rewards', JSON.stringify(data['data']['rewards']));
         window.localStorage.setItem('favoriteStations', JSON.stringify(data['data']['favorite_stations']));
+        myApp.hidePreloader();
         loginInit();
       },
       error = function(data) {
         console.log('login fail');
         console.log(data);
+        myApp.hidePreloader();
         myApp.alert('', '登入失敗，請重新輸入');
       }
     );
   });
 
   $$('.register-form-to-json').on('click', () => {
+    myApp.showPreloader();
+
     const formData = myApp.formToJSON('#register-form');
     console.log(formData);
 
@@ -110,7 +143,8 @@ myApp.onPageInit('index', function(page) {
       },
       success = function(data) {
         console.log('register success');
-        myApp.alert(`嗨! ${formData['nickname']}`, '註冊成功!', function() {
+        myApp.hidePreloader();
+        myApp.alert(`嗨! ${formData['nickname']}<br>請至註冊之信箱收取認證信件！`, '註冊成功!', function() {
           myApp.closeModal();
         });
 
@@ -118,6 +152,7 @@ myApp.onPageInit('index', function(page) {
       error = function(data) {
         console.log('register fail');
         console.log(data);
+        myApp.hidePreloader();
         myApp.alert(data['responseText'], '註冊失敗');
       }
     );
@@ -309,7 +344,7 @@ myApp.onPageInit('map', (page) => {
       if (page.context.isDirection) {
         calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
           waypts,
-          display = true,
+          display = true
         );
       }
     }
@@ -322,7 +357,7 @@ myApp.onPageInit('map', (page) => {
       myApp.alert('導覽無法進行定位', '未開啟GPS');
       calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
         waypts,
-        display = true,
+        display = true
       );
     }
   }
@@ -440,7 +475,7 @@ function createCards(data, onclickCallback) {
               <div class="card-footer"><span>預估時間: ${(t/60).toFixed(0)} 分鐘</span></div>
           </div>`);
           onclickCallback();
-        },
+        }
       );
     } else {
       $$('.big-card').append(`<div class="card" id="${data[i].id}">
@@ -1111,7 +1146,7 @@ myApp.onPageInit('favorite', () => {
 });
 
 function backChoice(previous) {
-  if ('previous' === 'themeRoute.html') {
+  if (previous === 'themeRoute.html') {
     mainView.hideToolbar();
     mainView.router.back();
   } else {
@@ -1190,7 +1225,7 @@ myApp.onPageInit('customRoute', () => {
                 itemList,
               },
             });
-          },
+          }
         );
       } else {
         mainView.router.load({
@@ -1340,7 +1375,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           },
           success = function(data) {
             console.log('add answered success');
-          },
+          }
         );
       }
 
@@ -1357,7 +1392,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           const rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
           myApp.addNotification({
-            title: '成大尋寶趣',
+            title: '成大藏奇圖',
             message: `您已獲得收藏品:  「${rewardInfo.name}」`,
             media: `<img width="44" height="44" style="border-radius:100%" src="${rewardInfo.image_url}">`,
             hold: 8000,

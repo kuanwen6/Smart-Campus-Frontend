@@ -52,6 +52,7 @@
 #login-form {
   margin-left: 10vw;
   margin-right: 10vw;
+  margin-top: 8vh;
 }
 
 #login-form>ul {
@@ -73,8 +74,11 @@
 
 .page-btn {
   display: table;
-  margin: 0 auto;
   border-spacing: 0 20px;
+  position: absolute;
+  top: 47vh;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .page-btn>div {
@@ -87,11 +91,14 @@
 }
 
 .page-btn img {
-  width: 50%;
+  width: 55%;
 }
 
 #register-btn {
-  text-align: center;
+  bottom: 30px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 #register-btn img {
