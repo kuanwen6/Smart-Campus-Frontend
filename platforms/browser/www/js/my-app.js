@@ -1038,7 +1038,9 @@ myApp.onPageInit('themeSite', () => {
     createSites(stations, favoriteSequence, -1, -1, onclickFunc);
     console.log("themeSite onSuccess finish no loc");
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
+
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 3500, enableHighAccuracy: true });
+
 });
 
 myApp.onPageInit('routeDetail', (page) => {
@@ -1062,10 +1064,6 @@ myApp.onPageInit('routeDetail', (page) => {
 
 myApp.onPageInit('favorite', () => {
   mainView.hideToolbar();
-
-  $$('.back-force').on('click', () => {
-    mainView.router.back({ url: 'themeSite.html', force: true });
-  });
 
   const stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
@@ -1148,7 +1146,7 @@ myApp.onPageInit('favorite', () => {
   function onError() {
     createFavorite(itemList, -1, -1, onclickFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 3500, enableHighAccuracy: true });
 });
 
 function backChoice(previous) {
@@ -1199,7 +1197,7 @@ myApp.onPageInit('customRoute', () => {
   function onError() {
     createFavoriteCards(itemList, -1, -1, deleteFunc);
   }
-  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 3500, enableHighAccuracy: true });
 
   mainView.showToolbar();
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto; height:48px;">確定行程</a></div>');
