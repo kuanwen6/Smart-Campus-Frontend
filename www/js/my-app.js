@@ -1156,14 +1156,13 @@ function backChoice(previous) {
     mainView.hideToolbar();
     mainView.router.back();
   } else {
-    console.log('aa');
-    mainView.router.back({ url: 'customRoute.html', force: true });
+    mainView.router.back({ url: 'customRoute.html', force: true, ignoreCache: true});
   }
 }
 
 myApp.onPageInit('customRoute', () => {
-  mainView.showToolbar();
   $$('.back-force').on('click', () => {
+    console.log('back click');
     mainView.router.back({ url: 'route.html', force: true });
   });
 
