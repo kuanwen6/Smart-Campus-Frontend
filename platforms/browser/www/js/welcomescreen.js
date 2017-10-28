@@ -1,5 +1,5 @@
-/* jslint browser: true */
-/* global console, Framework7, alert, Dom7, Swiper, Template7 */
+/*jslint browser: true*/
+/*global console, Framework7, alert, Dom7, Swiper, Template7*/
 
 /**
  * A plugin for Framework7 to show a slideable welcome screen
@@ -8,16 +8,17 @@
  * @author www.timo-ernst.net
  * @license MIT
  */
-Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) {
+Framework7.prototype.plugins.welcomescreen = function(app, globalPluginParams) {
+  'use strict';
   // Variables in module scope
-  let $$ = Dom7,
+  var $$ = Dom7,
     t7 = Template7,
     Welcomescreen;
 
   // Click handler to close welcomescreen
-  $$(document).on('click', '.close-welcomescreen', function (e) {
+  $$(document).on('click', '.close-welcomescreen', function(e) {
     e.preventDefault();
-    const $wscreen = $$(this).parents('.welcomescreen-container');
+    var $wscreen = $$(this).parents('.welcomescreen-container');
     if ($wscreen.length > 0 && $wscreen[0].f7Welcomescreen) { $wscreen[0].f7Welcomescreen.close(); }
   });
 
@@ -27,9 +28,10 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
    * @class
    * @memberof module:Framework7/prototype/plugins/welcomescreen
    */
-  Welcomescreen = function (slides, options) {
+  Welcomescreen = function(slides, options) {
+
     // Private properties
-    let self = this,
+    var self = this,
       defaultTemplate,
       template,
       container,
@@ -39,7 +41,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
         closeButton: true, // enabled/disable close button
         closeButtonText: 'Skip', // close button text
         cssClass: '', // additional class on container
-        pagination: true, // swiper pagination, 
+        pagination: true, // swiper pagination
         navigation: false, // swiper navigation
         loop: false, // swiper loop
         open: true, // open welcome screen on init
@@ -50,8 +52,8 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
         parallaxSlideElements: {
           title: -100,
           subtitle: -300,
-          text: -500,
-        },
+          text: -500
+        }
       };
 
     /**
@@ -65,7 +67,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
         loop: options.loop,
         pagination: options.pagination ? swiperContainer.find('.swiper-pagination') : undefined,
         parallax: options.parallax,
-        speed: options.parallaxSpeed,
+        speed: options.parallaxSpeed
       });
     }
 
@@ -78,7 +80,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
       if (options.bgcolor) {
         container.css({
           'background-color': options.bgcolor,
-          color: options.fontcolor,
+          'color': options.fontcolor
         });
       }
     }
@@ -90,38 +92,38 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      */
     function defineDefaultTemplate() {
       defaultTemplate = '<div class="welcomescreen-container {{#if options.cssClass}}{{options.cssClass}}{{/if}}">' +
-          '{{#if options.closeButton}}' +
-          '<div class="welcomescreen-closebtn close-welcomescreen">{{options.closeButtonText}}</div>' +
-          '{{/if}}' +
-          '<div class="welcomescreen-swiper">' +
-            '{{#if options.parallax}}<div class="parallax-bg" style="background-image:url({{options.parallaxBackgroundImage}})" data-swiper-parallax="{{options.parallaxBackground}}"></div>{{/if}}' +
-                '<div class="swiper-wrapper">' +
-                  '{{#each slides}}' +
-                  '<div class="swiper-slide" {{#if id}}id="{{id}}"{{/if}}>' +
-                    '<div class="welcomescreen-title {{#unless title}}hide-title{{/unless}}" data-swiper-parallax="{{#if parallaxTitle}}{{parallaxTitle}}{{else}}{{@root.options.parallaxSlideElements.title}}{{/if}}">{{#if title}}{{title}}{{else}}title{{/if}}</div>' +
-                    '{{#if content}}' +
-                      '<div class="welcomescreen-content">{{content}}</div>' +
-                    '{{else}}' +
-                      '{{#if picture}}' +
-                        '<div class="welcomescreen-picture" data-swiper-parallax="{{#if parallaxPicture}}{{parallaxPicture}}{{else}}{{@root.options.parallaxSlideElements.subtitle}}{{/if}}">{{picture}}</div>' +
-                      '{{/if}}' +
-                      '{{#if text}}' +
-                        '<div class="welcomescreen-text" data-swiper-parallax="{{#if parallaxText}}{{parallaxText}}{{else}}{{@root.options.parallaxSlideElements.text}}{{/if}}">{{text}}</div>' +
-                      '{{/if}}' +
-                    '{{/if}}' +
-                  '</div>' +
-                  '{{/each}}' +
-                '</div>' +
-                '{{#if options.pagination}}' +
-                '<div class="welcomescreen-pagination swiper-pagination"></div>' +
-                '{{/if}}' +
-                '{{#if options.navigation}}' +
-                '<!-- If we need navigation buttons -->' +
-                '<div class="welcomescreen-navigation-prev swiper-button-prev"></div>' +
-                '<div class="welcomescreen-navigation-next swiper-button-next"></div>' +
-                '{{/if}}' +
-            '</div>' +
-          '</div>' +
+        '{{#if options.closeButton}}' +
+        '<div class="welcomescreen-closebtn close-welcomescreen">{{options.closeButtonText}}</div>' +
+        '{{/if}}' +
+        '<div class="welcomescreen-swiper">' +
+        '{{#if options.parallax}}<div class="parallax-bg" style="background-image:url({{options.parallaxBackgroundImage}})" data-swiper-parallax="{{options.parallaxBackground}}"></div>{{/if}}' +
+        '<div class="swiper-wrapper">' +
+        '{{#each slides}}' +
+        '<div class="swiper-slide" {{#if id}}id="{{id}}"{{/if}}>' +
+        '<div class="welcomescreen-title {{#unless title}}hide-title{{/unless}}" data-swiper-parallax="{{#if parallaxTitle}}{{parallaxTitle}}{{else}}{{@root.options.parallaxSlideElements.title}}{{/if}}">{{#if title}}{{title}}{{else}}title{{/if}}</div>' +
+        '{{#if content}}' +
+        '<div class="welcomescreen-content">{{content}}</div>' +
+        '{{else}}' +
+        '{{#if picture}}' +
+        '<div class="welcomescreen-picture" data-swiper-parallax="{{#if parallaxPicture}}{{parallaxPicture}}{{else}}{{@root.options.parallaxSlideElements.subtitle}}{{/if}}">{{picture}}</div>' +
+        '{{/if}}' +
+        '{{#if text}}' +
+        '<div class="welcomescreen-text" data-swiper-parallax="{{#if parallaxText}}{{parallaxText}}{{else}}{{@root.options.parallaxSlideElements.text}}{{/if}}">{{text}}</div>' +
+        '{{/if}}' +
+        '{{/if}}' +
+        '</div>' +
+        '{{/each}}' +
+        '</div>' +
+        '{{#if options.pagination}}' +
+        '<div class="welcomescreen-pagination swiper-pagination"></div>' +
+        '{{/if}}' +
+        '{{#if options.navigation}}' +
+        '<!-- If we need navigation buttons -->' +
+        '<div class="welcomescreen-navigation-prev swiper-button-prev"></div>' +
+        '<div class="welcomescreen-navigation-next swiper-button-next"></div>' +
+        '{{/if}}' +
+        '</div>' +
+        '</div>' +
         '</div>';
     }
 
@@ -131,7 +133,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @private
      */
     function applyOptions() {
-      let def;
+      var def;
       options = options || {};
       for (def in defaults) {
         if (typeof options[def] === 'undefined') {
@@ -163,8 +165,8 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @public
      * @memberof module:Framework7/prototype/plugins/welcomescreen
      */
-    self.open = function () {
-      container = $$(template({ options, slides }));
+    self.open = function() {
+      container = $$(template({ options: options, slides: slides }));
       swiperContainer = container.find('.welcomescreen-swiper');
       setColors();
       $$('body').append(container);
@@ -179,7 +181,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @public
      * @memberof module:Framework7/prototype/plugins/welcomescreen
      */
-    self.close = function () {
+    self.close = function() {
       if (swiper) { swiper.destroy(true); }
       if (container) { container.remove(); }
       container = swiperContainer = swiper = undefined;
@@ -192,7 +194,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @public
      * @memberof module:Framework7/prototype/plugins/welcomescreen
      */
-    self.next = function () {
+    self.next = function() {
       if (swiper) { swiper.slideNext(); }
     };
 
@@ -202,7 +204,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @public
      * @memberof module:Framework7/prototype/plugins/welcomescreen
      */
-    self.previous = function () {
+    self.previous = function() {
       if (swiper) { swiper.slidePrev(); }
     };
 
@@ -213,7 +215,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      * @public
      * @memberof module:Framework7/prototype/plugins/welcomescreen
      */
-    self.slideTo = function (index) {
+    self.slideTo = function(index) {
       if (swiper) { swiper.slideTo(index); }
     };
 
@@ -222,7 +224,7 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
      *
      * @method init
      */
-    (function () {
+    (function() {
       defineDefaultTemplate();
       compileTemplate();
       applyOptions();
@@ -231,13 +233,15 @@ Framework7.prototype.plugins.welcomescreen = function (app, globalPluginParams) 
       if (options.open) {
         self.open();
       }
+
     }());
 
     // Return instance
     return self;
   };
 
-  app.welcomescreen = function (slides, options) {
+  app.welcomescreen = function(slides, options) {
     return new Welcomescreen(slides, options);
   };
+
 };
