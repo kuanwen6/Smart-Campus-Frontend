@@ -1,10 +1,10 @@
-let directionsService;
-let directionsDisplay;
+var directionsService = void 0;
+var directionsDisplay = void 0;
 
 mainView.hideToolbar();
 
-$$(document).on('page:init', (e) => {
-  const page = e.detail.page;
+$$(document).on('page:init', function(e) {
+  var page = e.detail.page;
   console.log(page);
 });
 
@@ -34,13 +34,13 @@ $$(document).on('resume', function() {
   console.log("resume");
 });
 
-$$(document).on('deviceready', () => {
+$$(document).on('deviceready', function() {
   console.log('Device is ready!');
 
-  directionsService = new google.maps.DirectionsService;
+  directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
-  const applaunchCount = window.localStorage.getItem('launchCount');
+  var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
     window.localStorage.setItem('launchCount', true);
     window.localStorage.setItem('nickname', 'Guest');
@@ -48,7 +48,7 @@ $$(document).on('deviceready', () => {
     window.localStorage.setItem('rewards', '[]');
     window.localStorage.setItem('favoriteStations', '[]');
     window.localStorage.setItem('coins', 0);
-    const welcomescreen = myApp.welcomescreen(
+    var welcomescreen = myApp.welcomescreen(
       welcomescreenSlides, {
         closeButton: false,
         onClosed: function() {
@@ -58,54 +58,54 @@ $$(document).on('deviceready', () => {
         },
       }
     );
-    $$(document).on('click', '#welcome-close-btn', () => {
+    $$(document).on('click', '#welcome-close-btn', function() {
       welcomescreen.close();
     });
   } else {
-    console.log(`App has launched: ${window.localStorage.launchCount}`);
-    //iBeacon Setup
+    console.log('App has launched: ' + window.localStorage.launchCount);
+    // iBeacon Setup
     beacon_util.init_beacon_detection();
     beacon_util.startScanForBeacons();
   }
 
   $$.get(
-    url = `${HOOKURL}smart_campus/get_all_rewards/`,
-    success = function(data) {
+    url = HOOKURL + 'smart_campus/get_all_rewards/',
+    success = function success(data) {
       console.log('get rewards info success');
       window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
     },
-    error = function(data) {
+    error = function error(data) {
       console.log('get rewards info fail');
       console.log(data);
     }
-  )
+  );
   $$.get(
-    url = `${HOOKURL}smart_campus/get_all_stations/`,
-    success = function(data) {
+    url = HOOKURL + 'smart_campus/get_all_stations/',
+    success = function success(data) {
       console.log('get stations info success');
       window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
     },
-    error = function(data) {
+    error = function error(data) {
       console.log('get stations info fail');
       console.log(data);
     }
-  )
+  );
 });
 
 myApp.onPageInit('index', function(page) {
-  $$('.login-form-to-json').on('click', () => {
+  $$('.login-form-to-json').on('click', function() {
     myApp.showPreloader();
 
-    const formData = myApp.formToJSON('#login-form');
+    var formData = myApp.formToJSON('#login-form');
     console.log(formData);
 
     $$.post(
-      url = `${HOOKURL}smart_campus/login/`,
+      url = HOOKURL + 'smart_campus/login/',
       data = {
         'email': formData['email'],
-        'password': formData['password'],
+        'password': formData['password']
       },
-      success = function(data) {
+      success = function success(data) {
         console.log('login success');
         data = JSON.parse(data);
         console.log(data);
@@ -119,7 +119,7 @@ myApp.onPageInit('index', function(page) {
         myApp.hidePreloader();
         loginInit();
       },
-      error = function(data) {
+      error = function error(data) {
         console.log('login fail');
         console.log(data);
         myApp.hidePreloader();
@@ -128,28 +128,27 @@ myApp.onPageInit('index', function(page) {
     );
   });
 
-  $$('.register-form-to-json').on('click', () => {
+  $$('.register-form-to-json').on('click', function() {
     myApp.showPreloader();
 
-    const formData = myApp.formToJSON('#register-form');
+    var formData = myApp.formToJSON('#register-form');
     console.log(formData);
 
     $$.post(
-      url = `${HOOKURL}smart_campus/signup/`,
+      url = HOOKURL + 'smart_campus/signup/',
       data = {
         'email': formData['email'],
         'password': formData['password'],
-        'nickname': formData['nickname'],
+        'nickname': formData['nickname']
       },
-      success = function(data) {
+      success = function success(data) {
         console.log('register success');
         myApp.hidePreloader();
-        myApp.alert(`嗨! ${formData['nickname']}<br>請至註冊之信箱收取認證信件！`, '註冊成功!', function() {
+        myApp.alert('嗨！' + formData['nickname'] + '<br>請至註冊之信箱收取認證信件！', '註冊成功！', function() {
           myApp.closeModal();
         });
-
       },
-      error = function(data) {
+      error = function error(data) {
         console.log('register fail');
         console.log(data);
         myApp.hidePreloader();
@@ -171,24 +170,24 @@ myApp.onPageInit('index', function(page) {
   }
 }).trigger();
 
-myApp.onPageInit('map', (page) => {
-  $$('.open-filter').on('click', () => {
+myApp.onPageInit('map', function(page) {
+  $$('.open-filter').on('click', function() {
     $$('#map-filter').css('display', 'block');
   });
 
-  $$(window).on('click', (event) => {
+  $$(window).on('click', function(event) {
     if (event.target === $$('#map-filter')[0]) {
       $$('#map-filter').css('display', 'none');
     }
   });
 
-  $$('.filter-table div').on('click', (e) => {
+  $$('.filter-table div').on('click', function(e) {
     $$(e.currentTarget).children('span').toggleClass('filter-added');
     setGroupMarkerVisible(e.currentTarget.id);
   });
 
-  $$('.marker-favorite').on('click', (e) => {
-    let favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+  $$('.marker-favorite').on('click', function(e) {
+    var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
     $$(e.currentTarget).toggleClass('color-red');
 
     if ($$(e.currentTarget).hasClass('color-red')) {
@@ -198,53 +197,53 @@ myApp.onPageInit('map', (page) => {
     }
   });
 
-  let markers;
-  let stations;
-  let waypts = [];
-  let Latitude = undefined;
-  let Longitude = undefined;
-  let Accuracy = undefined;
-  const image = {
+  var markers = void 0;
+  var stations = void 0;
+  var waypts = [];
+  var Latitude = undefined;
+  var Longitude = undefined;
+  var Accuracy = undefined;
+  var image = {
     url: './icon/mobileimgs2.png',
     size: new google.maps.Size(22, 22),
     origin: new google.maps.Point(0, 18),
-    anchor: new google.maps.Point(11, 11),
+    anchor: new google.maps.Point(11, 11)
   };
-  const map = new google.maps.Map($$('#map')[0], {
+  var map = new google.maps.Map($$('#map')[0], {
     zoom: 16,
     center: { lat: 22.998089, lng: 120.217441 },
     disableDefaultUI: true,
-    clickableIcons: false,
+    clickableIcons: false
   });
-  const locationMarker = new google.maps.Marker({
+  var locationMarker = new google.maps.Marker({
     clickable: false,
     icon: image,
     shadow: null,
     zIndex: 999,
-    map: map,
+    map: map
   });
-  const locationCircle = new google.maps.Circle({
+  var locationCircle = new google.maps.Circle({
     fillColor: '#61a0bf',
     fillOpacity: 0.4,
     strokeColor: '#1bb6ff',
     strokeOpacity: 0.4,
     strokeWeight: 1,
-    map: map,
+    map: map
   });
-  const walkingLineSymbol = {
+  var walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
-    scale: 3,
+    scale: 3
   };
-  const walkingPathLine = {
+  var walkingPathLine = {
     strokeColor: '#0eb7f6',
     strokeOpacity: 0,
     fillOpacity: 0,
     icons: [{
       icon: walkingLineSymbol,
       offset: '0',
-      repeat: '10px',
-    }],
+      repeat: '10px'
+    }]
   };
 
   map.addListener('click', hideMarkerInfo);
@@ -260,8 +259,29 @@ myApp.onPageInit('map', (page) => {
       directionsDisplay.setMap(map);
 
       stations = page.context.stations;
-      for (const station of stations) {
-        waypts.push({ location: { lat: station['location'][1], lng: station['location'][0] } });
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = stations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var station = _step.value;
+
+          waypts.push({ location: { lat: station['location'][1], lng: station['location'][0] } });
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
     } else {
       console.log('Map overview mode!');
@@ -271,41 +291,66 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setMarkers(map) {
-    const icon = {
+    var icon = {
       '古蹟': 'img/markers/marker_red.png',
       '藝文': 'img/markers/marker_orange.png',
       '景觀': 'img/markers/marker_green.png',
-      '行政單位': 'img/markers/marker_blue.png',
+      '行政單位': 'img/markers/marker_blue.png'
     };
-    const scaledSize = new google.maps.Size(25, 36);
-    const anchor = new google.maps.Point(12.5, 36);
+    var scaledSize = new google.maps.Size(25, 36);
+    var anchor = new google.maps.Point(12.5, 36);
     markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
 
-    for (const station of stations) {
-      const marker = new google.maps.Marker({
-        position: { lat: station['location'][1], lng: station['location'][0] },
-        title: station['name'],
-        map: map,
-        icon: {
-          url: icon[station['category']],
-          scaledSize: scaledSize,
-          anchor: anchor,
-        },
-      });
-      marker.addListener('click', showMarkerInfo);
-      markers[station['category']].push(marker);
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = stations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var station = _step2.value;
+
+        var marker = new google.maps.Marker({
+          position: { lat: station['location'][1], lng: station['location'][0] },
+          title: station['name'],
+          map: map,
+          icon: {
+            url: icon[station['category']],
+            scaledSize: scaledSize,
+            anchor: anchor
+          }
+        });
+        marker.addListener('click', showMarkerInfo);
+        markers[station['category']].push(marker);
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+          _iterator2.return();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
+      }
     }
   }
 
   function showMarkerInfo() {
-    const station = stations.find(x => x.name === this.title);
-    let _distance = '';
+    var _this = this;
+
+    var station = stations.find(function(x) {
+      return x.name === _this.title;
+    });
+    var _distance = '';
     if (Latitude !== undefined && Longitude !== undefined) {
       _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
     }
 
     $$('#marker-img').attr('src', station['image']['primary']);
-    $$('#marker-category').html(`/ ${station['category']}主題 /`);
+    $$('#marker-category').html('/ ' + station['category'] + '主題 /');
     $$('#marker-name').html(station['name'].replace('/', '<br>/'));
     $$('#marker-distance').html(_distance);
     $$('.marker-favorite').attr('id', station['id']);
@@ -318,9 +363,30 @@ myApp.onPageInit('map', (page) => {
   }
 
   function setGroupMarkerVisible(groupId) {
-    const category = ['古蹟', '藝文', '景觀', '行政單位'];
-    for (const marker of markers[category[groupId]]) {
-      marker.setVisible(!marker.visible);
+    var category = ['古蹟', '藝文', '景觀', '行政單位'];
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+      for (var _iterator3 = markers[category[groupId]][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        var marker = _step3.value;
+
+        marker.setVisible(!marker.visible);
+      }
+    } catch (err) {
+      _didIteratorError3 = true;
+      _iteratorError3 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+          _iterator3.return();
+        }
+      } finally {
+        if (_didIteratorError3) {
+          throw _iteratorError3;
+        }
+      }
     }
   }
 
@@ -331,9 +397,9 @@ myApp.onPageInit('map', (page) => {
   }
 
   function onMapWatchSuccess(position) {
-    let updatedLatitude = position.coords.latitude;
-    let updatedLongitude = position.coords.longitude;
-    let updatedAccuracy = position.coords.accuracy;
+    var updatedLatitude = position.coords.latitude;
+    var updatedLongitude = position.coords.longitude;
+    var updatedAccuracy = position.coords.accuracy;
 
     if (updatedLatitude !== Latitude || updatedLongitude !== Longitude || updatedAccuracy !== Accuracy) {
       Latitude = updatedLatitude;
@@ -342,57 +408,56 @@ myApp.onPageInit('map', (page) => {
 
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
       if (page.context.isDirection) {
-        calculateAndDisplayRoute({ lat: Latitude, lng: Longitude },
-          waypts,
-          display = true
-        );
+        calculateAndDisplayRoute({ lat: Latitude, lng: Longitude }, waypts, display = true);
       }
     }
   };
 
   function onMapError(error) {
-    console.log(`code: ${error.code}\nmessage: ${error.message}\n`);
+    console.log('code: ' + error.code + '\nmessage: ' + error.message + '\n');
     if (page.context.isDirection) {
-      const origin = waypts.pop();
+      var origin = waypts.pop();
       myApp.alert('導覽無法進行定位', '未開啟GPS');
-      calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] },
-        waypts,
-        display = true
-      );
+      calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] }, waypts, display = true);
     }
   }
 });
 
-myApp.onPageInit('info', (page) => {
-  const level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
+myApp.onPageInit('info', function(page) {
+  var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
   $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  for (let i = 0; i < 12; i++) {
+  for (var i = 0; i < 12; i++) {
     $$('.collections').append('<div></div>');
   }
 
-  const rewards = JSON.parse(window.localStorage.getItem('rewards'));
-  const allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
-  for (let i = 0; i < rewards.length; i++) {
+  var rewards = JSON.parse(window.localStorage.getItem('rewards'));
+  var allRewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
+  for (var i = 0; i < rewards.length; i++) {
     if (i > 11 && i % 4 === 0) {
-      for (let j = 0; j < 4; j++) {
+      for (var j = 0; j < 4; j++) {
         $$('.collections').append('<div></div>');
       }
     }
 
-    const rewardImg = allRewardsInfo.find(x => x.id === rewards[i])['image_url'];
-    $$('.collections > div').eq(i).append(`<img src="${rewardImg}"/>`);
+    var rewardImg = allRewardsInfo.find(function(x) {
+      return x.id === rewards[i];
+    })['image_url'];
+    $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 });
 
-function calculateAndDisplayRoute(origin, waypts, display = false, callback = null) {
+function calculateAndDisplayRoute(origin, waypts) {
+  var display = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
   directionsService.route({
     origin: origin,
     destination: origin,
     waypoints: waypts,
     optimizeWaypoints: true,
-    travelMode: 'WALKING',
+    travelMode: 'WALKING'
   }, function(response, status) {
     if (status === 'OK') {
       response.routes[0].legs = response.routes[0].legs.slice(0, -1);
@@ -400,16 +465,38 @@ function calculateAndDisplayRoute(origin, waypts, display = false, callback = nu
       if (display) {
         directionsDisplay.setDirections(response);
       } else {
-        let totalDistance = 0;
-        let totalDuration = 0;
-        for (const leg of response.routes[0].legs) {
-          totalDistance += leg.distance.value;
-          totalDuration += leg.duration.value;
+        var totalDistance = 0;
+        var totalDuration = 0;
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
+
+        try {
+          for (var _iterator4 = response.routes[0].legs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var leg = _step4.value;
+
+            totalDistance += leg.distance.value;
+            totalDuration += leg.duration.value;
+          }
+        } catch (err) {
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+              _iterator4.return();
+            }
+          } finally {
+            if (_didIteratorError4) {
+              throw _iteratorError4;
+            }
+          }
         }
+
         callback(totalDistance, totalDuration);
       }
     } else {
-      console.log(`Directions request failed due to ${status}`);
+      console.log('Directions request failed due to ' + status);
     }
   });
 }
@@ -1154,7 +1241,7 @@ function backChoice(previous) {
     mainView.hideToolbar();
     mainView.router.back();
   } else {
-    mainView.router.back({ url: 'customRoute.html', force: true, ignoreCache: true});
+    mainView.router.back({ url: 'customRoute.html', force: true, ignoreCache: true });
   }
 }
 
