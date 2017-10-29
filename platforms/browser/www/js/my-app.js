@@ -254,6 +254,7 @@ myApp.onPageInit('map', function(page) {
   function directionOrMapOverview(isDirection) {
     if (isDirection) {
       console.log('Direction mode!');
+      $$('.left>a').removeClass('back');
       $$('#page-title').html('導覽中');
       $$('.open-filter').css('visibility', 'hidden');
       directionsDisplay.setMap(map);
