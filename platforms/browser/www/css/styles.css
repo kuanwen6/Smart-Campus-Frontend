@@ -77,6 +77,7 @@
   border-spacing: 0 20px;
   position: absolute;
   top: 47vh;
+  width: 85vw;
   left: 50%;
   transform: translate(-50%, 0);
 }
@@ -255,8 +256,12 @@
   margin-top: 2vh;
   height: 8vh;
   width: 100%;
-  background-image: url('../img/login_button.png');
+  background-image: url('../img/long_btn_bg.png');
   background-size: 100% 100%;
+  text-align: center;
+  line-height: 8vh;
+  color: white;
+  font-size: 3vh;
 }
 
 .popup-register {
@@ -268,8 +273,12 @@
   margin-top: 2vh;
   height: 10vh;
   width: 100%;
-  background-image: url('../img/register_button.png');
+  background-image: url('../img/long_btn_bg.png');
   background-size: 100% 100%;
+  text-align: center;
+  line-height: 10vh;
+  color: white;
+  font-size: 3vh;
 }
 
 .level-and-money {
