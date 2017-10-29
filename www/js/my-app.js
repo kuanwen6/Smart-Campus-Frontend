@@ -170,13 +170,15 @@ myApp.onPageInit('index', function(page) {
 
 myApp.onPageInit('map', function(page) {
   $$('.open-filter').on('click', function() {
-    $$('#map-filter').css('display', 'block');
+    $('#map-filter').toggle();
   });
 
-  $$(window).on('click', function(event) {
-    if (event.target === $$('#map-filter')[0]) {
-      $$('#map-filter').css('display', 'none');
-    }
+  $$('.open-filter, .filter-table').on('click', function(event) {
+    event.stopPropagation();
+  })
+
+  $$(window).on('click', function() {
+    $$('#map-filter').hide();
   });
 
   $$('.filter-table div').on('click', function(e) {
@@ -1013,7 +1015,7 @@ function moneySelect() {
 myApp.onPageInit('route', function() {
   mainView.hideToolbar();
   $$('.back-force').on('click', function() {
-    mainView.router.back({ url: 'index.html', force: true });
+    mainView.router.back({ url: 'index.html', force: false });
   });
 });
 
@@ -1056,7 +1058,7 @@ myApp.onPageInit('themeRoute', function() {
 
 myApp.onPageInit('themeSite', function() {
   $$('.back-force').on('click', function() {
-    mainView.router.back({ url: 'index.html', force: true });
+    mainView.router.back({ url: 'index.html', force: false });
   });
 
   var stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
