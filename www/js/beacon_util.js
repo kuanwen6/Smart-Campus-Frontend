@@ -23,23 +23,32 @@ beacon_util.beaconRegions =
 	}
 ];
 
-
-beacon_util.init_beacon_detection = function()
+beacon_util.init_setup_for_IBeacon = function()
 {
-	// Specify a shortcut for the location manager that
-	// has the iBeacon functions.
-	window.locationManager = cordova.plugins.locationManager;
+  // The delegate object contains iBeacon callback functions.
+  var delegate = new cordova.plugins.locationManager.Delegate();
 
-  beacon_util.setIBeaconCallback();
-  
+  delegate.didRangeBeaconsInRegion = function(pluginResult)
+  {
+    beacon_util.didRangeBeaconsInRegion(pluginResult);
+  }
+
+  // Set the delegate object to use.
+  cordova.plugins.locationManager.setDelegate(delegate);
+  //IOS authorization
+  cordova.plugins.locationManager.requestAlwaysAuthorization();
+}
+
+beacon_util.startUpBeaconUtil = function()
+{
   if(myApp.device.os == 'android'){
-    locationManager.isBluetoothEnabled()
+    cordova.plugins.locationManager.isBluetoothEnabled()
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
         if (!isEnabled) {
           myApp.confirm('啟動藍牙以展開校園探索！！是否開啟？', '啟用藍芽？',
             function () {
-              locationManager.enableBluetooth();
+              cordova.plugins.locationManager.enableBluetooth();
             }
           );
         }
@@ -54,34 +63,8 @@ beacon_util.init_beacon_detection = function()
       closeOnClick: true,
     });
   }
-  
-}
 
-
-beacon_util.setIBeaconCallback = function()
-{
-	// The delegate object contains iBeacon callback functions.
-	var delegate = new cordova.plugins.locationManager.Delegate();
-
-	delegate.didRangeBeaconsInRegion = function(pluginResult)
-	{
-		beacon_util.didRangeBeaconsInRegion(pluginResult);
-	}
-	
-	delegate.didEnterRegion = function(pluginResult)
-	{
-
-	}
-
-	delegate.didExitRegion = function(pluginResult)
-	{
-
-	}
-
-	// Set the delegate object to use.
-	locationManager.setDelegate(delegate);
-	//IOS authorization
-	locationManager.requestAlwaysAuthorization();
+  beacon_util.startScanForBeacons();
 }
 
 beacon_util.startScanForBeacons = function()
@@ -91,16 +74,16 @@ beacon_util.startScanForBeacons = function()
 	{
 		var region = beacon_util.beaconRegions[r];
 
-		var beaconRegion = new locationManager.BeaconRegion(
+		var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
 			region.id, region.uuid, region.major, region.minor);
 		
 		// Start monitoring.
-		locationManager.startMonitoringForRegion(beaconRegion)
+		cordova.plugins.locationManager.startMonitoringForRegion(beaconRegion)
 			.fail()
 			.done()
 
 		// Start ranging.
-		locationManager.startRangingBeaconsInRegion(beaconRegion)
+		cordova.plugins.locationManager.startRangingBeaconsInRegion(beaconRegion)
 			.fail()
 			.done()
 	}
@@ -113,16 +96,16 @@ beacon_util.stopScanForBeacons = function()
   {
     var region = beacon_util.beaconRegions[r];
 
-    var beaconRegion = new locationManager.BeaconRegion(
+    var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
       region.id, region.uuid, region.major, region.minor);
     
     // Stop monitoring.
-    locationManager.stopMonitoringForRegion(beaconRegion)
+    cordova.plugins.locationManager.stopMonitoringForRegion(beaconRegion)
       .fail()
       .done()
 
     // Stop ranging.
-    locationManager.stopRangingBeaconsInRegion(beaconRegion)
+    cordova.plugins.locationManager.stopRangingBeaconsInRegion(beaconRegion)
       .fail()
       .done()
   }

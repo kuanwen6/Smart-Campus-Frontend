@@ -37,6 +37,8 @@ $$(document).on('resume', function() {
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
 
+  beacon_util.init_setup_for_IBeacon();
+
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
@@ -52,9 +54,7 @@ $$(document).on('deviceready', function() {
       welcomescreenSlides, {
         closeButton: false,
         onClosed: function() {
-          //iBeacon Setup
-          beacon_util.init_beacon_detection();
-          beacon_util.startScanForBeacons();
+          beacon_util.startUpBeaconUtil();
         },
       }
     );
@@ -63,9 +63,7 @@ $$(document).on('deviceready', function() {
     });
   } else {
     console.log('App has launched: ' + window.localStorage.launchCount);
-    // iBeacon Setup
-    beacon_util.init_beacon_detection();
-    beacon_util.startScanForBeacons();
+    beacon_util.startUpBeaconUtil();
   }
 
   $$.get(
