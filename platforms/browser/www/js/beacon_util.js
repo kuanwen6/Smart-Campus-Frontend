@@ -218,12 +218,12 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
           data: {
             'beacon_id': platformID,
           },
-          success: (stations) => {
-            const stationsObj = JSON.parse(stations).data;
+          success: function (stations) {
+            var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
 
-            const stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-            const site = findStation(stations_stored, parseInt(stationsObj[0], 10));
+            var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+            var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
                 
             myApp.addNotification({
               title: '接近'+site['category']+'站點',
@@ -235,7 +235,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
                 mainView.router.load({
                   url: 'itemDetail.html',
                   context: {
-                    site,
+                    site: currentSite,
                     isBeacon: true,
                     favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
                     favorite: isFavorite(parseInt(stationsObj[0], 10)),
@@ -244,7 +244,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
               }
             });
           },
-          error: (data) => {
+          error: function (data) {
             console.log(data);
           },
         });

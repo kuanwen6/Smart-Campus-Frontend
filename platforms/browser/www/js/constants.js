@@ -1,14 +1,15 @@
 var myApp = new Framework7({
   template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
   swipeBackPage: false,
-  preloadPreviousPage: false
+  //preloadPreviousPage: false
 });
 
 var $$ = Dom7;
 
 var mainView = myApp.addView('.view-main', {
   // Because we use fixed-through navbar we can enable dynamic navbar
-  dynamicNavbar: true
+  dynamicNavbar: true,
+  domCache: true,
 });
 
 var mySwiper = myApp.swiper('.swiper-container', {
