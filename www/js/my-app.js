@@ -1347,9 +1347,17 @@ myApp.onPageInit('customRoute', function() {
     mainView.router.back({ url: 'route.html', force: true });
   });
 
+  
+
   var stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
   var itemList = findSequence(stations, favoriteSequence);
+
+  if (favoriteSequence.length === 0) {
+    myApp.alert('快去加入你所感興趣的站點吧!', '尚未有任何最愛站點', function() {
+      mainView.router.back();
+    });
+  }
 
   function deleteFunc() {
     $$('img.lazy').trigger('lazy');
