@@ -209,8 +209,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
                 
             myApp.addNotification({
-              title: '接近'+site['category']+'站點',
-              message: site['name'],
+              title: '接近' + currentSite['category'] + '站點',
+              message: currentSite['name'],
               hold: 6000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
