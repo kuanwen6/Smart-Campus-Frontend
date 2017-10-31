@@ -216,6 +216,8 @@ myApp.onPageInit('index', function(page) {
 
   if (JSON.parse(window.localStorage.getItem('loggedIn'))) {
     loginInit();
+  }else{
+    guestInit();
   }
 
   function loginInit() {
@@ -225,6 +227,15 @@ myApp.onPageInit('index', function(page) {
     $$('#register-btn').hide();
     $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
+    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+  }
+
+  function guestInit() {
+    $$('#login-form').show();
+    $$('#login-form').css('display', 'block');
+    $$('#register-btn').show();
+    $$('.profile-pic').addClass('hide');
+    $$('.nickname').addClass('hide');
     $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
 }).trigger();
@@ -486,6 +497,11 @@ myApp.onPageInit('map', function(page) {
 });
 
 myApp.onPageInit('info', function(page) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
+    $$('#logout').css('display', 'block');
+  }else{
+    $$('#logout').css('display', 'none');
+  }
   var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
@@ -509,9 +525,32 @@ myApp.onPageInit('info', function(page) {
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 
-  $$('.logout').on('click', function() {
-    console.log('logout');
-    userDataInit();
+  $$('#logout').on('click', function() {
+    if (window.localStorage.getItem("loggedIn") !== "false") {
+      console.log('logout');
+      myApp.confirm('確認登出?', '登出', function () {
+        myApp.showPreloader();
+        $$.post(
+          url = HOOKURL + 'smart_campus/logout/',
+          data = {
+            'email': window.localStorage.getItem('email'),
+          },
+          success = function success(data) {
+            console.log('logout success');
+            userDataInit();
+            myApp.hidePreloader();
+            myApp.alert('已成功登出！', '登出', function() {
+              mainView.router.back({ url: 'index.html', force: false });
+            });
+          },
+          error = function error(data, status) {
+            console.log('logout fail');
+            myApp.hidePreloader();
+            myApp.alert('登出失敗！', '登出');
+          }
+        );
+      });  
+    }
   });
 });
 
