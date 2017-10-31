@@ -3,7 +3,7 @@ var myApp = new Framework7({
   swipeBackPage: false,
   //preloadPreviousPage: false
   template7Data: {
-    'map_index': {
+    'map_clicked_on_index': {
       isDirection: false,
     },
   }
