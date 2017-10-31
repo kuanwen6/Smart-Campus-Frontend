@@ -53,6 +53,7 @@
   margin-left: 10vw;
   margin-right: 10vw;
   margin-top: 8vh;
+  text-align: center;
 }
 
 #login-form>ul {
@@ -70,6 +71,13 @@
 
 #login-form .item-inner {
   width: 65vw;
+}
+
+.forget-pw {
+  line-height: 48px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #6c7b8a;
 }
 
 .page-btn {

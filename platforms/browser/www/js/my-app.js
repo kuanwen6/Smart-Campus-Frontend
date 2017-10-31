@@ -155,6 +155,51 @@ myApp.onPageInit('index', function(page) {
     );
   });
 
+  $$('.forget-pw').on('click', function() {
+    myApp.prompt('請輸入註冊時的email', '忘記密碼',
+      function (value) {
+        myApp.showPreloader();
+        $$.post(
+          url = HOOKURL + 'smart_campus/reset_password/' + value + '/',
+          success = function success(data) {
+            console.log('reset password success');
+            myApp.hidePreloader();
+            myApp.alert('請至信箱收取信件以重置密碼！', '成功');
+          },
+          error = function error(data, status) {
+            console.log('reset password fail');
+            console.log(status, data);
+            myApp.hidePreloader();
+
+            if(status===401) {
+              myApp.confirm('你的信箱未認證，需要重發認證信至你的信箱嗎？', '認證失敗',
+                function() {
+                  myApp.showPreloader();
+                  $$.post(
+                    url = HOOKURL + 'smart_campus/resend_activation/' + value + '/',
+                    success = function success(data) {
+                      console.log('resend activation success');
+                      myApp.hidePreloader();
+                      myApp.alert('認證信已寄出，請至信箱查看', '');
+                    },
+                    error = function error(data) {
+                      console.log('resend activation fail');
+                      console.log(data);
+                      myApp.hidePreloader();
+                      myApp.alert('伺服器錯誤，請稍後再試', '失敗');
+                    }
+                  );
+                }
+              );
+            } else {
+              myApp.alert('輸入信箱格式錯誤或不存在', '失敗');
+            }
+          }
+        );
+      }
+    );
+  })
+
   if (window.localStorage.getItem('loggedIn')) {
     loginInit();
   }
