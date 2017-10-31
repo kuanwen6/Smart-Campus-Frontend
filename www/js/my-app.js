@@ -34,6 +34,16 @@ $$(document).on('resume', function() {
   console.log("resume");
 });
 
+function userDataInit() {
+  window.localStorage.setItem('loggedIn', false);
+  window.localStorage.setItem('launchCount', true);
+  window.localStorage.setItem('nickname', 'Guest');
+  window.localStorage.setItem('experiencePoint', 0);
+  window.localStorage.setItem('rewards', '[]');
+  window.localStorage.setItem('favoriteStations', '[]');
+  window.localStorage.setItem('coins', 0);
+}
+
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
 
@@ -44,12 +54,7 @@ $$(document).on('deviceready', function() {
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
-    window.localStorage.setItem('launchCount', true);
-    window.localStorage.setItem('nickname', 'Guest');
-    window.localStorage.setItem('experiencePoint', 0);
-    window.localStorage.setItem('rewards', '[]');
-    window.localStorage.setItem('favoriteStations', '[]');
-    window.localStorage.setItem('coins', 0);
+    userDataInit();
     var welcomescreen = myApp.welcomescreen(
       welcomescreenSlides, {
         closeButton: false,
@@ -146,11 +151,19 @@ myApp.onPageInit('index', function(page) {
           myApp.closeModal();
         });
       },
-      error = function error(data) {
+      error = function error(data, status) {
         console.log('register fail');
-        console.log(data);
+        console.log(status, data);
         myApp.hidePreloader();
-        myApp.alert(data['responseText'], '註冊失敗');
+        if (status===400) {
+          myApp.alert('Email格式錯誤，請重新再試', '註冊失敗');
+        } else if (status===409) {
+          myApp.alert('此Email已經註冊過', '註冊失敗');
+        } else if (status===422) {
+          myApp.alert('輸入資料不完整，請重新再試', '註冊失敗');
+        } else {
+          myApp.alert('伺服器錯誤，請稍後再試', '註冊失敗');
+        }
       }
     );
   });
@@ -200,7 +213,7 @@ myApp.onPageInit('index', function(page) {
     );
   })
 
-  if (window.localStorage.getItem('loggedIn')) {
+  if (JSON.parse(window.localStorage.getItem('loggedIn'))) {
     loginInit();
   }
 
