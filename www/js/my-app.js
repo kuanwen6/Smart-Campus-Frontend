@@ -216,8 +216,6 @@ var indexPageCallback = myApp.onPageInit('index', function(page) {
 
   if (JSON.parse(window.localStorage.getItem('loggedIn'))) {
     loginInit();
-  }else{
-    guestInit();
   }
 
   function loginInit() {
@@ -230,14 +228,6 @@ var indexPageCallback = myApp.onPageInit('index', function(page) {
     $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
 
-  function guestInit() {
-    $$('#login-form').show();
-    $$('#login-form').css('display', 'block');
-    $$('#register-btn').show();
-    $$('.profile-pic').addClass('hide');
-    $$('.nickname').addClass('hide');
-    $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-  }
 }).trigger();
 
 myApp.onPageInit('map', function(page) {
