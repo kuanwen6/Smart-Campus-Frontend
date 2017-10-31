@@ -540,7 +540,8 @@ myApp.onPageInit('info', function(page) {
             userDataInit();
             myApp.hidePreloader();
             myApp.alert('', '已成功登出！', function() {
-              mainView.router.refreshPage();
+              mainView.router.refreshPreviousPage();
+              mainView.router.back({ url: 'index.html', force: false });
             });
           },
           error = function error(data, status) {
