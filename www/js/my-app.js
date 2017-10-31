@@ -91,6 +91,7 @@ $$(document).on('deviceready', function() {
 });
 
 myApp.onPageInit('index', function(page) {
+  console.log('enter index');
   $$('.login-form-to-json').on('click', function() {
     myApp.showPreloader();
 
@@ -160,7 +161,9 @@ myApp.onPageInit('index', function(page) {
   }
 
   function loginInit() {
+    console.log('init');
     $$('#login-form').hide();
+    $$('#login-form').css('display', 'none');
     $$('#register-btn').hide();
     $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
@@ -1272,7 +1275,7 @@ myApp.onPageInit('favorite', function() {
         url: 'itemDetail.html',
         context: {
           site: favoriteSite,
-          isBeacon: false,
+          isBeacon: true,
           favoriteSequence: favoriteSequence,
           favorite: isFavorite(parseInt(this.id, 10)),
         },
