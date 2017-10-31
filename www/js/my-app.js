@@ -541,7 +541,13 @@ myApp.onPageInit('info', function(page) {
             myApp.hidePreloader();
             myApp.alert('', '已成功登出！', function() {
               mainView.router.refreshPreviousPage();
-              mainView.router.back({ url: 'index.html', force: false, content: ['mainView.router.refreshPage();']});
+              mainView.router.back({ url: 'index.html', force: false });
+              $$('#login-form').show();
+              $$('#login-form').css('display', 'block');
+              $$('#register-btn').show();
+              $$('.profile-pic').addClass('hide');
+              $$('.nickname').addClass('hide');
+              $$('.nickname>p').html(window.localStorage.getItem('nickname'));
             });
           },
           error = function error(data, status) {
