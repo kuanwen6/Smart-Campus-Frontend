@@ -34,6 +34,16 @@ $$(document).on('resume', function() {
   console.log("resume");
 });
 
+function userDataInit() {
+  window.localStorage.setItem('loggedIn', false);
+  window.localStorage.setItem('launchCount', true);
+  window.localStorage.setItem('nickname', 'Guest');
+  window.localStorage.setItem('experiencePoint', 0);
+  window.localStorage.setItem('rewards', '[]');
+  window.localStorage.setItem('favoriteStations', '[]');
+  window.localStorage.setItem('coins', 0);
+}
+
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
 
@@ -44,12 +54,7 @@ $$(document).on('deviceready', function() {
 
   var applaunchCount = window.localStorage.getItem('launchCount');
   if (!applaunchCount) {
-    window.localStorage.setItem('launchCount', true);
-    window.localStorage.setItem('nickname', 'Guest');
-    window.localStorage.setItem('experiencePoint', 0);
-    window.localStorage.setItem('rewards', '[]');
-    window.localStorage.setItem('favoriteStations', '[]');
-    window.localStorage.setItem('coins', 0);
+    userDataInit();
     var welcomescreen = myApp.welcomescreen(
       welcomescreenSlides, {
         closeButton: false,
@@ -147,16 +152,69 @@ myApp.onPageInit('index', function(page) {
           myApp.closeModal();
         });
       },
-      error = function error(data) {
+      error = function error(data, status) {
         console.log('register fail');
-        console.log(data);
+        console.log(status, data);
         myApp.hidePreloader();
-        myApp.alert(data['responseText'], '註冊失敗');
+        if (status===400) {
+          myApp.alert('Email格式錯誤，請重新再試', '註冊失敗');
+        } else if (status===409) {
+          myApp.alert('此Email已經註冊過', '註冊失敗');
+        } else if (status===422) {
+          myApp.alert('輸入資料不完整，請重新再試', '註冊失敗');
+        } else {
+          myApp.alert('伺服器錯誤，請稍後再試', '註冊失敗');
+        }
       }
     );
   });
 
-  if (window.localStorage.getItem('loggedIn')) {
+  $$('.forget-pw').on('click', function() {
+    myApp.prompt('請輸入註冊時的email', '忘記密碼',
+      function (value) {
+        myApp.showPreloader();
+        $$.post(
+          url = HOOKURL + 'smart_campus/reset_password/' + value + '/',
+          success = function success(data) {
+            console.log('reset password success');
+            myApp.hidePreloader();
+            myApp.alert('請至信箱收取信件以重置密碼！', '成功');
+          },
+          error = function error(data, status) {
+            console.log('reset password fail');
+            console.log(status, data);
+            myApp.hidePreloader();
+
+            if(status===401) {
+              myApp.confirm('你的信箱未認證，需要重發認證信至你的信箱嗎？', '認證失敗',
+                function() {
+                  myApp.showPreloader();
+                  $$.post(
+                    url = HOOKURL + 'smart_campus/resend_activation/' + value + '/',
+                    success = function success(data) {
+                      console.log('resend activation success');
+                      myApp.hidePreloader();
+                      myApp.alert('認證信已寄出，請至信箱查看', '');
+                    },
+                    error = function error(data) {
+                      console.log('resend activation fail');
+                      console.log(data);
+                      myApp.hidePreloader();
+                      myApp.alert('伺服器錯誤，請稍後再試', '失敗');
+                    }
+                  );
+                }
+              );
+            } else {
+              myApp.alert('輸入信箱格式錯誤或不存在', '失敗');
+            }
+          }
+        );
+      }
+    );
+  })
+
+  if (JSON.parse(window.localStorage.getItem('loggedIn'))) {
     loginInit();
   }
 
@@ -857,7 +915,7 @@ function findStation(stations, id) {
 
 function getRewards(rewards, rewardID) {
   rewards.push(rewardID);
-  if (window.localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_reward/',
       data = {
@@ -879,7 +937,7 @@ function getRewards(rewards, rewardID) {
 }
 
 function modifyMoney(money, change) {
-  if (window.localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_coins/',
       data = {
@@ -901,7 +959,7 @@ function modifyMoney(money, change) {
 }
 
 function experienceUp(experiencePoint) {
-  if (window.localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/update_user_experience_point/',
       data = {
@@ -932,7 +990,7 @@ function isFavorite(id) {
 function addFavorite(favorite, id) {
   favorite.push(id);
 
-  if (window.localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_user_favorite_stations/',
       data = {
@@ -961,7 +1019,7 @@ function removeFavorite(favorite, id) {
     favorite.splice(index, 1);
   }
 
-  if (window.localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.post(
       url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/remove_user_favorite_stations/',
       data = {
@@ -1275,7 +1333,7 @@ myApp.onPageInit('favorite', function() {
         url: 'itemDetail.html',
         context: {
           site: favoriteSite,
-          isBeacon: true,
+          isBeacon: false,
           favoriteSequence: favoriteSequence,
           favorite: isFavorite(parseInt(this.id, 10)),
         },
@@ -1446,7 +1504,7 @@ myApp.onPageInit('itemDetail', function (page) {
   $$('.toolbar').off('click');
   //  detect if this station have question to answered
   if (page.context.isBeacon) {
-    if (localStorage.getItem("loggedIn") !== null) {
+    if (localStorage.getItem("loggedIn") !== "false") {
       $$.ajax({
         url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
         type: 'get',
@@ -1563,7 +1621,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
         '</div>');
       }, 1200);
 
-      if (window.localStorage.getItem('loggedIn') !== null) {
+      if (window.localStorage.getItem('loggedIn') !== "false") {
         $$.post(
           url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
           data = {
@@ -1640,7 +1698,7 @@ myApp.onPageInit('gamePage', function(page) {
     }
   });
 
-  if (localStorage.getItem("loggedIn") !== null) {
+  if (window.localStorage.getItem("loggedIn") !== "false") {
     $$.ajax({
       url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
       type: 'get',
