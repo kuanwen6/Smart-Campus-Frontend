@@ -508,6 +508,11 @@ myApp.onPageInit('info', function(page) {
     })['image_url'];
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
+
+  $$('.logout').on('click', function() {
+    console.log('logout');
+    userDataInit();
+  });
 });
 
 function calculateAndDisplayRoute(origin, waypts) {
