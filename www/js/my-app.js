@@ -95,7 +95,7 @@ $$(document).on('deviceready', function() {
   );
 });
 
-myApp.onPageInit('index', function(page) {
+var indexPageCallback = myApp.onPageInit('index', function(page) {
   console.log('enter index');
   $$('.login-form-to-json').on('click', function() {
     myApp.showPreloader();
@@ -541,7 +541,7 @@ myApp.onPageInit('info', function(page) {
             myApp.hidePreloader();
             myApp.alert('', '已成功登出！', function() {
               mainView.router.refreshPreviousPage();
-              mainView.router.back({ url: 'index.html', force: false });
+              mainView.router.back({ url: 'index.html', force: false, content: ['mainView.router.refreshPage();']});
             });
           },
           error = function error(data, status) {
