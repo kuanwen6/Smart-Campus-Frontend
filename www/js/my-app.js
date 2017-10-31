@@ -528,7 +528,7 @@ myApp.onPageInit('info', function(page) {
   $$('#logout').on('click', function() {
     if (window.localStorage.getItem("loggedIn") !== "false") {
       console.log('logout');
-      myApp.confirm('確認登出?', '登出', function () {
+      myApp.confirm('', '確認登出?', function () {
         myApp.showPreloader();
         $$.post(
           url = HOOKURL + 'smart_campus/logout/',
@@ -540,7 +540,7 @@ myApp.onPageInit('info', function(page) {
             userDataInit();
             myApp.hidePreloader();
             myApp.alert('', '已成功登出！', function() {
-              mainView.router.load({ url: 'index.html', force: true, ignoreCache: true});
+              mainView.router.refreshPage();
             });
           },
           error = function error(data, status) {
