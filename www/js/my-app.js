@@ -539,14 +539,14 @@ myApp.onPageInit('info', function(page) {
             console.log('logout success');
             userDataInit();
             myApp.hidePreloader();
-            myApp.alert('已成功登出！', '登出', function() {
-              mainView.router.load({ url: 'index.html', force: false, reload: true});
+            myApp.alert('', '已成功登出！', function() {
+              mainView.router.load({ url: 'index.html', force: true, ignoreCache: true});
             });
           },
           error = function error(data, status) {
             console.log('logout fail');
             myApp.hidePreloader();
-            myApp.alert('登出失敗！', '登出');
+            myApp.alert('', '登出失敗！');
           }
         );
       });  
