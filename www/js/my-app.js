@@ -498,9 +498,9 @@ myApp.onPageInit('map', function(page) {
 
 myApp.onPageInit('info', function(page) {
   if (window.localStorage.getItem("loggedIn") !== "false") {
-    $$('#logout').css('display', 'block');
+    $$('#logout').show();
   }else{
-    $$('#logout').css('display', 'none');
+    $$('#logout').hide();
   }
   var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
@@ -540,7 +540,7 @@ myApp.onPageInit('info', function(page) {
             userDataInit();
             myApp.hidePreloader();
             myApp.alert('已成功登出！', '登出', function() {
-              mainView.router.back({ url: 'index.html', force: false });
+              mainView.router.load({ url: 'index.html', force: false, reload: true});
             });
           },
           error = function error(data, status) {
