@@ -172,7 +172,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
       if( key == 'B'+platformID){
         beaconStillInRange = true;
-        myApp.alert('equal found');
+        
         break;
       }
     }
@@ -180,6 +180,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if(!beaconStillInRange)
     {
       beacon_util.recordDetection[key] = false;
+      myApp.alert('false found');
     }
   });
 
