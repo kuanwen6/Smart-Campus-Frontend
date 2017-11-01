@@ -171,8 +171,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       var platformID = beacon_util.transformToPlatformID(beacon);
 
       if( key == 'B'+platformID){
-        beaconStillInRange = true;
-        
+        beaconStillInRange = true;      
         break;
       }
     }
@@ -180,7 +179,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if(!beaconStillInRange)
     {
       beacon_util.recordDetection[key] = false;
-      myApp.alert('false found'+key);
     }
   });
 
