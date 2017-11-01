@@ -59,7 +59,7 @@ beacon_util.startUpBeaconUtil = function()
     myApp.addNotification({
       title: '小提示',
       message: '啟動藍牙以展開校園探索！！',
-      hold: 6000,
+      hold: 4500,
       closeOnClick: true,
     });
   }
@@ -180,7 +180,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if(!beaconStillInRange)
     {
       beacon_util.recordDetection[key] = false;
-      myApp.alert('false found');
+      myApp.alert('false found'+key);
     }
   });
 
@@ -234,10 +234,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
           },
         });
       }  
-    }
-    else
-    {
-      beacon_util.recordDetection['B'+platformID] = false;
     }
   }
   return 
