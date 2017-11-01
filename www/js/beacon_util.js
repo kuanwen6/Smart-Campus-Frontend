@@ -161,7 +161,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     return;
   }
 
-  Object.keys(beacon_util.recordDetection).forEach(function(key,index) {
+  Object.keys(beacon_util.recordDetection).forEach(function(key) {
     // key: the name of the object key
     // index: the ordinal position of the key within the object
     var beaconStillInRange = false;
@@ -172,6 +172,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
       if( key == 'B'+platformID){
         beaconStillInRange = true;
+        myApp.alert('equal found');
         break;
       }
     }
@@ -192,7 +193,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
 
-      if( !beacon_util.recordDetection['B'+platformID] )
+      if( beacon_util.recordDetection['B'+platformID] !== true)
       {
         beacon_util.recordDetection['B'+platformID] = true;
         $$.ajax({
