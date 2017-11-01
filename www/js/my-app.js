@@ -488,9 +488,9 @@ myApp.onPageInit('map', function(page) {
 
 myApp.onPageInit('info', function(page) {
   if (window.localStorage.getItem("loggedIn") !== "false") {
-    $$('#logout').show();
+    $$('#logout').css('visibility', 'visible');
   }else{
-    $$('#logout').hide();
+    $$('#logout').css('visibility', 'hidden');
   }
   var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
