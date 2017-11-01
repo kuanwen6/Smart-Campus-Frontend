@@ -93,6 +93,18 @@ $$(document).on('deviceready', function() {
       console.log(data);
     }
   );
+
+  $$.get(
+    url = HOOKURL + 'smart_campus/get_all_travel_plans/',
+    success = function success(data) {
+      console.log('get plans info success');
+      window.sessionStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
+    },
+    error = function error(data) {
+      console.log('get plans info fail');
+      console.log(data);
+    }
+  );
 });
 
 myApp.onPageInit('index', function(page) {
@@ -1083,39 +1095,30 @@ myApp.onPageInit('route', function() {
 
 myApp.onPageInit('themeRoute', function() {
   var stationsObj = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-  $$.ajax({
-    url: 'http://smartcampus.csie.ncku.edu.tw/smart_campus/get_all_travel_plans',
-    type: 'get',
-    success: function(plans) {
-      var plansObj = JSON.parse(plans).data;
+  var plansObj = JSON.parse(window.sessionStorage.getItem('allPlansInfo'));
+  
+  function cardOnclick() {
+    $$('img.lazy').trigger('lazy');
+    $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
+      var route = findRoute(plansObj, this.id);
+      var itemList = findSequence(stationsObj, route.station_sequence);
+      var time = $$(this).children('.card-footer').find('span').html();
 
-      function cardOnclick() {
-        $$('img.lazy').trigger('lazy');
-        $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
-          var route = findRoute(plansObj, this.id);
-          var itemList = findSequence(stationsObj, route.station_sequence);
-          var time = $$(this).children('.card-footer').find('span').html();
-
-          mainView.router.load({
-            url: 'routeDetail.html',
-            context: {
-              title: route.name,
-              time: time,
-              custom: false,
-              previous: 'themeRoute.html',
-              introduction: route.description,
-              img: route.image,
-              itemList: itemList
-            },
-          });
-        });
-      }
-      createCards(plansObj, cardOnclick);
-    },
-    error: function(data) {
-      console.log(data);
-    },
-  });
+      mainView.router.load({
+        url: 'routeDetail.html',
+        context: {
+          title: route.name,
+          time: time,
+          custom: false,
+          previous: 'themeRoute.html',
+          introduction: route.description,
+          img: route.image,
+          itemList: itemList
+        },
+      });
+    });
+  }
+  createCards(plansObj, cardOnclick);
 });
 
 myApp.onPageInit('themeSite', function() {
