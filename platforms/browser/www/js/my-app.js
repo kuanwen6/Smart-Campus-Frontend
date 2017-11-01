@@ -923,25 +923,21 @@ function createSites(sites, favorite, lat, lng, callback) {
 }
 
 function findRoute(routes, id) {
-  for (var i = 0; i < routes.length; i += 1) {
-    if (routes[i].id === parseInt(id, 10)) {
-      return routes[i];
-    }
-  }
+  return routes.find(function(entry) { return entry.id === parseInt(id, 10); });
 }
 
 function findSequence(stations, sequence) {
   var result = [];
 
   for (var i = 0; i < sequence.length; i += 1) {
-    result.push(stations.filter(function(entry) { return entry.id === sequence[i]; })[0]);
+    result.push(stations.find(function(entry) { return entry.id === sequence[i]; }));
   }
 
   return result;
 }
 
 function findStation(stations, id) {
-  return stations.filter(function(entry) { return entry.id === id; })[0];
+  return stations.find(function(entry) { return entry.id === id; });
 }
 
 function getRewards(rewards, rewardID) {
