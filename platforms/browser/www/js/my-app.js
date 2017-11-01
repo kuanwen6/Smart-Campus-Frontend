@@ -98,7 +98,7 @@ $$(document).on('deviceready', function() {
     url = HOOKURL + 'smart_campus/get_all_travel_plans/',
     success = function success(data) {
       console.log('get plans info success');
-      window.sessionStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
+      window.localStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
     },
     error = function error(data) {
       console.log('get plans info fail');
@@ -1122,7 +1122,7 @@ myApp.onPageInit('route', function() {
 
 myApp.onPageInit('themeRoute', function() {
   var stationsObj = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-  var plansObj = JSON.parse(window.sessionStorage.getItem('allPlansInfo'));
+  var plansObj = JSON.parse(window.localStorage.getItem('allPlansInfo'));
   
   function cardOnclick() {
     $$('img.lazy').trigger('lazy');
@@ -1442,6 +1442,7 @@ myApp.onPageInit('customRoute', function() {
 
   var stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
+  console.log(favoriteSequence);
   var itemList = findSequence(stations, favoriteSequence);
 
   if (favoriteSequence.length === 0) {

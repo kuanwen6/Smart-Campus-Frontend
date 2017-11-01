@@ -24,12 +24,6 @@
         },
         "cordova-custom-config": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
     "dependent_plugins": {},
@@ -119,8 +113,6 @@
         "com.unarin.cordova.beacon": "3.5.2",
         "cordova-plugin-statusbar": "2.2.3",
         "cordova-plugin-splashscreen": "4.0.3",
-        "cordova-custom-config": "4.0.2",
-        "cordova-plugin-compat": "1.2.0",
-        "cordova-plugin-geolocation": "2.4.3"
+        "cordova-custom-config": "4.0.2"
     }
 }
