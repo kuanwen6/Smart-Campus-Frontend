@@ -108,7 +108,6 @@ $$(document).on('deviceready', function() {
 });
 
 myApp.onPageInit('index', function(page) {
-  console.log('enter index');
   $$('.login-form-to-json').on('click', function() {
     myApp.showPreloader();
 
@@ -231,9 +230,7 @@ myApp.onPageInit('index', function(page) {
   }
 
   function loginInit() {
-    console.log('init');
     $$('#login-form').hide();
-    $$('#login-form').css('display', 'none');
     $$('#register-btn').hide();
     $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
@@ -520,6 +517,40 @@ myApp.onPageInit('info', function(page) {
     })['image_url'];
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
+
+  if (!JSON.parse(window.localStorage.getItem('loggedIn'))) {
+    $$('#logout').css('visibility', 'hidden');
+  }
+
+  $$('#logout').on('click', function() {
+    myApp.confirm('', '確認登出?', function () {
+      myApp.showPreloader();
+      $$.post(
+        url = HOOKURL + 'smart_campus/logout/',
+        data = {
+          'email': window.localStorage.getItem('email')
+        },
+        success = function success(data) {
+          console.log('logout success');
+          userDataInit();
+          myApp.hidePreloader();
+          myApp.alert('', '已成功登出！', function() {
+            mainView.router.refreshPage();
+            $$('#login-form').show();
+            $$('#register-btn').show();
+            $$('.profile-pic').addClass('hide');
+            $$('.nickname').addClass('hide');
+            $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+          });
+        },
+        error = function error(data, status) {
+          console.log('logout fail');
+          myApp.hidePreloader();
+          myApp.alert('', '登出失敗！');
+        }
+      );
+    });
+  });
 });
 
 function calculateAndDisplayRoute(origin, waypts) {
@@ -904,25 +935,21 @@ function createSites(sites, favorite, lat, lng, callback) {
 }
 
 function findRoute(routes, id) {
-  for (var i = 0; i < routes.length; i += 1) {
-    if (routes[i].id === parseInt(id, 10)) {
-      return routes[i];
-    }
-  }
+  return routes.find(function(entry) { return entry.id === parseInt(id, 10); });
 }
 
 function findSequence(stations, sequence) {
   var result = [];
 
   for (var i = 0; i < sequence.length; i += 1) {
-    result.push(stations.filter(function(entry) { return entry.id === sequence[i]; })[0]);
+    result.push(stations.find(function(entry) { return entry.id === sequence[i]; }));
   }
 
   return result;
 }
 
 function findStation(stations, id) {
-  return stations.filter(function(entry) { return entry.id === id; })[0];
+  return stations.find(function(entry) { return entry.id === id; });
 }
 
 function getRewards(rewards, rewardID) {
