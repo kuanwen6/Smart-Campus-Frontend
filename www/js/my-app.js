@@ -95,8 +95,7 @@ $$(document).on('deviceready', function() {
   );
 });
 
-var indexPageCallback = myApp.onPageInit('index', function(page) {
-  console.log('enter index');
+myApp.onPageInit('index', function(page) {
   $$('.login-form-to-json').on('click', function() {
     myApp.showPreloader();
 
@@ -219,15 +218,12 @@ var indexPageCallback = myApp.onPageInit('index', function(page) {
   }
 
   function loginInit() {
-    console.log('init');
     $$('#login-form').hide();
-    $$('#login-form').css('display', 'none');
     $$('#register-btn').hide();
     $$('.profile-pic').removeClass('hide');
     $$('.nickname').removeClass('hide');
     $$('.nickname>p').html(window.localStorage.getItem('nickname'));
   }
-
 }).trigger();
 
 myApp.onPageInit('map', function(page) {
@@ -487,11 +483,6 @@ myApp.onPageInit('map', function(page) {
 });
 
 myApp.onPageInit('info', function(page) {
-  if (window.localStorage.getItem("loggedIn") !== "false") {
-    $$('#logout').css('visibility', 'visible');
-  }else{
-    $$('#logout').css('visibility', 'hidden');
-  }
   var level = Math.floor(parseInt(window.localStorage.getItem('experiencePoint')) / EXP_PER_LEVEL);
   $$('#level').html(level);
   $$('#coin').html(window.localStorage.getItem('coins'));
@@ -515,39 +506,38 @@ myApp.onPageInit('info', function(page) {
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 
+  if (!JSON.parse(window.localStorage.getItem('loggedIn'))) {
+    $$('#logout').css('visibility', 'hidden');
+  }
+
   $$('#logout').on('click', function() {
-    if (window.localStorage.getItem("loggedIn") !== "false") {
-      console.log('logout');
-      myApp.confirm('', '確認登出?', function () {
-        myApp.showPreloader();
-        $$.post(
-          url = HOOKURL + 'smart_campus/logout/',
-          data = {
-            'email': window.localStorage.getItem('email'),
-          },
-          success = function success(data) {
-            console.log('logout success');
-            userDataInit();
-            myApp.hidePreloader();
-            myApp.alert('', '已成功登出！', function() {
-              mainView.router.refreshPreviousPage();
-              mainView.router.back({ url: 'index.html', force: false });
-              $$('#login-form').show();
-              $$('#login-form').css('display', 'block');
-              $$('#register-btn').show();
-              $$('.profile-pic').addClass('hide');
-              $$('.nickname').addClass('hide');
-              $$('.nickname>p').html(window.localStorage.getItem('nickname'));
-            });
-          },
-          error = function error(data, status) {
-            console.log('logout fail');
-            myApp.hidePreloader();
-            myApp.alert('', '登出失敗！');
-          }
-        );
-      });  
-    }
+    myApp.confirm('', '確認登出?', function () {
+      myApp.showPreloader();
+      $$.post(
+        url = HOOKURL + 'smart_campus/logout/',
+        data = {
+          'email': window.localStorage.getItem('email')
+        },
+        success = function success(data) {
+          console.log('logout success');
+          userDataInit();
+          myApp.hidePreloader();
+          myApp.alert('', '已成功登出！', function() {
+            mainView.router.refreshPage();
+            $$('#login-form').show();
+            $$('#register-btn').show();
+            $$('.profile-pic').addClass('hide');
+            $$('.nickname').addClass('hide');
+            $$('.nickname>p').html(window.localStorage.getItem('nickname'));
+          });
+        },
+        error = function error(data, status) {
+          console.log('logout fail');
+          myApp.hidePreloader();
+          myApp.alert('', '登出失敗！');
+        }
+      );
+    });
   });
 });
 
