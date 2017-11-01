@@ -87,7 +87,9 @@ module.exports.metadata =
     "com.unarin.cordova.beacon": "3.5.2",
     "cordova-plugin-statusbar": "2.2.3",
     "cordova-plugin-splashscreen": "4.0.3",
-    "cordova-custom-config": "4.0.2"
+    "cordova-custom-config": "4.0.2",
+    "cordova-plugin-compat": "1.2.0",
+    "cordova-plugin-geolocation": "2.4.3"
 }
 // BOTTOM OF METADATA
 });
