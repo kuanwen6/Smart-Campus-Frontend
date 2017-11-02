@@ -46,7 +46,7 @@ beacon_util.startUpBeaconUtil = function()
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
         if (!isEnabled) {
-          myApp.confirm('啟動藍牙以展開校園探索！！是否開啟？', '啟用藍芽？',
+          myApp.confirm('啟動藍牙以探索成大校園！！是否開啟？', '啟用藍芽？',
             function () {
               cordova.plugins.locationManager.enableBluetooth();
             }
@@ -58,8 +58,8 @@ beacon_util.startUpBeaconUtil = function()
   }else{
     myApp.addNotification({
       title: '小提示',
-      message: '啟動藍牙以展開校園探索！！',
-      hold: 4500,
+      message: '啟動藍牙以探索成大校園！！',
+      hold: 4000,
       closeOnClick: true,
     });
   }
