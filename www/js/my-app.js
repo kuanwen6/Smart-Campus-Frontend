@@ -1,6 +1,3 @@
-var directionsService = void 0;
-var directionsDisplay = void 0;
-
 mainView.hideToolbar();
 
 $$(document).on('page:init', function(e) {
@@ -58,17 +55,16 @@ $$(document).on('deviceready', function() {
   if (navigator.connection.type == Connection.NONE) {
     console.log('no network detected!');
     myApp.alert('需網路連線以正常運作！請重啟APP!', '無網路連線', function() {
-      if(myApp.device.os == 'android'){
+      if (myApp.device.os == 'android') {
         navigator.app.clearHistory();
         navigator.app.exitApp();
       }
     });
-  }else{
+  } else {
     beacon_util.init_setup_for_IBeacon();
-    
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-  
+
     var applaunchCount = window.localStorage.getItem('launchCount');
     if (!applaunchCount) {
       userDataInit();
@@ -87,7 +83,7 @@ $$(document).on('deviceready', function() {
       console.log('App has launched: ' + window.localStorage.launchCount);
       beacon_util.startUpBeaconUtil();
     }
-  
+
     $$.get(
       url = HOOKURL + 'smart_campus/get_all_rewards/',
       success = function success(data) {
@@ -110,7 +106,7 @@ $$(document).on('deviceready', function() {
         console.log(data);
       }
     );
-  
+
     $$.get(
       url = HOOKURL + 'smart_campus/get_all_travel_plans/',
       success = function success(data) {
@@ -291,12 +287,6 @@ myApp.onPageInit('map', function(page) {
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
-  var image = {
-    url: './icon/mobileimgs2.png',
-    size: new google.maps.Size(22, 22),
-    origin: new google.maps.Point(0, 18),
-    anchor: new google.maps.Point(11, 11)
-  };
   var map = new google.maps.Map($$('#map')[0], {
     zoom: 16,
     center: { lat: 22.998089, lng: 120.217441 },
@@ -305,14 +295,29 @@ myApp.onPageInit('map', function(page) {
   });
   var locationMarker = new google.maps.Marker({
     clickable: false,
-    icon: image,
-    shadow: null,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 4,
+      strokeWeight: 8,
+      strokeColor: 'rgb(72, 106, 243)',
+    },
     zIndex: 999,
+    map: map
+  });
+  var locationMarkerFrame = new google.maps.Marker({
+    clickable: false,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 5,
+      strokeWeight: 10,
+      strokeColor: 'white',
+    },
+    zIndex: 998,
     map: map
   });
   var locationCircle = new google.maps.Circle({
     fillColor: '#61a0bf',
-    fillOpacity: 0.4,
+    fillOpacity: 0.2,
     strokeColor: '#1bb6ff',
     strokeOpacity: 0.4,
     strokeWeight: 1,
@@ -336,7 +341,8 @@ myApp.onPageInit('map', function(page) {
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
-  setMarkers(map);
+  directionsDisplay.setMap(map);
+  setMarkers();
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
   function directionOrMapOverview(isDirection) {
@@ -345,7 +351,6 @@ myApp.onPageInit('map', function(page) {
       $$('.left>a').removeClass('back');
       $$('#page-title').html('導覽中');
       $$('.open-filter').css('visibility', 'hidden');
-      directionsDisplay.setMap(map);
 
       stations = page.context.stations;
       var _iteratorNormalCompletion = true;
@@ -379,7 +384,7 @@ myApp.onPageInit('map', function(page) {
     }
   }
 
-  function setMarkers(map) {
+  function setMarkers() {
     var icon = {
       '古蹟': 'img/markers/marker_red.png',
       '藝文': 'img/markers/marker_orange.png',
@@ -481,6 +486,7 @@ myApp.onPageInit('map', function(page) {
 
   function getMap(latitude, longitude, accuracy) {
     locationMarker.setPosition({ lat: latitude, lng: longitude });
+    locationMarkerFrame.setPosition({ lat: latitude, lng: longitude });
     locationCircle.setCenter({ lat: latitude, lng: longitude });
     locationCircle.setRadius(accuracy);
   }
@@ -571,7 +577,6 @@ myApp.onPageInit('info', function(page) {
   });
 });
 
-
 function calculateAndDisplayRoute(origin, waypts) {
   var display = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -636,8 +641,7 @@ function calculateAndDisplayRoute(origin, waypts) {
   });
 }
 
-
-function distance(lat1, lng1, lat2, lng2, type=0) {
+function distance(lat1, lng1, lat2, lng2, type = 0) {
   if (lat1 === -1 && lng1 === -1) {
     return '未開啟GPS';
   }
@@ -652,7 +656,7 @@ function distance(lat1, lng1, lat2, lng2, type=0) {
   dist *= 69.09;
   dist *= 1.609344;
 
-  if (type===0) {
+  if (type === 0) {
     if (dist < 1) {
       dist *= 1000;
       return dist.toFixed(0) + '公尺';
