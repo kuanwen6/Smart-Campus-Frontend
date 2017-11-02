@@ -241,8 +241,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       }
     }else{
       beacon_util.recordDetection['B'+platformID] = false;
-      myApp.alert('ios in far');
+      myApp.alert('ios in far'+'B'+platformID+' : '+beacon.proximity);
     }
   }
-  return 
+  return;
 }
