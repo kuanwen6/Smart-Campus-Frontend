@@ -207,7 +207,10 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
             var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
-                
+            
+            // Device Vibrate
+            navigator.vibrate([500, 200, 650]);
+
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
               message: currentSite['name'],
