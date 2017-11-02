@@ -182,7 +182,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
   //   }
   // });
 
-
+  var one_beacon_verified_this_round = false;
   for (var i=0;i < pluginResult.beacons.length ; i++)
   {
     var beacon = pluginResult.beacons[i];
@@ -192,15 +192,17 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
 
-      if( !beacon_util.recordDetection['B'+platformID] )
+      if( (!beacon_util.recordDetection['B'+platformID]) && (!one_beacon_verified_this_round) )
       {
         beacon_util.recordDetection['B'+platformID] = true;
+        var ifSucceed = false;
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
           type: 'post',
           data: {
             'beacon_id': platformID,
           },
+          async: false,
           success: function (stations) {
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
@@ -217,7 +219,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
-              message: currentSite['name'] + beacon_util.recordDetection['B'+platformID],
+              message: currentSite['name'],
               hold: 6000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
@@ -233,15 +235,19 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
                 });
               }
             });
+
+            ifSucceed = true;
           },
           error: function (data) {
             console.log(data);
           },
         });
+        if (ifSucceed){
+          one_beacon_verified_this_round = true;
+        }
       }
-    }else{
+    }else if ( beacon.proximity == 'ProximityFar' ){
       beacon_util.recordDetection['B'+platformID] = false;
-      myApp.alert('ios in far'+'B'+platformID+' : '+beacon.proximity);
     }
   }
   return;
