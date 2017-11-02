@@ -13,7 +13,7 @@ $$(document).on('backbutton', function() {
   var page = view.activePage;
 
   if (page.name == "index") {
-    var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
+    var result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
     });
@@ -47,9 +47,12 @@ function userDataInit() {
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
   if (navigator.connection.type == Connection.NONE) {
-    myApp.alert('需網路連線以正常運作！', '無網路連線', function() {
-      navigator.app.clearHistory();
-      navigator.app.exitApp();
+    console.log('no network detected!');
+    myApp.alert('需網路連線以正常運作！請重啟APP!', '無網路連線', function() {
+      if(myApp.device.os == 'android'){
+        navigator.app.clearHistory();
+        navigator.app.exitApp();
+      }
     });
   }else{
     beacon_util.init_setup_for_IBeacon();
@@ -1582,10 +1585,28 @@ myApp.onPageInit('itemDetail', function (page) {
         },
       });
     } else {
-      mainView.showToolbar();
-      $$('.page-content').css('padding-bottom', '9.5vh');
-      $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-      $$('.toolbar').on('click', moneySelect);
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': 'visitMode@gmail.com',
+          'station_id': page.context.site.id,
+        },
+        success: function(data) {
+          var questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
     }
   }
 
@@ -1701,7 +1722,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           var rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
           myApp.addNotification({
-            title: '成大藏奇圖',
+            title: '成大校園導覽',
             message: '您已獲得收藏品:  「' + rewardInfo.name + '」',
             media: '<img width="44" height="44" style="border-radius:100%" src="' + rewardInfo.image_url + '">',
             hold: 8000,
