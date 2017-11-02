@@ -167,11 +167,11 @@ myApp.onPageInit('index', function(page) {
         console.log('register fail');
         console.log(status, data);
         myApp.hidePreloader();
-        if (status===400) {
+        if (status === 400) {
           myApp.alert('Email格式錯誤，請重新再試', '註冊失敗');
-        } else if (status===409) {
+        } else if (status === 409) {
           myApp.alert('此Email已經註冊過', '註冊失敗');
-        } else if (status===422) {
+        } else if (status === 422) {
           myApp.alert('輸入資料不完整，請重新再試', '註冊失敗');
         } else {
           myApp.alert('伺服器錯誤，請稍後再試', '註冊失敗');
@@ -182,7 +182,7 @@ myApp.onPageInit('index', function(page) {
 
   $$('.forget-pw').on('click', function() {
     myApp.prompt('請輸入註冊時的email', '忘記密碼',
-      function (value) {
+      function(value) {
         myApp.showPreloader();
         $$.post(
           url = HOOKURL + 'smart_campus/reset_password/' + value + '/',
@@ -196,7 +196,7 @@ myApp.onPageInit('index', function(page) {
             console.log(status, data);
             myApp.hidePreloader();
 
-            if(status===401) {
+            if (status === 401) {
               myApp.confirm('你的信箱未認證，需要重發認證信至你的信箱嗎？', '認證失敗',
                 function() {
                   myApp.showPreloader();
@@ -523,7 +523,7 @@ myApp.onPageInit('info', function(page) {
   }
 
   $$('#logout').on('click', function() {
-    myApp.confirm('', '確認登出?', function () {
+    myApp.confirm('', '確認登出?', function() {
       myApp.showPreloader();
       $$.post(
         url = HOOKURL + 'smart_campus/logout/',
@@ -553,19 +553,31 @@ myApp.onPageInit('info', function(page) {
   });
 });
 
+
 function calculateAndDisplayRoute(origin, waypts) {
   var display = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
+  /* Choose the destination in waypts*/
+  var max_distance = 0;
+  var max_distance_index;
+  waypts.forEach(function(point, index) {
+    var _distance = distance(point['location']['lat'], point['location']['lng'], origin['lat'], origin['lng'], 1);
+    if (_distance > max_distance) {
+      max_distance = _distance;
+      max_distance_index = index;
+    }
+  });
+  var destination = waypts.splice(max_distance_index, 1)[0];
+
   directionsService.route({
     origin: origin,
-    destination: origin,
+    destination: destination,
     waypoints: waypts,
     optimizeWaypoints: true,
     travelMode: 'WALKING'
   }, function(response, status) {
     if (status === 'OK') {
-      response.routes[0].legs = response.routes[0].legs.slice(0, -1);
       console.log(response);
       if (display) {
         directionsDisplay.setDirections(response);
@@ -606,7 +618,8 @@ function calculateAndDisplayRoute(origin, waypts) {
   });
 }
 
-function distance(lat1, lng1, lat2, lng2) {
+
+function distance(lat1, lng1, lat2, lng2, type=0) {
   if (lat1 === -1 && lng1 === -1) {
     return '未開啟GPS';
   }
@@ -621,11 +634,15 @@ function distance(lat1, lng1, lat2, lng2) {
   dist *= 69.09;
   dist *= 1.609344;
 
-  if (dist < 1) {
-    dist *= 1000;
-    return dist.toFixed(0) + '公尺';
+  if (type===0) {
+    if (dist < 1) {
+      dist *= 1000;
+      return dist.toFixed(0) + '公尺';
+    }
+    return dist.toFixed(1) + '公里';
+  } else {
+    return dist;
   }
-  return dist.toFixed(1) + '公里';
 }
 
 function getLocationArray(idArray) {
