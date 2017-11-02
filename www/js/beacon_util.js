@@ -192,7 +192,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
 
-      if( beacon_util.recordDetection['B'+platformID] !== true)
+      if( !beacon_util.recordDetection['B'+platformID] )
       {
         beacon_util.recordDetection['B'+platformID] = true;
         $$.ajax({
@@ -217,7 +217,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
-              message: currentSite['name'],
+              message: currentSite['name'] + beacon_util.recordDetection['B'+platformID],
               hold: 6000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
@@ -241,6 +241,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       }
     }else{
       beacon_util.recordDetection['B'+platformID] = false;
+      myApp.alert('ios in far');
     }
   }
   return 
