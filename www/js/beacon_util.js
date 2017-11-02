@@ -161,28 +161,28 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     return;
   }
 
-  Object.keys(beacon_util.recordDetection).forEach(function(key) {
-    // key: the name of the object key
-    // index: the ordinal position of the key within the object
-    var beaconStillInRange = false;
-    for (var i=0;i < pluginResult.beacons.length ; i++)
-    {
-      var beacon = pluginResult.beacons[i];
-      var platformID = beacon_util.transformToPlatformID(beacon);
+  // Object.keys(beacon_util.recordDetection).forEach(function(key) {
+  //   // key: the name of the object key
+  //   // index: the ordinal position of the key within the object
+  //   var beaconStillInRange = false;
+  //   for (var i=0;i < pluginResult.beacons.length ; i++)
+  //   {
+  //     var beacon = pluginResult.beacons[i];
+  //     var platformID = beacon_util.transformToPlatformID(beacon);
 
-      if( key == 'B'+platformID){
-        beaconStillInRange = true;      
-        break;
-      }
-    }
+  //     if( key == 'B'+platformID){
+  //       beaconStillInRange = true;      
+  //       break;
+  //     }
+  //   }
 
-    if(!beaconStillInRange)
-    {
-      beacon_util.recordDetection[key] = false;
-    }
-  });
+  //   if(!beaconStillInRange)
+  //   {
+  //     beacon_util.recordDetection[key] = false;
+  //   }
+  // });
 
-
+  var one_beacon_verified_this_round = false;
   for (var i=0;i < pluginResult.beacons.length ; i++)
   {
     var beacon = pluginResult.beacons[i];
@@ -192,15 +192,17 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
 
-      if( beacon_util.recordDetection['B'+platformID] !== true)
+      if( (!beacon_util.recordDetection['B'+platformID]) && (!one_beacon_verified_this_round) )
       {
         beacon_util.recordDetection['B'+platformID] = true;
+        var ifSucceed = false;
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
           type: 'post',
           data: {
             'beacon_id': platformID,
           },
+          async: false,
           success: function (stations) {
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
@@ -233,13 +235,20 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
                 });
               }
             });
+
+            ifSucceed = true;
           },
           error: function (data) {
             console.log(data);
           },
         });
-      }  
+        if (ifSucceed){
+          one_beacon_verified_this_round = true;
+        }
+      }
+    }else if ( beacon.proximity == 'ProximityFar' ){
+      beacon_util.recordDetection['B'+platformID] = false;
     }
   }
-  return 
+  return;
 }
