@@ -161,26 +161,26 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     return;
   }
 
-  Object.keys(beacon_util.recordDetection).forEach(function(key) {
-    // key: the name of the object key
-    // index: the ordinal position of the key within the object
-    var beaconStillInRange = false;
-    for (var i=0;i < pluginResult.beacons.length ; i++)
-    {
-      var beacon = pluginResult.beacons[i];
-      var platformID = beacon_util.transformToPlatformID(beacon);
+  // Object.keys(beacon_util.recordDetection).forEach(function(key) {
+  //   // key: the name of the object key
+  //   // index: the ordinal position of the key within the object
+  //   var beaconStillInRange = false;
+  //   for (var i=0;i < pluginResult.beacons.length ; i++)
+  //   {
+  //     var beacon = pluginResult.beacons[i];
+  //     var platformID = beacon_util.transformToPlatformID(beacon);
 
-      if( key == 'B'+platformID){
-        beaconStillInRange = true;      
-        break;
-      }
-    }
+  //     if( key == 'B'+platformID){
+  //       beaconStillInRange = true;      
+  //       break;
+  //     }
+  //   }
 
-    if(!beaconStillInRange)
-    {
-      beacon_util.recordDetection[key] = false;
-    }
-  });
+  //   if(!beaconStillInRange)
+  //   {
+  //     beacon_util.recordDetection[key] = false;
+  //   }
+  // });
 
 
   for (var i=0;i < pluginResult.beacons.length ; i++)
@@ -238,7 +238,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
             console.log(data);
           },
         });
-      }  
+      }
+    }else{
+      beacon_util.recordDetection['B'+platformID] = false;
     }
   }
   return 
