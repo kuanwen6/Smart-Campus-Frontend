@@ -299,8 +299,7 @@ myApp.onPageInit('map', function(page) {
       path: google.maps.SymbolPath.CIRCLE,
       scale: 4,
       strokeWeight: 8,
-      strokeColor: 'rgb(62, 98, 242)',
-      anchor: new google.maps.Point(-1, -1)
+      strokeColor: 'rgb(72, 106, 243)',
     },
     zIndex: 999,
     map: map
@@ -312,7 +311,6 @@ myApp.onPageInit('map', function(page) {
       scale: 5,
       strokeWeight: 10,
       strokeColor: 'white',
-      anchor: new google.maps.Point(-1, -1)
     },
     zIndex: 998,
     map: map
@@ -345,7 +343,7 @@ myApp.onPageInit('map', function(page) {
   directionOrMapOverview(page.context.isDirection);
   directionsDisplay.setMap(map);
   setMarkers();
-  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { maximumAge: 3000, timeout: 10000, enableHighAccuracy: true });
 
   function directionOrMapOverview(isDirection) {
     if (isDirection) {
