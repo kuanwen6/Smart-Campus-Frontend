@@ -27,6 +27,9 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
     "dependent_plugins": {

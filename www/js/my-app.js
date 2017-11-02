@@ -46,65 +46,71 @@ function userDataInit() {
 
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
-
-  beacon_util.init_setup_for_IBeacon();
-
-  directionsService = new google.maps.DirectionsService();
-  directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-
-  var applaunchCount = window.localStorage.getItem('launchCount');
-  if (!applaunchCount) {
-    userDataInit();
-    var welcomescreen = myApp.welcomescreen(
-      welcomescreenSlides, {
-        closeButton: false,
-        onClosed: function() {
-          beacon_util.startUpBeaconUtil();
-        },
+  if (navigator.connection.type == Connection.NONE) {
+    myApp.alert('需網路連線以正常運作！', '無網路連線', function() {
+      navigator.app.clearHistory();
+      navigator.app.exitApp();
+    });
+  }else{
+    beacon_util.init_setup_for_IBeacon();
+    
+    directionsService = new google.maps.DirectionsService();
+    directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+  
+    var applaunchCount = window.localStorage.getItem('launchCount');
+    if (!applaunchCount) {
+      userDataInit();
+      var welcomescreen = myApp.welcomescreen(
+        welcomescreenSlides, {
+          closeButton: false,
+          onClosed: function() {
+            beacon_util.startUpBeaconUtil();
+          },
+        }
+      );
+      $$(document).on('click', '#welcome-close-btn', function() {
+        welcomescreen.close();
+      });
+    } else {
+      console.log('App has launched: ' + window.localStorage.launchCount);
+      beacon_util.startUpBeaconUtil();
+    }
+  
+    $$.get(
+      url = HOOKURL + 'smart_campus/get_all_rewards/',
+      success = function success(data) {
+        console.log('get rewards info success');
+        window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
+      },
+      error = function error(data) {
+        console.log('get rewards info fail');
+        console.log(data);
       }
     );
-    $$(document).on('click', '#welcome-close-btn', function() {
-      welcomescreen.close();
-    });
-  } else {
-    console.log('App has launched: ' + window.localStorage.launchCount);
-    beacon_util.startUpBeaconUtil();
+    $$.get(
+      url = HOOKURL + 'smart_campus/get_all_stations/',
+      success = function success(data) {
+        console.log('get stations info success');
+        window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
+      },
+      error = function error(data) {
+        console.log('get stations info fail');
+        console.log(data);
+      }
+    );
+  
+    $$.get(
+      url = HOOKURL + 'smart_campus/get_all_travel_plans/',
+      success = function success(data) {
+        console.log('get plans info success');
+        window.localStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
+      },
+      error = function error(data) {
+        console.log('get plans info fail');
+        console.log(data);
+      }
+    );
   }
-
-  $$.get(
-    url = HOOKURL + 'smart_campus/get_all_rewards/',
-    success = function success(data) {
-      console.log('get rewards info success');
-      window.sessionStorage.setItem('allRewardsInfo', JSON.stringify(JSON.parse(data).data));
-    },
-    error = function error(data) {
-      console.log('get rewards info fail');
-      console.log(data);
-    }
-  );
-  $$.get(
-    url = HOOKURL + 'smart_campus/get_all_stations/',
-    success = function success(data) {
-      console.log('get stations info success');
-      window.sessionStorage.setItem('allStationsInfo', JSON.stringify(JSON.parse(data).data));
-    },
-    error = function error(data) {
-      console.log('get stations info fail');
-      console.log(data);
-    }
-  );
-
-  $$.get(
-    url = HOOKURL + 'smart_campus/get_all_travel_plans/',
-    success = function success(data) {
-      console.log('get plans info success');
-      window.localStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
-    },
-    error = function error(data) {
-      console.log('get plans info fail');
-      console.log(data);
-    }
-  );
 });
 
 myApp.onPageInit('index', function(page) {
