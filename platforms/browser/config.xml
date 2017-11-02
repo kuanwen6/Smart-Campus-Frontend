@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="tw.edu.ncku.csie.smartcampus" version="1.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>成大藏奇圖</name>
+<widget id="tw.edu.ncku.csie.smartcampus" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>成大校園導覽</name>
     <description>
-        成大智慧校園領航APP.
+        成功大學 智慧校園導覽APP
     </description>
     <author email="jeff1jeffo@gmail.com" href="http://www.csie.ncku.edu.tw/">
         CSIE TEAM
@@ -21,7 +21,7 @@
     <preference name="orientation" value="portrait" />
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="SplashScreenDelay" value="2500" />
+    <preference name="SplashScreenDelay" value="2000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="StatusBarOverlaysWebView" value="true" />
 </widget>
