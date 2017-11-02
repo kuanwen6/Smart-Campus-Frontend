@@ -13,7 +13,7 @@ $$(document).on('backbutton', function() {
   var page = view.activePage;
 
   if (page.name == "index") {
-    var result = myApp.confirm("確定要離開嗎？", "成大藏奇圖", function() {
+    var result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
     });
@@ -1704,7 +1704,7 @@ function answerQuestion(question, options, answer, question_id, gain, rewardID) 
           var rewardInfo = findStation(rewardsInfo, rewardID[0]);
 
           myApp.addNotification({
-            title: '成大藏奇圖',
+            title: '成大校園導覽',
             message: '您已獲得收藏品:  「' + rewardInfo.name + '」',
             media: '<img width="44" height="44" style="border-radius:100%" src="' + rewardInfo.image_url + '">',
             hold: 8000,
