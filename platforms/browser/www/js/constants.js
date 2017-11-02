@@ -33,3 +33,6 @@ var HOOKURL = 'https://smartcampus.csie.ncku.edu.tw/';
 
 // experience per level
 var EXP_PER_LEVEL = 50;
+
+var directionsDisplay,
+    directionsService;
