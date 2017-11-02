@@ -1,7 +1,7 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left">
-      <a href="#" class="back icon-only"><i class="f7-icons">home_fill</i></a>
+      <a href="#" class="icon-only" onclick="mainView.router.back({ pageName: 'index', force: true });"><i class="f7-icons">home_fill</i></a>
     </div>
     <div id="page-title" class="center sliding">地圖總覽</div>
     <div class="right">
@@ -14,9 +14,9 @@
 </div>
 <div class="pages">
   <div data-page="map" class="page no-toolbar">
-    <div id="map-filter" style="display: none; z-index: 2; position: absolute; padding-right: 10vw; padding-left: 10vw; padding-top: 20vh; width: 80vw; height: 100%; background-color: rgba(0,0,0,0.4);">
-      <img src="img/filter_bg.png" style="width: 80vw; position: absolute;">
-      <div class="filter-table" style="display: table;position: relative;top: 7vh;left: 15vw;">
+    <div id="map-filter">
+      <img src="img/filter_bg.png">
+      <div class="filter-table">
         <div class="filter-div" id="0">
           <img src="img/markers/marker_red.png"><span>古  蹟  主題站點</span>
         </div>
@@ -27,7 +27,7 @@
           <img src="img/markers/marker_green.png"><span>景  觀  主題站點</span>
         </div>
         <div class="filter-div" id="3">
-          <img src="img/markers/marker_blue.png"><span>我是王冠軍  主題站點</span>
+          <img src="img/markers/marker_blue.png"><span>行政單位  主題站點</span>
         </div>
       </div>
     </div>

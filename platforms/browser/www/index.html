@@ -2,16 +2,6 @@
 <html>
 
 <head>
-  <!--
-      Customize this policy to fit your own app's needs. For more guidance, see:
-          https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-      Some notes:
-          * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-          * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-          * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-              * Enable inline JS: add 'unsafe-inline' to default-src
-      -->
-  <!-- Required meta tags-->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -40,32 +30,33 @@
       <div class="pages">
         <div data-page="index" class="page bg-white no-toolbar">
           <div class="page-content">
-            <div class="profile-pic hide" style="top: 10vh;">
+            <div class="profile-pic hide">
               <img src="img/person.png">
             </div>
-            <div class="nickname hide" style="top: 10vh; margin-bottom: 15vh;">
+            <div class="nickname hide">
               <p>Guest</p>
             </div>
-            <form id="login-form" class="list-block inset" style="margin-left: 10vw;margin-right: 10vw;">
-              <ul style="border: 1px solid #ddd;">
-                <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
+            <form id="login-form" class="list-block inset">
+              <ul>
+                <li class="item-content">
                   <div class="item-media"><i class="f7-icons color-gray">email_fill</i></div>
-                  <div class="item-inner" style="width: 65vw;">
+                  <div class="item-inner">
                     <div class="item-input">
                       <input type="email" name="email" placeholder="Email">
                     </div>
                   </div>
                 </li>
-                <li class="item-content" style="height: 8vh;">
+                <li class="item-content">
                   <div class="item-media"><i class="f7-icons color-gray">lock_fill</i></div>
-                  <div class="item-inner" style="width: 65vw;">
+                  <div class="item-inner" style="margin-left: 20px;">
                     <div class="item-input">
                       <input type="password" name="password" placeholder="Password">
                     </div>
                   </div>
                 </li>
               </ul>
-              <div class="login-form-to-json"></div>
+              <div class="login-form-to-json"><span>登 入</span></div>
+              <span class="forget-pw">忘記密碼 ?</span>
             </form>
             <div class="page-btn">
               <div>
@@ -73,7 +64,7 @@
                   <a href="info.html"><img src="img/info_button.png"></a>
                 </div>
                 <div>
-                  <a href="map.html"><img src="img/map_button.png"></a>
+                  <a href="map.html" data-context='{"isDirection":false}'><img src="img/map_button.png"></a>
                 </div>
               </div>
               <div>
@@ -85,8 +76,8 @@
                 </div>
               </div>
             </div>
-            <div id="register-btn" class="content-block" style="text-align: center;">
-              <a href="#" data-popup=".popup-register" class="open-popup"><img src="img/1.jpg" style="height: 3vh"></img></a>
+            <div id="register-btn">
+              <a href="#" data-popup=".popup-register" class="open-popup"><img src="img/1.jpg"></img></a>
             </div>
           </div>
         </div>
@@ -101,31 +92,31 @@
     <div class="content-block" style="text-align: center; position: relative; top: 20vh;">
       <p style="font-size: 17px">註冊新帳戶</p>
     </div>
-    <form id="register-form" class="list-block inset" style="margin-left: 10vw; margin-right: 10vw; position: relative; top: 20vh;">
-      <ul style="border: 1px solid #ddd;">
-        <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
-          <div class="item-inner" style="width: 65vw;">
+    <form id="register-form" class="list-block inset">
+      <ul>
+        <li class="item-content">
+          <div class="item-inner">
             <div class="item-input">
               <input type="email" name="email" placeholder="Email">
             </div>
           </div>
         </li>
-        <li class="item-content" style="height: 8vh; border-bottom: 1px solid #ddd;">
-          <div class="item-inner" style="width: 65vw;">
+        <li class="item-content">
+          <div class="item-inner">
             <div class="item-input">
               <input type="password" name="password" placeholder="密碼">
             </div>
           </div>
         </li>
-        <li class="item-content" style="height: 8vh;">
-          <div class="item-inner" style="width: 65vw;">
+        <li class="item-content">
+          <div class="item-inner">
             <div class="item-input">
               <input type="text" name="nickname" placeholder="使用者名稱">
             </div>
           </div>
         </li>
       </ul>
-      <div class="register-form-to-json"></div>
+      <div class="register-form-to-json"><span>註 冊</span></div>
     </form>
   </div>
   <script src="cordova.js"></script>

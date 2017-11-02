@@ -14,6 +14,33 @@
   background: #000000;
 }
 
+.profile-pic {
+  position: relative;
+  top: 5vh;
+}
+
+.profile-pic img {
+  height: 20vh;
+  margin: 0 auto;
+  display: block;
+}
+
+.nickname {
+  position: relative;
+  top: 4vh;
+  text-align: center;
+  font-size: 3vh;
+}
+
+[data-page=index] .profile-pic {
+  top: 10vh;
+}
+
+[data-page=index] .nickname {
+  top: 10vh;
+  margin-bottom: 15vh;
+}
+
 .hide {
   display: none;
 }
@@ -22,10 +49,45 @@
   display: none;
 }
 
+#login-form {
+  margin-left: 10vw;
+  margin-right: 10vw;
+  margin-top: 8vh;
+  text-align: center;
+}
+
+#login-form>ul {
+  border: 1px solid #ddd;
+}
+
+#login-form .item-content:nth-of-type(1) {
+  height: 8vh;
+  border-bottom: 1px solid #ddd;
+}
+
+#login-form .item-content:nth-of-type(2) {
+  height: 8vh;
+}
+
+#login-form .item-inner {
+  width: 65vw;
+}
+
+.forget-pw {
+  line-height: 48px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #6c7b8a;
+}
+
 .page-btn {
   display: table;
-  margin: 0 auto;
   border-spacing: 0 20px;
+  position: absolute;
+  top: 47vh;
+  width: 85vw;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .page-btn>div {
@@ -38,12 +100,76 @@
 }
 
 .page-btn img {
-  width: 50%;
+  width: 55%;
+}
+
+#register-btn {
+  bottom: 30px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+#register-btn img {
+  height: 3vh
+}
+
+#register-form {
+  margin-left: 10vw;
+  margin-right: 10vw;
+  position: relative;
+  top: 20vh;
+}
+
+#register-form>ul {
+  border: 1px solid #ddd;
+}
+
+#register-form .item-content:nth-of-type(1) {
+  height: 8vh;
+  border-bottom: 1px solid #ddd;
+}
+
+#register-form .item-content:nth-of-type(2) {
+  height: 8vh;
+  border-bottom: 1px solid #ddd;
+}
+
+#register-form .item-content:nth-of-type(3) {
+  height: 8vh;
+}
+
+#register-form .item-inner {
+  width: 65vw;
 }
 
 #map {
   width: 100%;
   height: 100%;
+}
+
+#map-filter {
+  display: none;
+  z-index: 2;
+  position: absolute;
+  padding-right: 10vw;
+  padding-left: 10vw;
+  padding-top: 20vh;
+  width: 80vw;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#map-filter>img {
+  width: 80vw;
+  position: absolute;
+}
+
+.filter-table {
+  display: table;
+  position: relative;
+  top: 7vh;
+  left: 15vw;
 }
 
 .filter-table div {
@@ -89,22 +215,30 @@
 }
 
 .marker-info span:nth-of-type(1) {
-  left: 45%; top: 27%; font-size: 3.5vmin; letter-spacing: 1.5px;
+  left: 45%;
+  top: 27%;
+  font-size: 3.5vmin;
+  letter-spacing: 1.5px;
 }
 
 .marker-info span:nth-of-type(2) {
-  left: 45%; top: 45%; font-size: 4.5vmin; letter-spacing: 1.5px;
+  left: 45%;
+  top: 45%;
+  font-size: 4.5vmin;
+  letter-spacing: 1.5px;
 }
 
 .marker-info span:nth-of-type(3) {
-  bottom: 10%; right: 5%; font-size: 4vmin;
+  bottom: 10%;
+  right: 5%;
+  font-size: 4vmin;
 }
 
 #marker-img {
   position: absolute;
   top: 27%;
   left: 23%;
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
   height: 60%;
   max-width: 35%;
 }
@@ -130,8 +264,12 @@
   margin-top: 2vh;
   height: 8vh;
   width: 100%;
-  background-image: url('../img/login_button.png');
+  background-image: url('../img/long_btn_bg.png');
   background-size: 100% 100%;
+  text-align: center;
+  line-height: 8vh;
+  color: white;
+  font-size: 3vh;
 }
 
 .popup-register {
@@ -143,8 +281,12 @@
   margin-top: 2vh;
   height: 10vh;
   width: 100%;
-  background-image: url('../img/register_button.png');
+  background-image: url('../img/long_btn_bg.png');
   background-size: 100% 100%;
+  text-align: center;
+  line-height: 10vh;
+  color: white;
+  font-size: 3vh;
 }
 
 .level-and-money {
@@ -173,6 +315,17 @@
   letter-spacing: 2px;
   vertical-align: middle;
   padding-left: 10px;
+}
+
+.collection-text {
+  position: absolute;
+  left: 50%;
+  bottom: 29vh;
+  transform: translate(-50%, 0);
+  text-align: center;
+  color: #6c7b8a;
+  font-weight: bold;
+  font-size: 4.6vmin;
 }
 
 .collections {
@@ -205,33 +358,4 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.profile-pic {
-  position: relative;
-  top: 5vh;
-}
-
-.profile-pic img {
-  height: 20vh;
-  margin: 0 auto;
-  display: block;
-}
-
-.nickname {
-  position: relative;
-  top: 4vh;
-  text-align: center;
-  font-size: 3vh;
-}
-
-.collection {
-  position: absolute;
-  left: 50%;
-  bottom: 29vh;
-  transform: translate(-50%, 0);
-  text-align: center;
-  color: #6c7b8a;
-  font-weight: bold;
-  font-size: 4.6vmin;
 }
