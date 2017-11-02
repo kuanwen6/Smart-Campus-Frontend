@@ -34,6 +34,15 @@ $$(document).on('resume', function() {
   console.log("resume");
 });
 
+$$(document).on('online', function() {
+  console.log("online");
+});
+
+$$(document).on('offline', function() {
+  myApp.alert('需網路連線以正常運作！', '網路連線中斷');
+  console.log("offline");
+});
+
 function userDataInit() {
   window.localStorage.setItem('loggedIn', false);
   window.localStorage.setItem('launchCount', true);

@@ -30,6 +30,9 @@
         },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
     "dependent_plugins": {
