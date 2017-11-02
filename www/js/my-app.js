@@ -47,9 +47,12 @@ function userDataInit() {
 $$(document).on('deviceready', function() {
   console.log('Device is ready!');
   if (navigator.connection.type == Connection.NONE) {
-    myApp.alert('需網路連線以正常運作！', '無網路連線', function() {
-      navigator.app.clearHistory();
-      navigator.app.exitApp();
+    console.log('no network detected!');
+    myApp.alert('需網路連線以正常運作！請重啟APP!', '無網路連線', function() {
+      if(myApp.device.os == 'android'){
+        navigator.app.clearHistory();
+        navigator.app.exitApp();
+      }
     });
   }else{
     beacon_util.init_setup_for_IBeacon();
