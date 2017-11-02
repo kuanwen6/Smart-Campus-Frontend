@@ -343,7 +343,7 @@ myApp.onPageInit('map', function(page) {
   directionOrMapOverview(page.context.isDirection);
   directionsDisplay.setMap(map);
   setMarkers();
-  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { maximumAge: 3000, timeout: 10000, enableHighAccuracy: true });
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
   function directionOrMapOverview(isDirection) {
     if (isDirection) {
