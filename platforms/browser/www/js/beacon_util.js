@@ -59,7 +59,7 @@ beacon_util.startUpBeaconUtil = function()
     myApp.addNotification({
       title: '小提示',
       message: '啟動藍牙以展開校園探索！！',
-      hold: 6000,
+      hold: 4500,
       closeOnClick: true,
     });
   }
@@ -161,7 +161,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     return;
   }
 
-  Object.keys(beacon_util.recordDetection).forEach(function(key,index) {
+  Object.keys(beacon_util.recordDetection).forEach(function(key) {
     // key: the name of the object key
     // index: the ordinal position of the key within the object
     var beaconStillInRange = false;
@@ -171,7 +171,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
       var platformID = beacon_util.transformToPlatformID(beacon);
 
       if( key == 'B'+platformID){
-        beaconStillInRange = true;
+        beaconStillInRange = true;      
         break;
       }
     }
@@ -192,7 +192,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
     {
 
-      if( !beacon_util.recordDetection['B'+platformID] )
+      if( beacon_util.recordDetection['B'+platformID] !== true)
       {
         beacon_util.recordDetection['B'+platformID] = true;
         $$.ajax({
@@ -232,10 +232,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
           },
         });
       }  
-    }
-    else
-    {
-      beacon_util.recordDetection['B'+platformID] = false;
     }
   }
   return 
