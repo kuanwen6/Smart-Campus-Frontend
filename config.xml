@@ -21,6 +21,7 @@
         <preference name="android-targetSdkVersion" value="24" />
         <preference name="SplashMaintainAspectRatio" value="false" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
+        <preference name="android-windowSoftInputMode" value="adjustPan" />
         <icon src="res/android/icon/logo.png" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
