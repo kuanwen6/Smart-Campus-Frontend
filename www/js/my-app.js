@@ -341,7 +341,7 @@ myApp.onPageInit('map', function(page) {
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
-  directionsDisplay.setMap(map);
+  // directionsDisplay.setMap(map);
   setMarkers();
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
@@ -351,7 +351,8 @@ myApp.onPageInit('map', function(page) {
       $$('.left>a').removeClass('back');
       $$('#page-title').html('導覽中');
       $$('.open-filter').css('visibility', 'hidden');
-
+      directionsDisplay.setMap(map);
+      
       stations = page.context.stations;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
