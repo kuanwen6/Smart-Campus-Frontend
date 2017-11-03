@@ -15,21 +15,16 @@
 */
 var beacon_util = {};
 
-beacon_util.beaconRegions =
-[
-	{
-		id: 'tainan',
-		uuid:'B01BCFC0-8F4B-11E5-A837-0821A8FF9A66'
-	}
-];
+beacon_util.beaconRegions = [{
+  id: 'tainan',
+  uuid: 'B01BCFC0-8F4B-11E5-A837-0821A8FF9A66'
+}];
 
-beacon_util.init_setup_for_IBeacon = function()
-{
+beacon_util.init_setup_for_IBeacon = function() {
   // The delegate object contains iBeacon callback functions.
   var delegate = new cordova.plugins.locationManager.Delegate();
 
-  delegate.didRangeBeaconsInRegion = function(pluginResult)
-  {
+  delegate.didRangeBeaconsInRegion = function(pluginResult) {
     beacon_util.didRangeBeaconsInRegion(pluginResult);
   }
 
@@ -39,15 +34,14 @@ beacon_util.init_setup_for_IBeacon = function()
   cordova.plugins.locationManager.requestAlwaysAuthorization();
 }
 
-beacon_util.startUpBeaconUtil = function()
-{
-  if(myApp.device.os == 'android'){
+beacon_util.startUpBeaconUtil = function() {
+  if (myApp.device.os == 'android') {
     cordova.plugins.locationManager.isBluetoothEnabled()
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
         if (!isEnabled) {
           myApp.confirm('啟動藍牙以探索成大校園！！是否開啟？', '啟用藍芽？',
-            function () {
+            function() {
               cordova.plugins.locationManager.enableBluetooth();
             }
           );
@@ -55,7 +49,7 @@ beacon_util.startUpBeaconUtil = function()
       })
       .fail()
       .done();
-  }else{
+  } else {
     myApp.addNotification({
       title: '小提示',
       message: '啟動藍牙以探索成大校園！！',
@@ -67,38 +61,34 @@ beacon_util.startUpBeaconUtil = function()
   beacon_util.startScanForBeacons();
 }
 
-beacon_util.startScanForBeacons = function()
-{
-	// Start monitoring and ranging our beacons.
-	for (var r in beacon_util.beaconRegions)
-	{
-		var region = beacon_util.beaconRegions[r];
-
-		var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
-			region.id, region.uuid, region.major, region.minor);
-		
-		// Start monitoring.
-		cordova.plugins.locationManager.startMonitoringForRegion(beaconRegion)
-			.fail()
-			.done()
-
-		// Start ranging.
-		cordova.plugins.locationManager.startRangingBeaconsInRegion(beaconRegion)
-			.fail()
-			.done()
-	}
-}
-
-beacon_util.stopScanForBeacons = function()
-{
-  // Stop monitoring and ranging our beacons.
-  for (var r in beacon_util.beaconRegions)
-  {
+beacon_util.startScanForBeacons = function() {
+  // Start monitoring and ranging our beacons.
+  for (var r in beacon_util.beaconRegions) {
     var region = beacon_util.beaconRegions[r];
 
     var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
       region.id, region.uuid, region.major, region.minor);
-    
+
+    // Start monitoring.
+    cordova.plugins.locationManager.startMonitoringForRegion(beaconRegion)
+      .fail()
+      .done()
+
+    // Start ranging.
+    cordova.plugins.locationManager.startRangingBeaconsInRegion(beaconRegion)
+      .fail()
+      .done()
+  }
+}
+
+beacon_util.stopScanForBeacons = function() {
+  // Stop monitoring and ranging our beacons.
+  for (var r in beacon_util.beaconRegions) {
+    var region = beacon_util.beaconRegions[r];
+
+    var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
+      region.id, region.uuid, region.major, region.minor);
+
     // Stop monitoring.
     cordova.plugins.locationManager.stopMonitoringForRegion(beaconRegion)
       .fail()
@@ -111,53 +101,49 @@ beacon_util.stopScanForBeacons = function()
   }
 }
 
-beacon_util.transformToPlatformID = function(beacon)
-{
+beacon_util.transformToPlatformID = function(beacon) {
   var uuid = beacon.uuid;
   var major = beacon.major;
   var minor = beacon.minor;
-  
+
   var shortUUID = beacon_util.mappingShortUUID(uuid);
-  
+
   //The ID on the SPOT platform
-  var ID = shortUUID +'-'+ major +'-'+ minor;
-  
+  var ID = shortUUID + '-' + major + '-' + minor;
+
   return ID;
 }
 
-beacon_util.mappingShortUUID = function(UUID)
-{
+beacon_util.mappingShortUUID = function(UUID) {
   var shortUUID = "";
   UUID = UUID.toUpperCase();
-  if(UUID == "B01BCFC0-8F4B-11E5-A837-0821A8FF9A66")
+  if (UUID == "B01BCFC0-8F4B-11E5-A837-0821A8FF9A66")
     shortUUID = "801";
-  else if(UUID == "B01BCFC0-8F4B-11E5-A837-0821A8FFFFFF")
+  else if (UUID == "B01BCFC0-8F4B-11E5-A837-0821A8FFFFFF")
     shortUUID = "995801";
-  else if(UUID == "D3556E50-C856-11E3-8408-0221A885EF40")
+  else if (UUID == "D3556E50-C856-11E3-8408-0221A885EF40")
     shortUUID = "1";
-  else if(UUID == "4408D700-8CC3-42E6-94D5-ADA446CF2D72")
+  else if (UUID == "4408D700-8CC3-42E6-94D5-ADA446CF2D72")
     shortUUID = "2";
-  else if(UUID == "D3556E50-C856-11E3-8408-0221A8FFEF40")
+  else if (UUID == "D3556E50-C856-11E3-8408-0221A8FFEF40")
     shortUUID = "1";
-  else if(UUID == "D3556E50-C856-11E3-8408-0221A8FFFFFF")
+  else if (UUID == "D3556E50-C856-11E3-8408-0221A8FFFFFF")
     shortUUID = "9951";
-  else if(UUID == "D3556E50-C856-11E3-8408-0221A885FFFF")
+  else if (UUID == "D3556E50-C856-11E3-8408-0221A885FFFF")
     shortUUID = "9951";
   else
     shortUUID = "000";
-  
+
   return shortUUID;
-  
+
 }
 
 beacon_util.recordDetection = {}
 
 // Actions when any beacon is in range
-beacon_util.didRangeBeaconsInRegion = function(pluginResult)
-{ 
+beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
-  if (0 == pluginResult.beacons.length)
-  {
+  if (0 == pluginResult.beacons.length) {
     return;
   }
 
@@ -183,18 +169,15 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
   // });
 
   var one_beacon_verified_this_round = false;
-  for (var i=0;i < pluginResult.beacons.length ; i++)
-  {
+  for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
-    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear'))
-    {
+    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
 
-      if( (!beacon_util.recordDetection['B'+platformID]) && (!one_beacon_verified_this_round) )
-      {
-        beacon_util.recordDetection['B'+platformID] = true;
+      if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
+        beacon_util.recordDetection['B' + platformID] = true;
         var ifSucceed = false;
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
@@ -203,7 +186,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
             'beacon_id': platformID,
           },
           async: false,
-          success: function (stations) {
+          success: function(stations) {
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
 
@@ -211,9 +194,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
 
             // Device Vibrate
-            if(myApp.device.os == 'android'){
+            if (myApp.device.os == 'android') {
               navigator.vibrate([500, 100, 500]);
-            }else{
+            } else {
               navigator.vibrate(500);
             }
 
@@ -224,7 +207,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
               hold: 6000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
-              onClick: function () {
+              onClick: function() {
                 mainView.router.load({
                   url: 'itemDetail.html',
                   context: {
@@ -239,16 +222,16 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult)
 
             ifSucceed = true;
           },
-          error: function (data) {
+          error: function(data) {
             console.log(data);
           },
         });
-        if (ifSucceed){
+        if (ifSucceed) {
           one_beacon_verified_this_round = true;
         }
       }
-    }else if ( beacon.proximity == 'ProximityFar' ){
-      beacon_util.recordDetection['B'+platformID] = false;
+    } else if (beacon.proximity == 'ProximityFar') {
+      beacon_util.recordDetection['B' + platformID] = false;
     }
   }
   return;

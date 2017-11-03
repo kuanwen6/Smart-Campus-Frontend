@@ -122,7 +122,7 @@ $$(document).on('deviceready', function() {
 });
 
 myApp.onPageInit('index', function(page) {
-  $$('.login-form-to-json').on('click', function() {
+  $$('.login-form-to-json').off('click').on('click', function() {
     myApp.showPreloader();
 
     var formData = myApp.formToJSON('#login-form');
@@ -157,7 +157,7 @@ myApp.onPageInit('index', function(page) {
     );
   });
 
-  $$('.register-form-to-json').on('click', function() {
+  $$('.register-form-to-json').off('click').on('click', function() {
     myApp.showPreloader();
 
     var formData = myApp.formToJSON('#register-form');
@@ -194,7 +194,7 @@ myApp.onPageInit('index', function(page) {
     );
   });
 
-  $$('.forget-pw').on('click', function() {
+  $$('.forget-pw').off('click').on('click', function() {
     myApp.prompt('請輸入註冊時的email', '忘記密碼',
       function(value) {
         myApp.showPreloader();
@@ -323,6 +323,7 @@ myApp.onPageInit('map', function(page) {
     strokeWeight: 1,
     map: map
   });
+  /*
   var walkingLineSymbol = {
     path: google.maps.SymbolPath.CIRCLE,
     fillOpacity: 1,
@@ -338,10 +339,10 @@ myApp.onPageInit('map', function(page) {
       repeat: '10px'
     }]
   };
+  */
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
-  directionsDisplay.setMap(map);
   setMarkers();
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
@@ -351,6 +352,7 @@ myApp.onPageInit('map', function(page) {
       $$('.left>a').removeClass('back');
       $$('#page-title').html('導覽中');
       $$('.open-filter').css('visibility', 'hidden');
+      directionsDisplay.setMap(map);
 
       stations = page.context.stations;
       var _iteratorNormalCompletion = true;
@@ -450,6 +452,20 @@ myApp.onPageInit('map', function(page) {
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
+    $$('.marker-info').off('click').on('click', function(e) {
+      if ($(e.target).closest(".marker-favorite").length > 0) {
+        return false;
+      }
+      mainView.router.load({
+        url: 'itemDetail.html',
+        context: {
+          site: station,
+          isBeacon: false,
+          favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+          favorite: isFavorite(parseInt(station['id'], 10)),
+        },
+      });
+    });
   }
 
   function hideMarkerInfo() {
@@ -546,7 +562,7 @@ myApp.onPageInit('info', function(page) {
     $$('#logout').css('visibility', 'hidden');
   }
 
-  $$('#logout').on('click', function() {
+  $$('#logout').off('click').on('click', function() {
     myApp.confirm('', '確認登出?', function() {
       myApp.showPreloader();
       $$.post(
@@ -1162,7 +1178,7 @@ myApp.onPageInit('route', function() {
 myApp.onPageInit('themeRoute', function() {
   var stationsObj = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var plansObj = JSON.parse(window.localStorage.getItem('allPlansInfo'));
-  
+
   function cardOnclick() {
     $$('img.lazy').trigger('lazy');
     $$('.card').on('click', function() { // if change to () => { ,it will go wrong!
@@ -1282,10 +1298,10 @@ myApp.onPageAfterAnimation('themeSite', function(p) {
     console.log('back');
     $$('*[data-page="themeSite"] li.swipeout').off('click');
     $$('*[data-page="themeSite"] .swipeout-overswipe').off('click');
-    
+
     var stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
     var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
-  
+
     onclickFunc();
 
     //  because haved to wait for appened fininshed
@@ -1304,7 +1320,7 @@ myApp.onPageAfterAnimation('themeSite', function(p) {
           },
         });
       });
-  
+
       $$('*[data-page="themeSite"] .swipeout').on('swipeout:closed', function() {
         $$('*[data-page="themeSite"] li.swipeout').on('click', function() {
           var site = findStation(stations, parseInt(this.id, 10));
@@ -1323,14 +1339,14 @@ myApp.onPageAfterAnimation('themeSite', function(p) {
 
       function favorites() { // if change to () => { , it will go wrong!
         $$('*[data-page="themeSite"] li.swipeout').off('click');
-  
+
         if ($$(this).hasClass('add-favorite')) {
           // add this.id to favorite
           console.log('add toggle');
-  
+
           favoriteSequence = addFavorite(favoriteSequence, parseInt(this.id, 10));
           console.log(favoriteSequence);
-  
+
           $$('.favorite-heart-' + this.id).removeClass('color-white').addClass('color-red');
           $('#' + this.id + '.add-favorite').removeClass('add-favorite').addClass('remove-favorite');
           myApp.swipeoutClose($$('li.swipeout-' + this.id));
@@ -1339,9 +1355,9 @@ myApp.onPageAfterAnimation('themeSite', function(p) {
         } else {
           // remove this.id to favorite
           console.log('remove toggle');
-  
+
           favoriteSequence = removeFavorite(favoriteSequence, parseInt(this.id, 10));
-  
+
           $$('.favorite-heart-' + this.id).removeClass('color-red').addClass('color-white');
           $('#' + this.id + '.remove-favorite').removeClass('remove-favorite').addClass('add-favorite');
           myApp.swipeoutClose($$('li.swipeout-' + this.id));
@@ -1349,7 +1365,7 @@ myApp.onPageAfterAnimation('themeSite', function(p) {
           $$(this).children('div').children('p').html('加入最愛');
         }
       }
-  
+
       $$('*[data-page="themeSite"] .swipeout-overswipe').on('click', favorites);
 
     }
@@ -1477,8 +1493,6 @@ myApp.onPageInit('customRoute', function() {
     mainView.router.back({ url: 'route.html', force: true });
   });
 
-  
-
   var stations = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
   var favoriteSequence = JSON.parse(window.localStorage.getItem('favoriteStations'));
   console.log(favoriteSequence);
@@ -1542,7 +1556,7 @@ myApp.onPageInit('customRoute', function() {
               url: 'routeDetail.html',
               context: {
                 title: '自訂行程',
-                time: '預估時間: ' + (t/60).toFixed(0) +  '分鐘',
+                time: '預估時間: ' + (t / 60).toFixed(0) + '分鐘',
                 custom: true,
                 previous: 'customRoute.html',
                 introduction: '自己想的好棒喔',
@@ -1570,7 +1584,7 @@ myApp.onPageInit('customRoute', function() {
   });
 });
 
-myApp.onPageInit('itemDetail', function (page) {
+myApp.onPageInit('itemDetail', function(page) {
   $$('.toolbar').off('click');
   //  detect if this station have question to answered
   if (page.context.isBeacon) {
