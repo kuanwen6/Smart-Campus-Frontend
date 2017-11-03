@@ -450,6 +450,17 @@ myApp.onPageInit('map', function(page) {
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
+    $$('.marker-info').on('click', function() {
+      mainView.router.load({
+        url: 'itemDetail.html',
+        context: {
+          site: station,
+          isBeacon: false,
+          favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+          favorite: isFavorite(parseInt(station['id'], 10)),
+        },
+      });
+    });
   }
 
   function hideMarkerInfo() {
