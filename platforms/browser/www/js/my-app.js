@@ -341,7 +341,6 @@ myApp.onPageInit('map', function(page) {
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
-  directionsDisplay.setMap(map);
   setMarkers();
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
 
@@ -351,6 +350,7 @@ myApp.onPageInit('map', function(page) {
       $$('.left>a').removeClass('back');
       $$('#page-title').html('導覽中');
       $$('.open-filter').css('visibility', 'hidden');
+      directionsDisplay.setMap(map);
 
       stations = page.context.stations;
       var _iteratorNormalCompletion = true;
@@ -450,6 +450,20 @@ myApp.onPageInit('map', function(page) {
     $$('.marker-favorite').attr('id', station['id']);
     $('.marker-favorite').toggleClass('color-red', isFavorite(station['id']));
     $$('.marker-info').css('display', 'block');
+    $$('.marker-info').on('click', function(e) {
+      if( $(e.target).closest(".marker-favorite").length > 0 ) {
+        return false;
+      }
+      mainView.router.load({
+        url: 'itemDetail.html',
+        context: {
+          site: station,
+          isBeacon: false,
+          favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+          favorite: isFavorite(parseInt(station['id'], 10)),
+        },
+      });
+    });
   }
 
   function hideMarkerInfo() {
