@@ -169,26 +169,15 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // });
 
   var one_beacon_verified_this_round = false;
-<<<<<<< HEAD
-  for (var i=0;i < pluginResult.beacons.length ; i++)
-  {
-=======
   for (var i = 0; i < pluginResult.beacons.length; i++) {
->>>>>>> b83b43c89f2e77c4d4f43b6c4b3af00d09339d12
     var beacon = pluginResult.beacons[i];
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
 
-<<<<<<< HEAD
-      if( (!beacon_util.recordDetection['B'+platformID]) && (!one_beacon_verified_this_round) )
-      {
-        beacon_util.recordDetection['B'+platformID] = true;
-=======
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
->>>>>>> b83b43c89f2e77c4d4f43b6c4b3af00d09339d12
         var ifSucceed = false;
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
@@ -197,11 +186,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             'beacon_id': platformID,
           },
           async: false,
-<<<<<<< HEAD
-          success: function (stations) {
-=======
           success: function(stations) {
->>>>>>> b83b43c89f2e77c4d4f43b6c4b3af00d09339d12
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
 
@@ -241,21 +226,12 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             console.log(data);
           },
         });
-<<<<<<< HEAD
-        if (ifSucceed){
-          one_beacon_verified_this_round = true;
-        }
-      }
-    }else if ( beacon.proximity == 'ProximityFar' ){
-      beacon_util.recordDetection['B'+platformID] = false;
-=======
         if (ifSucceed) {
           one_beacon_verified_this_round = true;
         }
       }
     } else if (beacon.proximity == 'ProximityFar') {
       beacon_util.recordDetection['B' + platformID] = false;
->>>>>>> b83b43c89f2e77c4d4f43b6c4b3af00d09339d12
     }
   }
   return;
