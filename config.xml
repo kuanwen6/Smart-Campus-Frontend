@@ -56,9 +56,6 @@
         <icon height="87" src="res/ios/icon/87x87.png" width="87" />
         <icon height="512" src="res/ios/icon/512x512.png" width="512" />
         <icon height="1024" src="res/ios/icon/1024x1024.png" width="1024" />
-        <feature name="StatusBar">
-            <param name="ios-package" onload="true" value="CDVStatusBar" />
-        </feature>
     </platform>
     <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
@@ -68,8 +65,6 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="SplashScreenDelay" value="2000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
-    <preference name="StatusBarOverlaysWebView" value="true" />
-    <preference name="StatusBarStyle" value="lightcontent" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
     <plugin name="com.unarin.cordova.beacon" spec="https://github.com/petermetz/cordova-plugin-ibeacon.git" />
