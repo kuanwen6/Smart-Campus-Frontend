@@ -284,6 +284,7 @@ myApp.onPageInit('map', function(page) {
   var markers = void 0;
   var stations = void 0;
   var waypts = [];
+  var animateMarker = undefined;
   var Latitude = undefined;
   var Longitude = undefined;
   var Accuracy = undefined;
@@ -386,7 +387,7 @@ myApp.onPageInit('map', function(page) {
     }
   }
 
-  function setMarkers() {
+  function addMarkerWithTimeout(station, timeout) {
     var icon = {
       '古蹟': 'img/markers/marker_red.png',
       '藝文': 'img/markers/marker_orange.png',
@@ -395,28 +396,35 @@ myApp.onPageInit('map', function(page) {
     };
     var scaledSize = new google.maps.Size(25, 36);
     var anchor = new google.maps.Point(12.5, 36);
-    markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
 
+    window.setTimeout(function() {
+      var marker = new google.maps.Marker({
+        position: { lat: station['location'][1], lng: station['location'][0] },
+        title: station['name'],
+        map: map,
+        icon: {
+          url: icon[station['category']],
+          scaledSize: scaledSize,
+          anchor: anchor
+        },
+        animation: google.maps.Animation.DROP
+      });
+      marker.addListener('click', showMarkerInfo);
+      markers[station['category']].push(marker);
+    }, timeout)
+  }
+
+  function setMarkers() {
+    markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
+    var timeout = 100
     var _iteratorNormalCompletion2 = true;
     var _didIteratorError2 = false;
     var _iteratorError2 = undefined;
-
     try {
       for (var _iterator2 = stations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
         var station = _step2.value;
-
-        var marker = new google.maps.Marker({
-          position: { lat: station['location'][1], lng: station['location'][0] },
-          title: station['name'],
-          map: map,
-          icon: {
-            url: icon[station['category']],
-            scaledSize: scaledSize,
-            anchor: anchor
-          }
-        });
-        marker.addListener('click', showMarkerInfo);
-        markers[station['category']].push(marker);
+        addMarkerWithTimeout(station, timeout);
+        timeout += 40;
       }
     } catch (err) {
       _didIteratorError2 = true;
@@ -445,6 +453,11 @@ myApp.onPageInit('map', function(page) {
       _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
     }
 
+    if(animateMarker) {
+      animateMarker.setAnimation(null);
+    }
+    animateMarker = _this;
+    _this.setAnimation(google.maps.Animation.BOUNCE)
     $$('#marker-img').attr('src', station['image']['primary']);
     $$('#marker-category').html('/ ' + station['category'] + '主題 /');
     $$('#marker-name').html(station['name'].replace('/', '<br>/'));
@@ -469,6 +482,9 @@ myApp.onPageInit('map', function(page) {
   }
 
   function hideMarkerInfo() {
+    if(animateMarker) {
+      animateMarker.setAnimation(null);
+    }
     $$('.marker-info').css('display', 'none');
   }
 
