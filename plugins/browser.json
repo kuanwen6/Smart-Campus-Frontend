@@ -16,9 +16,6 @@
         "com.unarin.cordova.beacon": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
@@ -32,6 +29,9 @@
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
         "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
