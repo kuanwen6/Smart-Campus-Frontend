@@ -699,8 +699,8 @@ function getLocationArray(idArray) {
 function createCards(data, onclickCallback) {
   for (var i = 0; i < data.length; i += 1) {
     var description = data[i].description;
-    if (data[i].description.length > 12) {
-      description = description.substring(0, 12) + '...';
+    if (data[i].description.length > 10) {
+      description = description.substring(0, 10) + '....';
     }
     var routeLocation = getLocationArray(data[i].station_sequence);
     console.log(routeLocation);
@@ -713,15 +713,15 @@ function createCards(data, onclickCallback) {
           display = false,
           callback = function(d, t) {
             $$('.big-card').append('<div class="card" id="' + currentData.id + '">' +
-                '<div href="#" class="card-content" style="height:15vh;">' +
+                '<div href="#" class="card-content" style="height:28.5vw;">' +
                     '<div class="row no-gutter">' +
-                        '<div class="col-35"><img src="' + currentData.image + '" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>' +
-                        '<div class="col-60" style="padding:8px;">' +
+                        '<div class="col-40"><img src="' + currentData.image + '" class="lazy lazy-fadeIn" style="width:38vw;height:28.5vw;object-fit: cover;"></div>' +
+                        '<div class="col-60" style="padding:8px; height:28.5vw; position:relative;">' +
                             '<div class="card-title"><span>' + currentData.name + '</span></div>' +
                             '<br>' +
-                            '<div class="row">' +
+                            '<div class="row" style="position:absolute; bottom:5px; right:5px;">' +
                                 '<div class="col-35"></div>' +
-                                '<div class="col-60"><span>' + des + '</span></div>' +
+                                '<div class="col-60" style="width:30vw;"><span>' + des + '</span></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -740,15 +740,15 @@ function createCards(data, onclickCallback) {
           display = false,
           callback = function(d, t) {
             $$('.big-card').append('<div class="card" id="' + currentData.id + '">' +
-                '<div href="#" class="card-content" style="height:15vh;">' +
+                '<div href="#" class="card-content" style="height:28.5vw;">' +
                     '<div class="row no-gutter">' +
-                        '<div class="col-35"><img src="' + currentData.image + '" class="lazy lazy-fadeIn" style="width:20vh;height:15vh;object-fit: cover;"></div>' +
-                        '<div class="col-60" style="padding:8px;">' +
+                        '<div class="col-40"><img src="' + currentData.image + '" class="lazy lazy-fadeIn" style="width:38vw;height:28.5vw;object-fit: cover;"></div>' +
+                        '<div class="col-60" style="padding:8px; height:28.5vw; position:relative;">' +
                             '<div class="card-title"><span>' + currentData.name + '</span></div>' +
                             '<br>' +
-                            '<div class="row">' +
+                            '<div class="row" style="position:absolute; bottom:5px; right:5px;">' +
                                 '<div class="col-35"></div>' +
-                                '<div class="col-60"><span>' + des + '</span></div>' +
+                                '<div class="col-60" style="width:30vw;"><span>' + des + '</span></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -771,12 +771,12 @@ function createFavoriteCards(favorite, lat, lng, callback) {
     (function(currentFavorite, dis){
       $$('*[data-page="customRoute"] .swipe-list').append('<li class="swipeout" id="' + currentFavorite.id + '" style="z-index:100;">' +
                   '<div class="card swipeout-content">' +
-                      '<div href="#" class="card-content" style="height:18vh;">' +
+                      '<div href="#" class="card-content" style="height:32vw;">' +
                           '<div class="row no-gutter">' +
                               '<img class="delete-route" id="' + currentFavorite.id + '" src="img/error.png" style="height:18px; width:18px;position:absolute;right:5px; top:5px;">' +
                               '<div class="col-50">' +
-                                '<img src="' + currentFavorite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                                '<i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                                '<img src="' + currentFavorite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                                '<i class="f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                               '</div>'+
                               '<div class="col-50" style="padding:8px;">' +
                                   '<div class="card-title"><span>' + currentFavorite.name + '</span></div>' +
@@ -811,11 +811,11 @@ function createFavorite(favorite, lat, lng, callback) {
     (function(currentFavorite, dis){
       $$('.favorite-swipe-list').append('<li class="swipeout swipeout-favorite-' + currentFavorite.id + '" id="' + currentFavorite.id + '" style="z-index:100;">' + 
       '<div class="card swipeout-content">' +
-          '<div href="#" class="card-content" style="height:18vh;">' +
+          '<div href="#" class="card-content" style="height:32vw;">' +
               '<div class="row no-gutter">' +
                   '<div class="col-50">' +
-                    '<img src="' + currentFavorite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                    '<i class="favorite-heart-' + currentFavorite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                    '<img src="' + currentFavorite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                    '<i class="favorite-heart-' + currentFavorite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                   '</div>' +
                   '<div class="col-50" style="padding:8px;">' +
                       '<div class="card-title"><span>' + currentFavorite.name + '</span></div>' +
@@ -871,11 +871,11 @@ function createSites(sites, favorite, lat, lng, callback) {
     if ($.inArray(currentSite.id, favorite) === -1) {
       $$('.' + cate + '-list').append('<li class="swipeout swipeout-' + currentSite.id + '" id="' + currentSite.id+ '" style="z-index:100;">' +
       '<div class="card swipeout-content">' +
-          '<div href="#" class="card-content" style="height:18vh;">' +
+          '<div href="#" class="card-content" style="height:32vw;">' +
               '<div class="row no-gutter">' +
                   '<div class="col-50">' +
-                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                   '</div>' +
                   '<div class="col-50" style="padding:8px;">' +
                       '<div class="card-title"><span>' + currentSite.name + '</span></div>' +
@@ -900,11 +900,11 @@ function createSites(sites, favorite, lat, lng, callback) {
       //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
       $$('.search-all-list').append('<li class="swipeout swipeout-search-' + currentSite.id + '" id="' + currentSite.id+ '" style="z-index:100;">' +
       '<div class="card swipeout-content">' +
-          '<div href="#" class="card-content" style="height:18vh;">' +
+          '<div href="#" class="card-content" style="height:32vw;">' +
               '<div class="row no-gutter">' +
                   '<div class="col-50">' +
-                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-white" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                   '</div>' +
                   '<div class="col-50" style="padding:8px;">' +
                       '<div class="card-title"><span>' + currentSite.name + '</span></div>' +
@@ -928,11 +928,11 @@ function createSites(sites, favorite, lat, lng, callback) {
     } else {
       $$('.' + cate + '-list').append('<li class="swipeout swipeout-' + currentSite.id + '" id="' + currentSite.id+ '" style="z-index:100;">' +
       '<div class="card swipeout-content">' +
-          '<div href="#" class="card-content" style="height:18vh;">' +
+          '<div href="#" class="card-content" style="height:32vw;">' +
               '<div class="row no-gutter">' +
                   '<div class="col-50">' +
-                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                   '</div>' +
                   '<div class="col-50" style="padding:8px;">' +
                       '<div class="card-title"><span>' + currentSite.name + '</span></div>' +
@@ -957,11 +957,11 @@ function createSites(sites, favorite, lat, lng, callback) {
       //  take apart of this two class is because of the swipeoutClose(), this function can only operate 'a' element at the same time
       $$('.search-all-list').append('<li class="swipeout swipeout-search-' + currentSite.id + '" id="' + currentSite.id+ '" style="z-index:100;">' +
       '<div class="card swipeout-content">' +
-          '<div href="#" class="card-content" style="height:18vh;">' +
+          '<div href="#" class="card-content" style="height:32vw;">' +
               '<div class="row no-gutter">' +
                   '<div class="col-50">' +
-                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:28vh;height:18vh;object-fit: cover;">' +
-                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:24vh; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
+                    '<img src="' + currentSite.image.primary + '" class="lazy lazy-fadeIn" style="width:50vw;height:32vw;object-fit: cover;">' +
+                    '<i class="favorite-heart-' + currentSite.id + ' f7-icons color-red" style="font-size:18px;position:absolute;bottom:5px;left:43vw; text-shadow: 0px 0px 8px white;">heart_fill</i>' +
                   '</div>' +
                   '<div class="col-50" style="padding:8px;">' +
                       '<div class="card-title"><span>' + currentSite.name + '</span></div>' +
@@ -1466,6 +1466,7 @@ myApp.onPageInit('favorite', function() {
 
     $$('*[data-page="favorite"] .swipeout-overswipe').off('click');
     $$('*[data-page="favorite"] .swipeout-overswipe').on('click', favorites);
+    $$('*[data-page="favorite"] .skeleton-screen').removeClass('skeleton-screen');
   }
 
   function onSuccess(position) {
@@ -1524,6 +1525,8 @@ myApp.onPageInit('customRoute', function() {
         favoriteSequence.splice(index, 1);
       }
     });
+
+    $$('*[data-page="customRoute"] .skeleton-screen').removeClass('skeleton-screen');
   }
 
   function onSuccess(position) {
