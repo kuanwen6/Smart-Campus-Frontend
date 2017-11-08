@@ -14,6 +14,10 @@ $$(document).on('backbutton', function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
     });
+  } else if (page.name == "itemDetail") {
+    mainView.hideToolbar();
+    $$('.page-content').css('padding-bottom', 0);
+    mainView.router.back();
   } else {
     view.router.back();
   }
