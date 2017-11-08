@@ -174,8 +174,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
-    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
-
+    if (beacon.proximity == 'ProximityImmediate') {
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
         var ifSucceed = false;
@@ -209,7 +208,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               title: '接近' + currentSite['category'] + '站點',
               subtitle: currentSite['name'],
               message: '(點擊查看站點介紹)',
-              hold: 6000,
+              hold: 5000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
               onClick: function() {
