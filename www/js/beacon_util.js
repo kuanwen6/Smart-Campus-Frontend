@@ -221,6 +221,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                     favorite: isFavorite(parseInt(stationsObj[0], 10)),
                   },
                 });
+                mainView.router.refreshPage();
               }
             });
 
