@@ -1,6 +1,7 @@
 var myApp = new Framework7({
   template7Pages: true,
   swipeBackPage: false,
+  statusbarOverlay: false
 });
 
 var $$ = Dom7;
