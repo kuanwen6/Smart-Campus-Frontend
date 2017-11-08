@@ -8,7 +8,6 @@ function userDataInit() {
   window.localStorage.setItem('coins', 0);
 }
 
-
 function calculateAndDisplayRoute(origin, waypts) {
   var display = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -585,104 +584,104 @@ function moneySelect() {
 }
 
 function backChoice(previous) {
-    if (previous === 'themeRoute.html') {
-      mainView.hideToolbar();
-      mainView.router.back();
-    } else {
-      mainView.router.back({ url: 'customRoute.html', force: true, ignoreCache: true });
-    }
+  if (previous === 'themeRoute.html') {
+    mainView.hideToolbar();
+    mainView.router.back();
+  } else {
+    mainView.router.back({ url: 'customRoute.html', force: true, ignoreCache: true });
+  }
 }
 
 function answerQuestion(question, options, answer, question_id, gain, rewardID) {
-    var money = parseInt(window.localStorage.getItem('coins'), 10);
-    var experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
-  
-    $$('#questionTextArea').html(question);
-    for (var i = 0; i < 4; i += 1) {
-      $$('#answer' + (i+1)).html(options[i]);
-    }
-  
-    console.log('money ' + money);
-    console.log('experiencePoint ' + experiencePoint);
-    console.log('progress ' + (experiencePoint % EXP_PER_LEVEL) * 2)
-  
-    $$('.money_reward').html(gain);
-    myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
-  
-    $$('.answer').on('click', function answerClicked() {
-      $$('.answer').off('click', answerClicked); // lock the button
-  
-      if (this.id === 'answer' + answer.toString()) {
-        money = modifyMoney(money, gain);
-        experiencePoint = experienceUp(experiencePoint);
-        myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2, 1300);
-  
-        $$('#' + this.id).css('background', '#40bf79');
-        $$('#' + this.id).append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">' +
-          '<circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>' +
-          '<polyline class="path check" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>' +
+  var money = parseInt(window.localStorage.getItem('coins'), 10);
+  var experiencePoint = parseInt(window.localStorage.getItem('experiencePoint'), 10);
+
+  $$('#questionTextArea').html(question);
+  for (var i = 0; i < 4; i += 1) {
+    $$('#answer' + (i + 1)).html(options[i]);
+  }
+
+  console.log('money ' + money);
+  console.log('experiencePoint ' + experiencePoint);
+  console.log('progress ' + (experiencePoint % EXP_PER_LEVEL) * 2)
+
+  $$('.money_reward').html(gain);
+  myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2);
+
+  $$('.answer').on('click', function answerClicked() {
+    $$('.answer').off('click', answerClicked); // lock the button
+
+    if (this.id === 'answer' + answer.toString()) {
+      money = modifyMoney(money, gain);
+      experiencePoint = experienceUp(experiencePoint);
+      myApp.setProgressbar($$('#level-progress'), (experiencePoint % EXP_PER_LEVEL) * 2, 1300);
+
+      $$('#' + this.id).css('background', '#40bf79');
+      $$('#' + this.id).append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">' +
+        '<circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>' +
+        '<polyline class="path check" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>' +
         '</svg>');
-        $$('#endImg').attr('src', 'img/success-board.png');
-        setTimeout(function() {
-          $$('#gameEnd-modal').css('display', 'block');
-          $$('#gameEnd-modal').append('<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">' +
-            '<span style="font-size:6vw;font-weight:bold;">等級' + Math.floor(experiencePoint / EXP_PER_LEVEL + 1) + '</span><br><br>' +
-            '<img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;' +
-            '<span style="font-size:9vw; font-weight:bold; vertical-align: middle;">' + money + '</span>' +
+      $$('#endImg').attr('src', 'img/success-board.png');
+      setTimeout(function() {
+        $$('#gameEnd-modal').css('display', 'block');
+        $$('#gameEnd-modal').append('<div class="end-board-message" style="position: relative;top: calc(53% - 22px);text-align:center;">' +
+          '<span style="font-size:6vw;font-weight:bold;">等級' + Math.floor(experiencePoint / EXP_PER_LEVEL + 1) + '</span><br><br>' +
+          '<img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;' +
+          '<span style="font-size:9vw; font-weight:bold; vertical-align: middle;">' + money + '</span>' +
           '</div>');
-        }, 1200);
-  
-        if (window.localStorage.getItem('loggedIn') !== "false") {
-          $$.post(
-            url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
-            data = {
-              'question_id': question_id,
-              'email': window.localStorage.getItem('email'),
-            },
-            success = function(data) {
-              console.log('add answered success');
-            }
-          );
-        }
-  
-        var rewards = JSON.parse(window.localStorage.getItem('rewards'));
-        console.log('rewardID');
-        if (rewardID.length > 0) {
-          console.log(rewardID);
-          console.log(rewards);
-  
-          if ($.inArray(rewardID[0], rewards) === -1) {
-            rewards = getRewards(rewards, rewardID[0]);
-  
-            var rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
-            var rewardInfo = findStation(rewardsInfo, rewardID[0]);
-  
-            myApp.addNotification({
-              title: '成大校園導覽',
-              message: '您已獲得收藏品:  「' + rewardInfo.name + '」',
-              media: '<img width="44" height="44" style="border-radius:100%" src="' + rewardInfo.image_url + '">',
-              hold: 8000,
-              closeOnClick: true,
-            });
+      }, 1200);
+
+      if (window.localStorage.getItem('loggedIn') !== "false") {
+        $$.post(
+          url = 'https://smartcampus.csie.ncku.edu.tw/smart_campus/add_answered_question/',
+          data = {
+            'question_id': question_id,
+            'email': window.localStorage.getItem('email'),
+          },
+          success = function(data) {
+            console.log('add answered success');
           }
-        }
-      } else {
-        console.log('fail');
-        $$('#' + this.id).css('background', '#ff4d4d');
-        $$('#' + this.id).append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">' +
-          '<circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>' +
-          '<line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>' +
-          '<line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>' +
-        '</svg>');
-        $$('#endImg').attr('src', 'img/fail-board.png');
-  
-        setTimeout(function() {
-          $$('#gameEnd-modal').css('display', 'block');
-          $$('#gameEnd-modal').append('<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">' +
-            '<img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;' +
-            '<span style="font-size:9vw; font-weight:bold; vertical-align: middle;">' + money + '</span>' +
-          '</div>');
-        }, 1200);
+        );
       }
-    });
+
+      var rewards = JSON.parse(window.localStorage.getItem('rewards'));
+      console.log('rewardID');
+      if (rewardID.length > 0) {
+        console.log(rewardID);
+        console.log(rewards);
+
+        if ($.inArray(rewardID[0], rewards) === -1) {
+          rewards = getRewards(rewards, rewardID[0]);
+
+          var rewardsInfo = JSON.parse(window.sessionStorage.getItem('allRewardsInfo'));
+          var rewardInfo = findStation(rewardsInfo, rewardID[0]);
+
+          myApp.addNotification({
+            title: '成大校園導覽',
+            message: '您已獲得收藏品:  「' + rewardInfo.name + '」',
+            media: '<img width="44" height="44" style="border-radius:100%" src="' + rewardInfo.image_url + '">',
+            hold: 8000,
+            closeOnClick: true,
+          });
+        }
+      }
+    } else {
+      console.log('fail');
+      $$('#' + this.id).css('background', '#ff4d4d');
+      $$('#' + this.id).append('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">' +
+        '<circle class="path circle" fill="none" stroke="white" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>' +
+        '<line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>' +
+        '<line class="path line" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>' +
+        '</svg>');
+      $$('#endImg').attr('src', 'img/fail-board.png');
+
+      setTimeout(function() {
+        $$('#gameEnd-modal').css('display', 'block');
+        $$('#gameEnd-modal').append('<div class="end-board-message" style="position: relative;top: 54%;text-align:center;">' +
+          '<img src="img/coins.png" style="height:12vw;vertical-align:middle;">&nbsp;' +
+          '<span style="font-size:9vw; font-weight:bold; vertical-align: middle;">' + money + '</span>' +
+          '</div>');
+      }, 1200);
+    }
+  });
 }

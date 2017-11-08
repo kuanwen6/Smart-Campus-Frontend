@@ -33,7 +33,6 @@ myApp.onPageInit('themeRoute', function() {
   createCards(plansObj, cardOnclick);
 });
 
-
 myApp.onPageInit('routeDetail', function(page) {
   $$('.toolbar').off('click');
   $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">開始參觀<i class="f7-icons color-red toolbar-icon">navigation_fill</i></a></div>');

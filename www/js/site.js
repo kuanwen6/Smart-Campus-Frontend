@@ -1,4 +1,3 @@
-
 myApp.onPageInit('themeSite', function() {
   $$('.back-force').on('click', function() {
     mainView.router.back({ url: 'index.html', force: false });
@@ -257,101 +256,101 @@ myApp.onPageInit('favorite', function() {
 });
 
 myApp.onPageInit('itemDetail', function(page) {
-    $$('.toolbar').off('click');
-    //  detect if this station have question to answered
-    if (page.context.isBeacon) {
-      if (localStorage.getItem("loggedIn") !== "false") {
-        $$.ajax({
-          url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-          type: 'get',
-          data: {
-            'email': window.localStorage.getItem('email'),
-            'station_id': page.context.site.id,
-          },
-          success: function(data) {
-            var questionData = JSON.parse(data);
-            console.log(questionData);
-            if ($.isEmptyObject(questionData)) {
-              mainView.hideToolbar();
-              console.log('empty');
-            } else {
-              mainView.showToolbar();
-              $$('.page-content').css('padding-bottom', '9.5vh');
-              $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-              $$('.toolbar').on('click', moneySelect);
-              console.log('not');
-            }
-          },
-        });
-      } else {
-        $$.ajax({
-          url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
-          type: 'get',
-          data: {
-            'email': 'visitMode@gmail.com',
-            'station_id': page.context.site.id,
-          },
-          success: function(data) {
-            var questionData = JSON.parse(data);
-            console.log(questionData);
-            if ($.isEmptyObject(questionData)) {
-              mainView.hideToolbar();
-              console.log('empty');
-            } else {
-              mainView.showToolbar();
-              $$('.page-content').css('padding-bottom', '9.5vh');
-              $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-              $$('.toolbar').on('click', moneySelect);
-              console.log('not');
-            }
-          },
-        });
-      }
+  $$('.toolbar').off('click');
+  //  detect if this station have question to answered
+  if (page.context.isBeacon) {
+    if (localStorage.getItem("loggedIn") !== "false") {
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': window.localStorage.getItem('email'),
+          'station_id': page.context.site.id,
+        },
+        success: function(data) {
+          var questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
+    } else {
+      $$.ajax({
+        url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_unanswered_question/',
+        type: 'get',
+        data: {
+          'email': 'visitMode@gmail.com',
+          'station_id': page.context.site.id,
+        },
+        success: function(data) {
+          var questionData = JSON.parse(data);
+          console.log(questionData);
+          if ($.isEmptyObject(questionData)) {
+            mainView.hideToolbar();
+            console.log('empty');
+          } else {
+            mainView.showToolbar();
+            $$('.page-content').css('padding-bottom', '9.5vh');
+            $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
+            $$('.toolbar').on('click', moneySelect);
+            console.log('not');
+          }
+        },
+      });
     }
-  
-    var link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
-    $$('*[data-page="itemDetail"] #site-content  a').attr('onclick', 'window.open("' + link + '", "_system")');
-    $$('*[data-page="itemDetail"] #site-content  a').attr('href', '#');
-  
-    $$('.custom-money-content').on('click', function(e) {
-      var pHeight = $$('.custom-money-content').height();
-      var pOffset = $$('.custom-money-content').offset();
-      var y = e.pageY - pOffset.top;
-      console.log(pHeight);
-      console.log(y);
-      var money = parseInt(window.localStorage.getItem('coins'), 10);
-  
-      if (y > pHeight * 0.5 && y <= pHeight) {
-        console.log('200');
+  }
+
+  var link = $('*[data-page="itemDetail"] #site-content  a').attr('href');
+  $$('*[data-page="itemDetail"] #site-content  a').attr('onclick', 'window.open("' + link + '", "_system")');
+  $$('*[data-page="itemDetail"] #site-content  a').attr('href', '#');
+
+  $$('.custom-money-content').on('click', function(e) {
+    var pHeight = $$('.custom-money-content').height();
+    var pOffset = $$('.custom-money-content').offset();
+    var y = e.pageY - pOffset.top;
+    console.log(pHeight);
+    console.log(y);
+    var money = parseInt(window.localStorage.getItem('coins'), 10);
+
+    if (y > pHeight * 0.5 && y <= pHeight) {
+      console.log('200');
+      mainView.router.load({
+        url: 'gamePage.html',
+        context: {
+          id: page.context.site.id,
+          rewardID: page.context.site.rewards,
+          gain: 200,
+        },
+      });
+      $$('#money-select-modal').css('display', 'none');
+      mainView.hideToolbar();
+      $$('.page-content').css('padding-bottom', 0);
+    } else {
+      console.log('500');
+      if (money < 500) {
+        myApp.alert('擁有金幣不足!', '下注失敗');
+      } else {
+        money = modifyMoney(money, -500);
         mainView.router.load({
           url: 'gamePage.html',
           context: {
             id: page.context.site.id,
             rewardID: page.context.site.rewards,
-            gain: 200,
+            gain: 1000,
           },
         });
         $$('#money-select-modal').css('display', 'none');
         mainView.hideToolbar();
         $$('.page-content').css('padding-bottom', 0);
-      } else {
-        console.log('500');
-        if (money < 500) {
-          myApp.alert('擁有金幣不足!', '下注失敗');
-        } else {
-          money = modifyMoney(money, -500);
-          mainView.router.load({
-            url: 'gamePage.html',
-            context: {
-              id: page.context.site.id,
-              rewardID: page.context.site.rewards,
-              gain: 1000,
-            },
-          });
-          $$('#money-select-modal').css('display', 'none');
-          mainView.hideToolbar();
-          $$('.page-content').css('padding-bottom', 0);
-        }
       }
-    });
+    }
   });
+});
