@@ -167,7 +167,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   //     beacon_util.recordDetection[key] = false;
   //   }
   // });
-
+  beacon_util.stopScanForBeacons();
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
@@ -212,15 +212,32 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
               onClick: function() {
-                mainView.router.load({
-                  url: 'itemDetail.html',
-                  context: {
-                    site: currentSite,
-                    isBeacon: true,
-                    favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                    favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                  },
-                });
+                if (mainView.activePage.name == "itemDetail") {
+                  mainView.router.load({
+                    reload: true,
+                    reloadPrevious: false,
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                } else {
+                  mainView.router.load({
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                }
+              },
+              onClose: function() {
+                beacon_util.startScanForBeacons();
               }
             });
 
@@ -237,6 +254,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     } else if (beacon.proximity == 'ProximityFar') {
       beacon_util.recordDetection['B' + platformID] = false;
     }
+  }
+  if (!one_beacon_verified_this_round) {
+    beacon_util.startScanForBeacons();
   }
   return;
 }
