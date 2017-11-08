@@ -32,7 +32,7 @@
         <preference name="BackupWebStorage" value="none" />
         <preference name="target-device" value="handset" />
         <preference name="StatusBarOverlaysWebView" value="true" />
-        <preference name="StatusBarBackgroundColor" value="#000000" />
+        <!--<preference name="StatusBarBackgroundColor" value="#000000" />-->
         <preference name="StatusBarStyle" value="lightcontent" />
         <splash height="2208" src="res/ios/splash/Default-736h.png" width="1242" />
         <splash height="1242" src="res/ios/splash/2208x1242.png" width="2208" />
