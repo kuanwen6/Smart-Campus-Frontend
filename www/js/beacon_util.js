@@ -179,10 +179,15 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
         var ifSucceed = false;
+        var email = 'visitMode@gmail.com';
+        if (localStorage.getItem("loggedIn") !== "false"){
+          email = window.localStorage.getItem('email');
+        }
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
           type: 'post',
           data: {
+            'email': email,
             'beacon_id': platformID,
           },
           async: false,
