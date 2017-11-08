@@ -174,7 +174,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
-    if (beacon.proximity == 'ProximityImmediate') {
+    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
         var ifSucceed = false;
