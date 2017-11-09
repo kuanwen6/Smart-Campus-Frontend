@@ -1,7 +1,6 @@
 var myApp = new Framework7({
-  template7Pages: true, // enable Template7 rendering for Ajax and Dynamic pages
+  template7Pages: true,
   swipeBackPage: false,
-  //preloadPreviousPage: false
 });
 
 var $$ = Dom7;
