@@ -1,7 +1,7 @@
 function userDataInit() {
   window.localStorage.setItem('loggedIn', false);
   window.localStorage.setItem('launchCount', true);
-  window.localStorage.setItem('nickname', 'Guest');
+  window.localStorage.setItem('nickname', '訪客');
   window.localStorage.setItem('experiencePoint', 0);
   window.localStorage.setItem('rewards', '[]');
   window.localStorage.setItem('favoriteStations', '[]');
