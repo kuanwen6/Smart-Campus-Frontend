@@ -147,26 +147,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     return;
   }
 
-  // Object.keys(beacon_util.recordDetection).forEach(function(key) {
-  //   // key: the name of the object key
-  //   // index: the ordinal position of the key within the object
-  //   var beaconStillInRange = false;
-  //   for (var i=0;i < pluginResult.beacons.length ; i++)
-  //   {
-  //     var beacon = pluginResult.beacons[i];
-  //     var platformID = beacon_util.transformToPlatformID(beacon);
-
-  //     if( key == 'B'+platformID){
-  //       beaconStillInRange = true;      
-  //       break;
-  //     }
-  //   }
-
-  //   if(!beaconStillInRange)
-  //   {
-  //     beacon_util.recordDetection[key] = false;
-  //   }
-  // });
   beacon_util.stopScanForBeacons();
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
@@ -174,10 +154,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
-    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
+    function beaconInRangeAction() {
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
-        var ifSucceed = false;
         var email = 'visitMode@gmail.com';
         if (localStorage.getItem("loggedIn") !== "false"){
           email = window.localStorage.getItem('email');
@@ -203,10 +182,13 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             } else {
               navigator.vibrate(500);
             }
-
+            var siteName = currentSite['name'];
+            if (siteName.length > 20) {
+              siteName = siteName.substring(0, 20) + '...';
+            }
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
-              subtitle: currentSite['name'],
+              subtitle: siteName,
               message: '(點擊查看站點介紹)',
               hold: 5000,
               media: '<img src="./img/icon.png">',
@@ -241,18 +223,26 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               }
             });
 
-            ifSucceed = true;
+            one_beacon_verified_this_round = true;
           },
           error: function(data) {
             console.log(data);
           },
         });
-        if (ifSucceed) {
-          one_beacon_verified_this_round = true;
-        }
       }
-    } else if (beacon.proximity == 'ProximityFar') {
-      beacon_util.recordDetection['B' + platformID] = false;
+    }
+    if (myApp.device.os == 'android') {
+      if ((beacon.accuracy > 0 && beacon.accuracy < 1.55)) {
+        beaconInRangeAction();
+      } else if (beacon.accuracy > 3.0) {
+        beacon_util.recordDetection['B' + platformID] = false;
+      }
+    }else{
+      if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
+        beaconInRangeAction();
+      } else if (beacon.proximity == 'ProximityFar') {
+        beacon_util.recordDetection['B' + platformID] = false;
+      }
     }
   }
   if (!one_beacon_verified_this_round) {
