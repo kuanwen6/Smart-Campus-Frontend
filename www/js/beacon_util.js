@@ -183,8 +183,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               navigator.vibrate(500);
             }
             var siteName = currentSite['name'];
-            if (siteName.length > 18) {
-              siteName = siteName.substring(0, 18) + '...';
+            if (siteName.length > 20) {
+              siteName = siteName.substring(0, 20) + '...';
             }
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
