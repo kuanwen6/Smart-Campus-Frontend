@@ -175,9 +175,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     var platformID = beacon_util.transformToPlatformID(beacon);
 
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
+      if (one_beacon_verified_this_round){myApp.alert('YES verified');}
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
-        var ifSucceed = false;
         var email = 'visitMode@gmail.com';
         if (localStorage.getItem("loggedIn") !== "false"){
           email = window.localStorage.getItem('email');
@@ -241,15 +241,12 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               }
             });
 
-            ifSucceed = true;
+            one_beacon_verified_this_round = true;
           },
           error: function(data) {
             console.log(data);
           },
         });
-        if (ifSucceed) {
-          one_beacon_verified_this_round = true;
-        }
       }
     } else if (beacon.proximity == 'ProximityFar') {
       beacon_util.recordDetection['B' + platformID] = false;
