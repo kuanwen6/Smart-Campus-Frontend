@@ -153,157 +153,90 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     var beacon = pluginResult.beacons[i];
 
     var platformID = beacon_util.transformToPlatformID(beacon);
-    if (myApp.device.os == 'android') {
-      if ((beacon.accuracy > 0 && beacon.accuracy < 2.4)) {
-        if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
-          beacon_util.recordDetection['B' + platformID] = true;
-          var email = 'visitMode@gmail.com';
-          if (localStorage.getItem("loggedIn") !== "false"){
-            email = window.localStorage.getItem('email');
-          }
-          $$.ajax({
-            url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
-            type: 'post',
-            data: {
-              'email': email,
-              'beacon_id': platformID,
-            },
-            async: false,
-            success: function(stations) {
-              var stationsObj = JSON.parse(stations).data;
-              console.log(stationsObj); // array
-  
-              var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-              var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
-  
-              // Device Vibrate
-              if (myApp.device.os == 'android') {
-                navigator.vibrate([500, 100, 500]);
-              } else {
-                navigator.vibrate(500);
-              }
-  
-              myApp.addNotification({
-                title: '接近' + currentSite['category'] + '站點',
-                subtitle: currentSite['name'],
-                message: '(點擊查看站點介紹)'+beacon.accuracy+' Dis'+beacon.distance,
-                hold: 5000,
-                media: '<img src="./img/icon.png">',
-                closeOnClick: true,
-                onClick: function() {
-                  if (mainView.activePage.name == "itemDetail") {
-                    mainView.router.load({
-                      reload: true,
-                      reloadPrevious: false,
-                      url: 'itemDetail.html',
-                      context: {
-                        site: currentSite,
-                        isBeacon: true,
-                        favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                        favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                      },
-                    });
-                  } else {
-                    mainView.router.load({
-                      url: 'itemDetail.html',
-                      context: {
-                        site: currentSite,
-                        isBeacon: true,
-                        favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                        favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                      },
-                    });
-                  }
-                },
-                onClose: function() {
-                  beacon_util.startScanForBeacons();
-                }
-              });
-  
-              one_beacon_verified_this_round = true;
-            },
-            error: function(data) {
-              console.log(data);
-            },
-          });
+
+    function beaconInRangeAction() {
+      if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
+        beacon_util.recordDetection['B' + platformID] = true;
+        var email = 'visitMode@gmail.com';
+        if (localStorage.getItem("loggedIn") !== "false"){
+          email = window.localStorage.getItem('email');
         }
-      } else if (beacon.accuracy > 2.6) {
+        $$.ajax({
+          url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
+          type: 'post',
+          data: {
+            'email': email,
+            'beacon_id': platformID,
+          },
+          async: false,
+          success: function(stations) {
+            var stationsObj = JSON.parse(stations).data;
+            console.log(stationsObj); // array
+
+            var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
+            var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
+
+            // Device Vibrate
+            if (myApp.device.os == 'android') {
+              navigator.vibrate([500, 100, 500]);
+            } else {
+              navigator.vibrate(500);
+            }
+
+            myApp.addNotification({
+              title: '接近' + currentSite['category'] + '站點',
+              subtitle: currentSite['name'],
+              message: '(點擊查看站點介紹)'+beacon.accuracy,
+              hold: 5000,
+              media: '<img src="./img/icon.png">',
+              closeOnClick: true,
+              onClick: function() {
+                if (mainView.activePage.name == "itemDetail") {
+                  mainView.router.load({
+                    reload: true,
+                    reloadPrevious: false,
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                } else {
+                  mainView.router.load({
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                }
+              },
+              onClose: function() {
+                beacon_util.startScanForBeacons();
+              }
+            });
+
+            one_beacon_verified_this_round = true;
+          },
+          error: function(data) {
+            console.log(data);
+          },
+        });
+      }
+    }
+    if (myApp.device.os == 'android') {
+      if ((beacon.accuracy > 0 && beacon.accuracy < 2.0)) {
+        beaconInRangeAction();
+      } else if (beacon.accuracy > 3.0) {
         beacon_util.recordDetection['B' + platformID] = false;
       }
     }else{
       if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
-        if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
-          beacon_util.recordDetection['B' + platformID] = true;
-          var email = 'visitMode@gmail.com';
-          if (localStorage.getItem("loggedIn") !== "false"){
-            email = window.localStorage.getItem('email');
-          }
-          $$.ajax({
-            url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
-            type: 'post',
-            data: {
-              'email': email,
-              'beacon_id': platformID,
-            },
-            async: false,
-            success: function(stations) {
-              var stationsObj = JSON.parse(stations).data;
-              console.log(stationsObj); // array
-  
-              var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-              var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
-  
-              // Device Vibrate
-              if (myApp.device.os == 'android') {
-                navigator.vibrate([500, 100, 500]);
-              } else {
-                navigator.vibrate(500);
-              }
-  
-              myApp.addNotification({
-                title: '接近' + currentSite['category'] + '站點',
-                subtitle: currentSite['name'],
-                message: '(點擊查看站點介紹)'+beacon.accuracy+' Dis'+beacon.distance,
-                hold: 5000,
-                media: '<img src="./img/icon.png">',
-                closeOnClick: true,
-                onClick: function() {
-                  if (mainView.activePage.name == "itemDetail") {
-                    mainView.router.load({
-                      reload: true,
-                      reloadPrevious: false,
-                      url: 'itemDetail.html',
-                      context: {
-                        site: currentSite,
-                        isBeacon: true,
-                        favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                        favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                      },
-                    });
-                  } else {
-                    mainView.router.load({
-                      url: 'itemDetail.html',
-                      context: {
-                        site: currentSite,
-                        isBeacon: true,
-                        favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                        favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                      },
-                    });
-                  }
-                },
-                onClose: function() {
-                  beacon_util.startScanForBeacons();
-                }
-              });
-  
-              one_beacon_verified_this_round = true;
-            },
-            error: function(data) {
-              console.log(data);
-            },
-          });
-        }
+        beaconInRangeAction();
       } else if (beacon.proximity == 'ProximityFar') {
         beacon_util.recordDetection['B' + platformID] = false;
       }
