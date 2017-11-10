@@ -36,3 +36,6 @@ var EXP_PER_LEVEL = 50;
 
 var directionsDisplay,
     directionsService;
+
+var exit_confirm_result;
+var network_interrupt_alert;
