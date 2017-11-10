@@ -1378,7 +1378,6 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
         // proximity
         dict.put("proximity", nameOfProximity(region.getDistance()));
-        dict.put("distance", region.getDistance());
         // signal strength and transmission power
         dict.put("rssi", region.getRssi());
         dict.put("tx", region.getTxPower());
@@ -1401,7 +1400,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
             return "ProximityImmediate";
         }
         // forums say 3.0 is the near/far threshold, but it looks to be based on experience that this is 4.0
-        if (accuracy <= 2.5) {
+        if (accuracy <= 4.0) {
             return "ProximityNear";
         }
         // if it is > 4.0 meters, call it far
