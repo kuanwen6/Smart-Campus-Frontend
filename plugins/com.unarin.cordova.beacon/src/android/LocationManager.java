@@ -1378,6 +1378,7 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
         // proximity
         dict.put("proximity", nameOfProximity(region.getDistance()));
+
         // signal strength and transmission power
         dict.put("rssi", region.getRssi());
         dict.put("tx", region.getTxPower());
