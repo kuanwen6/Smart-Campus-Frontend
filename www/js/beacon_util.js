@@ -147,28 +147,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     return;
   }
 
-  // Object.keys(beacon_util.recordDetection).forEach(function(key) {
-  //   // key: the name of the object key
-  //   // index: the ordinal position of the key within the object
-  //   var beaconStillInRange = false;
-  //   for (var i=0;i < pluginResult.beacons.length ; i++)
-  //   {
-  //     var beacon = pluginResult.beacons[i];
-  //     var platformID = beacon_util.transformToPlatformID(beacon);
-
-  //     if( key == 'B'+platformID){
-  //       beaconStillInRange = true;      
-  //       break;
-  //     }
-  //   }
-
-  //   if(!beaconStillInRange)
-  //   {
-  //     beacon_util.recordDetection[key] = false;
-  //   }
-  // });
   beacon_util.stopScanForBeacons();
-  myApp.alert('beacon#'+pluginResult.beacons.length);
+ 
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
@@ -176,7 +156,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     var platformID = beacon_util.transformToPlatformID(beacon);
 
     if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
-      if (one_beacon_verified_this_round){myApp.alert('YES verified/'+platformID+'ignored');}
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
         var email = 'visitMode@gmail.com';
