@@ -182,11 +182,14 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             } else {
               navigator.vibrate(500);
             }
-
+            var siteName = currentSite['name'];
+            if (siteName.length > 18) {
+              siteName = siteName.substring(0, 18) + '...';
+            }
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
-              subtitle: currentSite['name'],
-              message: '(點擊查看站點介紹)'+beacon.accuracy,
+              subtitle: siteName,
+              message: '(點擊查看站點介紹)',
               hold: 5000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
