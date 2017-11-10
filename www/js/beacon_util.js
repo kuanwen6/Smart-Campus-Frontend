@@ -148,7 +148,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   }
 
   beacon_util.stopScanForBeacons();
- 
+  myApp.alert('Beacon#:'+pluginResult.beacons.length);
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
