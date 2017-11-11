@@ -148,12 +148,17 @@ var detectedAlert;
 var detectSuccess;
 var detectError;
 var one_beacon_verified_this_round = false;
+var mutex = false;
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
   // if (0 == pluginResult.beacons.length) {
   //   return;
   // }
+  if(mutex) {
+    return;
+  }
+  mutex = true;
   if (detectedAlert != undefined){
     myApp.closeModal(detectedAlert);
   }
@@ -273,5 +278,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   if (!one_beacon_verified_this_round) {
     beacon_util.startScanForBeacons();
   }
+  mutex = false;
   return;
 }
