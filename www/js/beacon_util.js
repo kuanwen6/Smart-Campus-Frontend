@@ -31,7 +31,8 @@ beacon_util.init_setup_for_IBeacon = function() {
   // Set the delegate object to use.
   cordova.plugins.locationManager.setDelegate(delegate);
   //IOS authorization
-  cordova.plugins.locationManager.requestAlwaysAuthorization();
+  //cordova.plugins.locationManager.requestAlwaysAuthorization();
+  cordova.plugins.locationManager.requestWhenInUseAuthorization();
 }
 
 beacon_util.startUpBeaconUtil = function() {

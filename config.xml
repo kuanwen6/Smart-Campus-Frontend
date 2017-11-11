@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="tw.edu.ncku.csie.smartcampus.test" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>STOPtest</name>
+<widget id="tw.edu.ncku.csie.smartcampus.testloc" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>LOCtest</name>
     <description>
         成功大學 智慧校園導覽APP
     </description>
