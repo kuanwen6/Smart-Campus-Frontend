@@ -147,7 +147,7 @@ beacon_util.recordDetection = {}
 var detectedAlert;
 var detectSuccess;
 var detectError;
-
+var one_beacon_verified_this_round = false;
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
@@ -159,8 +159,11 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   }
   detectedAlert = myApp.alert("Beacon#: "+pluginResult.beacons.length);
   
-  //beacon_util.stopScanForBeacons();
-  var one_beacon_verified_this_round = false;
+  pluginResult.beacons.sort(function(a, b) {
+    return parseFloat(a.accuracy) - parseFloat(b.accuracy);
+  });
+  beacon_util.stopScanForBeacons();
+  one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
 
@@ -237,7 +240,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               },
               onClose: function() {
-                //beacon_util.startScanForBeacons();
+                beacon_util.startScanForBeacons();
               }
             });
 
@@ -267,8 +270,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       }
     }
   }
-  //if (!one_beacon_verified_this_round) {
-  //  beacon_util.startScanForBeacons();
-  //}
+  if (!one_beacon_verified_this_round) {
+    beacon_util.startScanForBeacons();
+  }
   return;
 }
