@@ -139,14 +139,22 @@ beacon_util.mappingShortUUID = function(UUID) {
 }
 
 beacon_util.recordDetection = {}
+//TESTs
+var detectedAlert;
+var detectSuccess;
+var detectError;
 
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
-  if (0 == pluginResult.beacons.length) {
-    return;
+  // if (0 == pluginResult.beacons.length) {
+  //   return;
+  // }
+  if (detectedAlert != undefined){
+    myApp.closeModal(detectedAlert);
   }
-
+  detectedAlert = myApp.alert("Beacon#: "+pluginResult.beacons.length);
+  
   beacon_util.stopScanForBeacons();
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
@@ -170,6 +178,12 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
           },
           async: false,
           success: function(stations) {
+
+            if (detectSuccess != undefined){
+              myApp.closeModal(detectSuccess);
+            }
+            detectSuccess = myApp.alert("Success call: "+platformID);
+
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
 
@@ -189,7 +203,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
               subtitle: siteName,
-              message: '(點擊查看站點介紹)',
+              message: '(點擊查看站點介紹) '+beacon.accuracy,
               hold: 5000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
@@ -227,6 +241,10 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
           },
           error: function(data) {
             console.log(data);
+            if (detectError != undefined){
+              myApp.closeModal(detectError);
+            }
+            detectError = myApp.alert(JSON.stringify(data));
           },
         });
       }
