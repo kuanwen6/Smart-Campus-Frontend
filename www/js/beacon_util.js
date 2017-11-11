@@ -31,7 +31,8 @@ beacon_util.init_setup_for_IBeacon = function() {
   // Set the delegate object to use.
   cordova.plugins.locationManager.setDelegate(delegate);
   //IOS authorization
-  cordova.plugins.locationManager.requestAlwaysAuthorization();
+  //cordova.plugins.locationManager.requestAlwaysAuthorization();
+  cordova.plugins.locationManager.requestWhenInUseAuthorization();
 }
 
 beacon_util.startUpBeaconUtil = function() {
@@ -139,6 +140,7 @@ beacon_util.mappingShortUUID = function(UUID) {
 }
 
 beacon_util.recordDetection = {}
+var one_beacon_verified_this_round = false;
 
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
@@ -147,8 +149,18 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     return;
   }
 
-  beacon_util.stopScanForBeacons();
-  var one_beacon_verified_this_round = false;
+  // If there exists a notification window,
+  // no further scanned results shall be processed
+  if ($$(".notification-item").length > 0) {
+    return;
+  }
+
+  // Sort the result by accuracy
+  pluginResult.beacons.sort(function(beacon_a, beacon_b) {
+    return parseFloat(beacon_a.accuracy) - parseFloat(beacon_b.accuracy);
+  });
+
+  one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
 
@@ -217,9 +229,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                     },
                   });
                 }
-              },
-              onClose: function() {
-                beacon_util.startScanForBeacons();
               }
             });
 
@@ -245,8 +254,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       }
     }
   }
-  if (!one_beacon_verified_this_round) {
-    beacon_util.startScanForBeacons();
-  }
+  
   return;
 }
