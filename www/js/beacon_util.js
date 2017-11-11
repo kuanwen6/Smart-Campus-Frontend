@@ -155,7 +155,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // if (0 == pluginResult.beacons.length) {
   //   return;
   // }
-  
+  if ($$(".notification-item").length > 0) {
+    return;
+  }
   if (detectedAlert != undefined){
     myApp.closeModal(detectedAlert);
   }
