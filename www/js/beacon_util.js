@@ -148,17 +148,14 @@ var detectedAlert;
 var detectSuccess;
 var detectError;
 var one_beacon_verified_this_round = false;
-var mutex = false;
+
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
   // if (0 == pluginResult.beacons.length) {
   //   return;
   // }
-  if(mutex) {
-    return;
-  }
-  mutex = true;
+  
   if (detectedAlert != undefined){
     myApp.closeModal(detectedAlert);
   }
@@ -167,7 +164,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   pluginResult.beacons.sort(function(a, b) {
     return parseFloat(a.accuracy) - parseFloat(b.accuracy);
   });
-  beacon_util.stopScanForBeacons();
+  //beacon_util.stopScanForBeacons();
   one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
@@ -175,7 +172,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     var platformID = beacon_util.transformToPlatformID(beacon);
 
     function beaconInRangeAction() {
-      if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
+      if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round) && ($$(".notification-item").length == 0)) {
         beacon_util.recordDetection['B' + platformID] = true;
         var email = 'visitMode@gmail.com';
         if (localStorage.getItem("loggedIn") !== "false"){
@@ -245,7 +242,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               },
               onClose: function() {
-                beacon_util.startScanForBeacons();
+                //beacon_util.startScanForBeacons();
               }
             });
 
@@ -276,8 +273,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     }
   }
   if (!one_beacon_verified_this_round) {
-    beacon_util.startScanForBeacons();
+    //beacon_util.startScanForBeacons();
   }
-  mutex = false;
+  
   return;
 }
