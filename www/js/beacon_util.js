@@ -80,6 +80,7 @@ beacon_util.startScanForBeacons = function() {
       .fail()
       .done()
   }
+  myApp.alert("start scanning");
 }
 
 beacon_util.stopScanForBeacons = function() {
@@ -100,6 +101,8 @@ beacon_util.stopScanForBeacons = function() {
       .fail()
       .done()
   }
+
+  myApp.alert("stop scanning");
 }
 
 beacon_util.transformToPlatformID = function(beacon) {

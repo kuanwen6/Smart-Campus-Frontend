@@ -30,6 +30,7 @@ $$(document).on('pause', function() {
   beacon_util.stopScanForBeacons();
 
   console.log("pause");
+  myApp.alert("PAUSED");
 });
 
 $$(document).on('resume', function() {
