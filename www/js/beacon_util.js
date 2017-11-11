@@ -159,7 +159,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   }
   detectedAlert = myApp.alert("Beacon#: "+pluginResult.beacons.length);
   
-  beacon_util.stopScanForBeacons();
+  //beacon_util.stopScanForBeacons();
   var one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
@@ -183,10 +183,10 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
           async: false,
           success: function(stations) {
 
-            if (detectSuccess != undefined){
-              myApp.closeModal(detectSuccess);
-            }
-            detectSuccess = myApp.alert("Success call: "+platformID);
+            // if (detectSuccess != undefined){
+            //   myApp.closeModal(detectSuccess);
+            // }
+            // detectSuccess = myApp.alert("Success call: "+platformID);
 
             var stationsObj = JSON.parse(stations).data;
             console.log(stationsObj); // array
@@ -237,7 +237,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               },
               onClose: function() {
-                beacon_util.startScanForBeacons();
+                //beacon_util.startScanForBeacons();
               }
             });
 
@@ -245,10 +245,10 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
           },
           error: function(data) {
             console.log(data);
-            if (detectError != undefined){
-              myApp.closeModal(detectError);
-            }
-            detectError = myApp.alert(JSON.stringify(data));
+            // if (detectError != undefined){
+            //   myApp.closeModal(detectError);
+            // }
+            // detectError = myApp.alert(JSON.stringify(data));
           },
         });
       }
@@ -267,8 +267,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       }
     }
   }
-  if (!one_beacon_verified_this_round) {
-    beacon_util.startScanForBeacons();
-  }
+  //if (!one_beacon_verified_this_round) {
+  //  beacon_util.startScanForBeacons();
+  //}
   return;
 }
