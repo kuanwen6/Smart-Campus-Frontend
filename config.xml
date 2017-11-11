@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="tw.edu.ncku.csie.smartcampus" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>成大校園導覽</name>
+<widget id="tw.edu.ncku.csie.smartcampus.test" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>STOPtest</name>
     <description>
         成功大學 智慧校園導覽APP
     </description>
@@ -74,7 +74,7 @@
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.3" />
     <plugin name="cordova-custom-config" spec="~4.0.2" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="導覽指南" />
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="這個應用程式會在您使用時運用iBeacon與GPS進行導覽指南" />
     </plugin>
     <plugin name="cordova-plugin-network-information" spec="^1.3.3" />
     <plugin name="cordova-plugin-vibration" spec="^2.1.5" />
