@@ -201,7 +201,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
               subtitle: siteName,
-              message: '(點擊查看站點介紹)',
+              message: '(點擊查看站點介紹)'+beacon.accuracy,
               hold: 5000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
