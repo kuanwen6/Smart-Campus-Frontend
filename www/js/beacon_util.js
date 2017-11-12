@@ -241,7 +241,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       }
     }
     if (myApp.device.os == 'android') {
-      if ((beacon.accuracy > 0 && beacon.accuracy < 1.8)) {
+      if ((beacon.accuracy > 0 && beacon.accuracy < 2.5)) {
         beaconInRangeAction();
       } else if (beacon.accuracy > 3.0) {
         beacon_util.recordDetection['B' + platformID] = false;
