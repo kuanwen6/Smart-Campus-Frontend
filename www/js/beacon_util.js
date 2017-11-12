@@ -156,9 +156,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   }
 
   // Sort the result by accuracy
-  pluginResult.beacons.sort(function(beacon_a, beacon_b) {
-    return parseFloat(beacon_a.accuracy) - parseFloat(beacon_b.accuracy);
-  });
+  // pluginResult.beacons.sort(function(beacon_a, beacon_b) {
+  //   return parseFloat(beacon_a.accuracy) - parseFloat(beacon_b.accuracy);
+  // });
 
   one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
@@ -196,7 +196,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             }
             var siteName = currentSite['name'];
             if (siteName.length > 20) {
-              siteName = siteName.substring(0, 20) + '...';
+              siteName = siteName.substring(0, 18) + '...';
             }
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
@@ -241,7 +241,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
       }
     }
     if (myApp.device.os == 'android') {
-      if ((beacon.accuracy > 0 && beacon.accuracy < 1.55)) {
+      if ((beacon.accuracy > 0 && beacon.accuracy < 2.5)) {
         beaconInRangeAction();
       } else if (beacon.accuracy > 3.0) {
         beacon_util.recordDetection['B' + platformID] = false;
