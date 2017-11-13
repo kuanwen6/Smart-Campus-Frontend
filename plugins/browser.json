@@ -34,7 +34,7 @@
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
-        "cordova-plugin-local-notification": {
+        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
@@ -45,7 +45,7 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
-        "cordova-plugin-badge": {
+        "cordova-plugin-app-event": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     }
