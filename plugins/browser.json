@@ -33,10 +33,19 @@
         },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-local-notification": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
     "dependent_plugins": {
         "cordova-plugin-compat": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "cordova-plugin-badge": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     }

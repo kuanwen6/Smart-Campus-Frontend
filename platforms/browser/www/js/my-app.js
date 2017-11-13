@@ -10,10 +10,17 @@ $$(document).on('backbutton', function() {
   var page = view.activePage;
 
   if (page.name == "index") {
-    var result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
+    if (exit_confirm_result != undefined){
+      myApp.closeModal(exit_confirm_result);
+    }
+    exit_confirm_result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
     });
+  } else if (page.name == "itemDetail") {
+    mainView.hideToolbar();
+    $$('.page-content').css('padding-bottom', 0);
+    mainView.router.back();
   } else {
     view.router.back();
   }
@@ -36,7 +43,10 @@ $$(document).on('online', function() {
 });
 
 $$(document).on('offline', function() {
-  myApp.alert('需網路連線以正常運作！', '網路連線中斷');
+  if (network_interrupt_alert != undefined){
+    myApp.closeModal(network_interrupt_alert);
+  }
+  network_interrupt_alert = myApp.alert('需網路連線以正常運作！', '網路連線中斷');
   console.log("offline");
 });
 

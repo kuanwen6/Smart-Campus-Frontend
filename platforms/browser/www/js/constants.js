@@ -1,6 +1,7 @@
 var myApp = new Framework7({
   template7Pages: true,
   swipeBackPage: false,
+  statusbarOverlay: false
 });
 
 var $$ = Dom7;
@@ -35,3 +36,6 @@ var EXP_PER_LEVEL = 50;
 
 var directionsDisplay,
     directionsService;
+
+var exit_confirm_result;
+var network_interrupt_alert;

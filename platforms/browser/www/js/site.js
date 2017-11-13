@@ -300,8 +300,9 @@ myApp.onPageInit('itemDetail', function(page) {
             mainView.showToolbar();
             $$('.page-content').css('padding-bottom', '9.5vh');
             $$('.toolbar').html('<div class="toolbar-inner"><a href="#" class="button button-big toolbar-text" style="text-align:center; margin:0 auto;  height:48px;">接受挑戰</a></div>');
-            $$('.toolbar').on('click', moneySelect);
-            console.log('not');
+            $$('.toolbar').on('click', function(){
+              myApp.alert('此功能僅能在登入後使用', '無法進行挑戰');
+            });
           }
         },
       });
