@@ -46,14 +46,10 @@ var notification = {
   addStationNotification: function(currentSite) {
     cordova.plugins.notification.local.hasPermission(function (granted) {
       if ( granted ) {
-        var siteName = currentSite['name'];
-        if (siteName.length > 20) {
-          siteName = siteName.substring(0, 18) + '...';
-        }
         cordova.plugins.notification.local.schedule({
           id: currentSite['id'],
           title: '接近' + currentSite['category'] + '站點',
-          text: siteName + '\n(點擊查看站點介紹)',
+          text: currentSite['name'],
           icon: './img/icon.png',
           smallIcon: './img/icon.png',
           foreground: true,
