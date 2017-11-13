@@ -24,12 +24,6 @@
         <preference name="android-windowSoftInputMode" value="adjustPan" />
         <icon src="res/android/icon/logo.png" />
         <splash src="res/android/splash/splash.png" />
-        <resource-file src="res/android/icon/icon-ldpi.png" target="res/drawable-mdpi/noti-icon.png" />
-        <resource-file src="res/android/icon/icon-mdpi.png" target="res/drawable-mdpi/noti-icon.png" />
-        <resource-file src="res/android/icon/icon-hdpi.png" target="res/drawable-hdpi/noti-icon.png" />
-        <resource-file src="res/android/icon/icon-xhdpi.png" target="res/drawable-xhdpi/noti-icon.png" />
-        <resource-file src="res/android/icon/icon-xxhdpi.png" target="res/drawable-xxhdpi/noti-icon.png" />
-        <resource-file src="res/android/icon/icon-xxxhdpi.png" target="res/drawable-xxxhdpi/noti-icon.png" />
         <allow-intent href="market:*" />
     </platform>
     <platform name="ios">

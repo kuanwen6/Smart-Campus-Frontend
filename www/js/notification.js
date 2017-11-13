@@ -51,8 +51,8 @@ var notification = {
           id: currentSite['id'],
           title: '接近' + currentSite['category'] + '站點',
           text: currentSite['name'],
-          icon: (myApp.device.os == 'android') ? 'res://noti-icon' : 'file://img/icon.png',
-          smallIcon: (myApp.device.os == 'android') ? 'res://noti-icon' : 'file://img/icon.png',
+          icon: (myApp.device.os == 'android') ? 'res://icon' : 'file://img/icon.png',
+          smallIcon: (myApp.device.os == 'android') ? 'res://icon' : 'file://img/icon.png',
           badge: 1,
           data: { type: STATION_NOTIFICATION, station: currentSite }
         });
