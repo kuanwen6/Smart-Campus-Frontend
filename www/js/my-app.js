@@ -33,7 +33,7 @@ $$(document).on('pause', function() {
 });
 
 $$(document).on('resume', function() {
-  beacon_util.startScanForBeacons();
+  //beacon_util.startScanForBeacons();
 
   console.log("resume");
 });
@@ -63,7 +63,7 @@ $$(document).on('deviceready', function() {
   } else {
     beacon_util.init_setup_for_IBeacon();
     notification.initialize();
-    
+
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
