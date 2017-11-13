@@ -232,6 +232,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               }
             });
 
+            // System notification
+            notification.addStationNotification(currentSite);
+
             one_beacon_verified_this_round = true;
           },
           error: function(data) {
