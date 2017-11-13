@@ -31,8 +31,8 @@ beacon_util.init_setup_for_IBeacon = function() {
   // Set the delegate object to use.
   cordova.plugins.locationManager.setDelegate(delegate);
   //IOS authorization
-  //cordova.plugins.locationManager.requestAlwaysAuthorization();
-  cordova.plugins.locationManager.requestWhenInUseAuthorization();
+  cordova.plugins.locationManager.requestAlwaysAuthorization();
+  //cordova.plugins.locationManager.requestWhenInUseAuthorization();
 }
 
 beacon_util.startUpBeaconUtil = function() {
@@ -189,6 +189,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
 
             // Device Vibrate
+            /*
             if (myApp.device.os == 'android') {
               navigator.vibrate([500, 100, 500]);
             } else {
@@ -231,6 +232,9 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               }
             });
+            */
+            // System notification
+            notification.addStationNotification(currentSite);
 
             one_beacon_verified_this_round = true;
           },
