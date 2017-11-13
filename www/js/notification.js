@@ -1,6 +1,8 @@
 var notification = {
   initialize: function() {
-    cordova.plugins.notification.local.registerPermission();
+    cordova.plugins.notification.local.registerPermission(function (granted) {
+      console.log('Notification Permission has been granted: ' + granted);
+    });
     notification.bindNotificationEvents();
   },
   bindNotificationEvents: function() {
