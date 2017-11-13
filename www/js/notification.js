@@ -8,7 +8,8 @@ var notification = {
   bindNotificationEvents: function() {
     cordova.plugins.notification.local.on('click', function (notification) {
       console.log('click', arguments);
-      var notification_type = notification.data.type;
+     
+      var notification_type = JSON.parse(notification.data).type;
       var currentSite = notification.data.station;
 
       switch(notification_type) {
