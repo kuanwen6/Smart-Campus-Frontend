@@ -70,23 +70,6 @@ myApp.onPageInit('map', function(page) {
     strokeWeight: 1,
     map: map
   });
-  /*
-  var walkingLineSymbol = {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillOpacity: 1,
-    scale: 3
-  };
-  var walkingPathLine = {
-    strokeColor: '#0eb7f6',
-    strokeOpacity: 0,
-    fillOpacity: 0,
-    icons: [{
-      icon: walkingLineSymbol,
-      offset: '0',
-      repeat: '10px'
-    }]
-  };
-  */
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
@@ -280,8 +263,9 @@ myApp.onPageInit('map', function(page) {
       Accuracy = updatedAccuracy;
 
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
-      if (page.context.isDirection) {
+      if (page.context.isDirection && !onMapWatchSuccess.first) {
         calculateAndDisplayRoute({ lat: Latitude, lng: Longitude }, waypts, display = true);
+        onMapWatchSuccess.first = true
       }
     }
   };
