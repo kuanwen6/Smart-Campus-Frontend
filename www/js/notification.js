@@ -53,7 +53,6 @@ var notification = {
           text: currentSite['name'],
           icon: 'file://img/icon.png',
           smallIcon: 'file://img/icon.png',
-          foreground: true,
           badge: 1,
           data: { type: STATION_NOTIFICATION, station: currentSite }
         });
