@@ -22,7 +22,12 @@
         <preference name="SplashMaintainAspectRatio" value="false" />
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <preference name="android-windowSoftInputMode" value="adjustPan" />
-        <icon src="res/android/icon/logo.png" />
+        <icon src="res/android/icon/icon-ldpi.png" platform="android" qualifier="ldpi" />
+        <icon src="res/android/icon/icon-mdpi.png" platform="android" qualifier="mdpi" />
+        <icon src="res/android/icon/icon-hdpi.png" platform="android" qualifier="hdpi" />
+        <icon src="res/android/icon/icon-xhdpi.png" platform="android" qualifier="xhdpi" />
+        <icon src="res/android/icon/icon-xxhdpi.png" platform="android" qualifier="xxhdpi" />
+        <icon src="res/android/icon/icon-xxxhdpi.png" platform="android" qualifier="xxxhdpi" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
     </platform>
