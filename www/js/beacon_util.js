@@ -189,6 +189,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
 
             // Device Vibrate
+            /*
             if (myApp.device.os == 'android') {
               navigator.vibrate([500, 100, 500]);
             } else {
@@ -231,7 +232,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               }
             });
-
+            */
             // System notification
             notification.addStationNotification(currentSite);
 
