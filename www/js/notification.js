@@ -51,8 +51,8 @@ var notification = {
           id: currentSite['id'],
           title: '接近' + currentSite['category'] + '站點',
           text: currentSite['name'],
-          icon: './img/icon.png',
-          smallIcon: './img/icon.png',
+          icon: 'file://img/icon.png',
+          smallIcon: 'file://img/icon.png',
           foreground: true,
           badge: 1,
           data: { type: STATION_NOTIFICATION, station: currentSite }
