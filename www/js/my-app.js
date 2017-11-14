@@ -27,19 +27,19 @@ $$(document).on('backbutton', function() {
 });
 
 $$(document).on('pause', function() {
-  if (localStorage.getItem("bgDetect") == null) return;
-  if (localStorage.getItem("bgDetect") !== "true") {
-    beacon_util.stopScanForBeacons();
-  }
+  // if (localStorage.getItem("bgDetect") == null) return;
+  // if (localStorage.getItem("bgDetect") !== "true") {
+  //   beacon_util.stopScanForBeacons();
+  // }
 
   console.log("pause");
 });
 
 $$(document).on('resume', function() {
-  if (localStorage.getItem("bgDetect") == null) return;
-  if (localStorage.getItem("bgDetect") !== "true") {
-    beacon_util.startScanForBeacons();
-  }
+  // if (localStorage.getItem("bgDetect") == null) return;
+  // if (localStorage.getItem("bgDetect") !== "true") {
+  //   beacon_util.startScanForBeacons();
+  // }
 
   console.log("resume");
 });
@@ -82,14 +82,14 @@ $$(document).on('deviceready', function() {
           onClosed: function() {
             beacon_util.startUpBeaconUtil();
 
-            myApp.confirm('是否開啟背景偵測？<br>APP在背景時將顯示接近站點通知', '接近站點通知',
-              function() {
-                window.localStorage.setItem('bgDetect', true);
-              },
-              function() {
-                window.localStorage.setItem('bgDetect', false);
-              }
-            );
+            // myApp.confirm('是否開啟背景偵測？<br>APP在背景時將顯示接近站點通知', '接近站點通知',
+            //   function() {
+            //     window.localStorage.setItem('bgDetect', true);
+            //   },
+            //   function() {
+            //     window.localStorage.setItem('bgDetect', false);
+            //   }
+            // );
           },
         }
       );
