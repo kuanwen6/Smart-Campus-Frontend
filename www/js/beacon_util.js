@@ -186,8 +186,8 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             console.log(stationsObj); // array
 
             var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-            for (var station in stationsObj) {
-              var currentSite = findStation(stations_stored, parseInt(station, 10));
+            for (var index in stationsObj) {
+              var currentSite = findStation(stations_stored, parseInt(stationsObj[index], 10));
               
               // System notification
               notification.addStationNotification(currentSite);
