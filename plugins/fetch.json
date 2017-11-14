@@ -95,20 +95,22 @@
         "is_top_level": false,
         "variables": {}
     },
-    "de.appplant.cordova.plugin.local-notification": {
-        "source": {
-            "type": "local",
-            "path": "/home/jeff/de.appplant.cordova.plugin.local-notification"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "com.unarin.cordova.beacon": {
         "source": {
             "type": "git",
             "url": "https://github.com/jeffwang0516/cordova-plugin-ibeacon.git",
             "subdir": ".",
             "ref": "custom"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "de.appplant.cordova.plugin.local-notification": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jeffwang0516/cordova-plugin-local-notifications.git",
+            "subdir": ".",
+            "ref": "0.8.5custom"
         },
         "is_top_level": true,
         "variables": {}
