@@ -25,12 +25,6 @@
         <preference name="com.unarin.cordova.beacon.android.altbeacon.ForegroundBetweenScanPeriod" value="900" />
         <preference name="com.unarin.cordova.beacon.android.altbeacon.BackgroundBetweenScanPeriod" value="20000" />     
         <icon platform="android" src="res/android/icon/icon.png" />
-        <resource-file src="res/android/icon/icon-ldpi.png" target="res/mipmap-ldpi-v4/icon.png" />
-        <resource-file src="res/android/icon/icon-mdpi.png" target="res/mipmap-mdpi-v4/icon.png" />
-        <resource-file src="res/android/icon/icon-hdpi.png" target="res/mipmap-hdpi-v4/icon.png" />
-        <resource-file src="res/android/icon/icon-xhdpi.png" target="res/mipmap-xhdpi-v4/icon.png" />
-        <resource-file src="res/android/icon/icon-xxhdpi.png" target="res/mipmap-xxhdpi-v4/icon.png" />
-        <resource-file src="res/android/icon/icon-xxxhdpi.png" target="res/mipmap-xxxhdpi-v4/icon.png" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
     </platform>
