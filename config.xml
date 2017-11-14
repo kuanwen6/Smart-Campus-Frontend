@@ -30,6 +30,7 @@
         <icon platform="android" qualifier="xhdpi" src="res/android/icon/icon-xhdpi.png" />
         <icon platform="android" qualifier="xxhdpi" src="res/android/icon/icon-xxhdpi.png" />
         <icon platform="android" qualifier="xxxhdpi" src="res/android/icon/icon-xxxhdpi.png" />
+        <icon platform="android" qualifier="nodpi" src="res/android/icon/icon.png" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
     </platform>
