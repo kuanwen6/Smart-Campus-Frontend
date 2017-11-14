@@ -41,7 +41,7 @@ beacon_util.startUpBeaconUtil = function() {
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
         if (!isEnabled) {
-          myApp.confirm('啟動藍牙以探索成大校園！！\n是否開啟？', '啟用藍芽？',
+          myApp.confirm('啟動藍牙以探索成大校園！！<br>是否開啟？', '啟用藍芽？',
             function() {
               cordova.plugins.locationManager.enableBluetooth();
             }
@@ -89,7 +89,7 @@ beacon_util.stopScanForBeacons = function() {
 
     var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
       region.id, region.uuid, region.major, region.minor);
-      
+
     // Stop ranging.
     cordova.plugins.locationManager.stopRangingBeaconsInRegion(beaconRegion)
     .fail()

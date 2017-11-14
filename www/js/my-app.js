@@ -80,7 +80,9 @@ $$(document).on('deviceready', function() {
         welcomescreenSlides, {
           closeButton: false,
           onClosed: function() {
-            myApp.confirm('是否開啟背景偵測？\n在您未使用時亦會顯示接近站點通知', '接近站點通知',
+            beacon_util.startUpBeaconUtil();
+
+            myApp.confirm('是否開啟背景偵測？<br>在您未使用時亦會顯示接近站點通知', '接近站點通知',
               function() {
                 window.localStorage.setItem('bgDetect', true);
               },
@@ -88,8 +90,6 @@ $$(document).on('deviceready', function() {
                 window.localStorage.setItem('bgDetect', false);
               }
             );
-            
-            beacon_util.startUpBeaconUtil();
           },
         }
       );
