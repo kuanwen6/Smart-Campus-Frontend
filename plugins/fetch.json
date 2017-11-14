@@ -105,8 +105,10 @@
     },
     "com.unarin.cordova.beacon": {
         "source": {
-            "type": "local",
-            "path": "local_plugins/com.unarin.cordova.beacon"
+            "type": "git",
+            "url": "https://github.com/jeffwang0516/cordova-plugin-ibeacon.git",
+            "subdir": ".",
+            "ref": "custom"
         },
         "is_top_level": true,
         "variables": {}

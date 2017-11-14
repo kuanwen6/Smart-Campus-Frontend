@@ -82,12 +82,12 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     private static final String SAMPLE_EXPIRATION_MILLISECOND = "com.unarin.cordova.beacon.android.altbeacon.SampleExpirationMilliseconds";
     private static final int DEFAULT_SAMPLE_EXPIRATION_MILLISECOND = 20000;
     private static final int DEFAULT_FOREGROUND_SCAN_PERIOD = 1100;
-    
+
     private static final String BACKGROUND_BETWEEN_SCAN_PERIOD_NAME = "com.unarin.cordova.beacon.android.altbeacon.BackgroundBetweenScanPeriod";
     private static final String BACKGROUND_SCAN_PERIOD_NAME = "com.unarin.cordova.beacon.android.altbeacon.BackgroundScanPeriod";
     public static final long DEFAULT_BACKGROUND_BETWEEN_SCAN_PERIOD = 300000;
     public static final long DEFAULT_BACKGROUND_SCAN_PERIOD = 10000;
-    
+
     private static int CDV_LOCATION_MANAGER_DOM_DELEGATE_TIMEOUT = 30;
     private static final int BUILD_VERSION_CODES_M = 23;
 
@@ -142,7 +142,6 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
         iBeaconManager.setForegroundScanPeriod(foregroundScanPeriod);
         iBeaconManager.setBackgroundBetweenScanPeriod(backgroundBetweenScanPeriod);
         iBeaconManager.setBackgroundScanPeriod(backgroundScanPeriod);
-        
 
         final int sampleExpirationMilliseconds = this.preferences.getInteger(
                 SAMPLE_EXPIRATION_MILLISECOND, DEFAULT_SAMPLE_EXPIRATION_MILLISECOND);

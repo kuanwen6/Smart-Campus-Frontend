@@ -91,5 +91,5 @@
     <plugin name="cordova-plugin-vibration" spec="^2.1.5" />
     <plugin name="cordova-plugin-statusbar" spec="https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
-    <plugin name="com.unarin.cordova.beacon" spec="local_plugins/com.unarin.cordova.beacon" />
+    <plugin name="com.unarin.cordova.beacon" spec="https://github.com/jeffwang0516/cordova-plugin-ibeacon.git#custom" />
 </widget>
