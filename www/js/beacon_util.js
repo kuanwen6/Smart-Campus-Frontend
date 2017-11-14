@@ -186,8 +186,13 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             console.log(stationsObj); // array
 
             var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-            var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
-
+            for (var station in stationsObj) {
+              var currentSite = findStation(stations_stored, parseInt(station, 10));
+              
+              // System notification
+              notification.addStationNotification(currentSite);
+            }
+            one_beacon_verified_this_round = true;
             // Device Vibrate
             /*
             if (myApp.device.os == 'android') {
@@ -233,10 +238,6 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
               }
             });
             */
-            // System notification
-            notification.addStationNotification(currentSite);
-
-            one_beacon_verified_this_round = true;
           },
           error: function(data) {
             console.log(data);
