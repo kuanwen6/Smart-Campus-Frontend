@@ -145,6 +145,7 @@ var one_beacon_verified_this_round = false;
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
   // There must be a beacon within range.
+  myApp.alert("test interval "+pluginResult.beacons.length);
   if (0 == pluginResult.beacons.length) {
     return;
   }
