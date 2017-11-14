@@ -23,6 +23,7 @@
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <preference name="android-windowSoftInputMode" value="adjustPan" />
         <preference name="com.unarin.cordova.beacon.android.altbeacon.ForegroundBetweenScanPeriod" value="900" />
+        <preference name="com.unarin.cordova.beacon.android.altbeacon.BackgroundBetweenScanPeriod" value="20000" />
         <icon platform="android" qualifier="ldpi" src="res/android/icon/icon-ldpi.png" />
         <icon platform="android" qualifier="mdpi" src="res/android/icon/icon-mdpi.png" />
         <icon platform="android" qualifier="hdpi" src="res/android/icon/icon-hdpi.png" />
