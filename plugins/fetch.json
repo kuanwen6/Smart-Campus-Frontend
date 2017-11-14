@@ -15,15 +15,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "com.unarin.cordova.beacon": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/petermetz/cordova-plugin-ibeacon.git",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-splashscreen": {
         "source": {
             "type": "registry",
@@ -108,6 +99,14 @@
         "source": {
             "type": "local",
             "path": "/home/jeff/de.appplant.cordova.plugin.local-notification"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.unarin.cordova.beacon": {
+        "source": {
+            "type": "local",
+            "path": "local_plugins/com.unarin.cordova.beacon"
         },
         "is_top_level": true,
         "variables": {}

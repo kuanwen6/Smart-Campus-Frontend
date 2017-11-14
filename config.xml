@@ -23,12 +23,12 @@
         <preference name="SplashShowOnlyFirstTime" value="false" />
         <preference name="android-windowSoftInputMode" value="adjustPan" />
         <preference name="com.unarin.cordova.beacon.android.altbeacon.ForegroundBetweenScanPeriod" value="900" />
-        <icon src="res/android/icon/icon-ldpi.png" platform="android" qualifier="ldpi" />
-        <icon src="res/android/icon/icon-mdpi.png" platform="android" qualifier="mdpi" />
-        <icon src="res/android/icon/icon-hdpi.png" platform="android" qualifier="hdpi" />
-        <icon src="res/android/icon/icon-xhdpi.png" platform="android" qualifier="xhdpi" />
-        <icon src="res/android/icon/icon-xxhdpi.png" platform="android" qualifier="xxhdpi" />
-        <icon src="res/android/icon/icon-xxxhdpi.png" platform="android" qualifier="xxxhdpi" />
+        <icon platform="android" qualifier="ldpi" src="res/android/icon/icon-ldpi.png" />
+        <icon platform="android" qualifier="mdpi" src="res/android/icon/icon-mdpi.png" />
+        <icon platform="android" qualifier="hdpi" src="res/android/icon/icon-hdpi.png" />
+        <icon platform="android" qualifier="xhdpi" src="res/android/icon/icon-xhdpi.png" />
+        <icon platform="android" qualifier="xxhdpi" src="res/android/icon/icon-xxhdpi.png" />
+        <icon platform="android" qualifier="xxxhdpi" src="res/android/icon/icon-xxxhdpi.png" />
         <splash src="res/android/splash/splash.png" />
         <allow-intent href="market:*" />
     </platform>
@@ -82,7 +82,6 @@
     <preference name="ShowSplashScreenSpinner" value="false" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.1" />
-    <plugin name="com.unarin.cordova.beacon" spec="plugins/com.unarin.cordova.beacon/" />
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.3" />
     <plugin name="cordova-custom-config" spec="~4.0.2" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3">
@@ -92,4 +91,5 @@
     <plugin name="cordova-plugin-vibration" spec="^2.1.5" />
     <plugin name="cordova-plugin-statusbar" spec="https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
+    <plugin name="com.unarin.cordova.beacon" spec="local_plugins/com.unarin.cordova.beacon" />
 </widget>

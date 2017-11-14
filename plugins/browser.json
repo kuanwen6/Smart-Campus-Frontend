@@ -13,9 +13,6 @@
         "cordova-plugin-console": {
             "PACKAGE_NAME": "com.phonegap.helloworld"
         },
-        "com.unarin.cordova.beacon": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
@@ -35,6 +32,9 @@
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         },
         "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+        },
+        "com.unarin.cordova.beacon": {
             "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
         }
     },
