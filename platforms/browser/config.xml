@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="tw.edu.ncku.csie.smartcampus" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="tw.edu.ncku.csie.smartcampus" version="1.1.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="Device">
+        <param name="browser-package" value="Device" />
+    </feature>
     <name>成大校園導覽</name>
     <description>
         成功大學 智慧校園導覽APP
@@ -17,6 +20,12 @@
     <allow-intent href="geo:*" />
     <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式需要藍芽以偵測iBeacon</string>
+    </config-file>
+    <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" platform="ios" target="*-Info.plist">
+        <string>這個應用程式會在您使用時運用iBeacon與GPS進行導覽指南</string>
+    </config-file>
+    <config-file parent="NSLocationAlwaysUsageDescription" platform="ios" target="*-Info.plist">
+        <string>這個應用程式會在背景偵測iBeacon以進行導覽指南</string>
     </config-file>
     <preference name="orientation" value="portrait" />
     <preference name="AutoHideSplashScreen" value="true" />

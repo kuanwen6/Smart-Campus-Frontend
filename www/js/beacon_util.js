@@ -31,8 +31,8 @@ beacon_util.init_setup_for_IBeacon = function() {
   // Set the delegate object to use.
   cordova.plugins.locationManager.setDelegate(delegate);
   //IOS authorization
-  //cordova.plugins.locationManager.requestAlwaysAuthorization();
-  cordova.plugins.locationManager.requestWhenInUseAuthorization();
+  cordova.plugins.locationManager.requestAlwaysAuthorization();
+  //cordova.plugins.locationManager.requestWhenInUseAuthorization();
 }
 
 beacon_util.startUpBeaconUtil = function() {
@@ -41,7 +41,7 @@ beacon_util.startUpBeaconUtil = function() {
       .then(function(isEnabled) {
         console.log("isEnabled: " + isEnabled);
         if (!isEnabled) {
-          myApp.confirm('啟動藍牙以探索成大校園！！是否開啟？', '啟用藍芽？',
+          myApp.confirm('啟動藍牙以探索成大校園！！<br>是否開啟？', '啟用藍芽？',
             function() {
               cordova.plugins.locationManager.enableBluetooth();
             }
@@ -90,13 +90,13 @@ beacon_util.stopScanForBeacons = function() {
     var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(
       region.id, region.uuid, region.major, region.minor);
 
-    // Stop monitoring.
-    cordova.plugins.locationManager.stopMonitoringForRegion(beaconRegion)
-      .fail()
-      .done()
-
     // Stop ranging.
     cordova.plugins.locationManager.stopRangingBeaconsInRegion(beaconRegion)
+    .fail()
+    .done()
+
+    // Stop monitoring.
+    cordova.plugins.locationManager.stopMonitoringForRegion(beaconRegion)
       .fail()
       .done()
   }
@@ -186,9 +186,15 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             console.log(stationsObj); // array
 
             var stations_stored = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-            var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
-
+            for (var index in stationsObj) {
+              var currentSite = findStation(stations_stored, parseInt(stationsObj[index], 10));
+              
+              // System notification
+              notification.addStationNotification(currentSite);
+            }
+            one_beacon_verified_this_round = true;
             // Device Vibrate
+            /*
             if (myApp.device.os == 'android') {
               navigator.vibrate([500, 100, 500]);
             } else {
@@ -231,8 +237,7 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
                 }
               }
             });
-
-            one_beacon_verified_this_round = true;
+            */
           },
           error: function(data) {
             console.log(data);

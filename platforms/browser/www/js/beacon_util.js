@@ -32,6 +32,7 @@ beacon_util.init_setup_for_IBeacon = function() {
   cordova.plugins.locationManager.setDelegate(delegate);
   //IOS authorization
   cordova.plugins.locationManager.requestAlwaysAuthorization();
+  //cordova.plugins.locationManager.requestWhenInUseAuthorization();
 }
 
 beacon_util.startUpBeaconUtil = function() {
@@ -139,6 +140,7 @@ beacon_util.mappingShortUUID = function(UUID) {
 }
 
 beacon_util.recordDetection = {}
+var one_beacon_verified_this_round = false;
 
 // Actions when any beacon is in range
 beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
@@ -147,42 +149,35 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
     return;
   }
 
-  // Object.keys(beacon_util.recordDetection).forEach(function(key) {
-  //   // key: the name of the object key
-  //   // index: the ordinal position of the key within the object
-  //   var beaconStillInRange = false;
-  //   for (var i=0;i < pluginResult.beacons.length ; i++)
-  //   {
-  //     var beacon = pluginResult.beacons[i];
-  //     var platformID = beacon_util.transformToPlatformID(beacon);
+  // If there exists a notification window,
+  // no further scanned results shall be processed
+  if ($$(".notification-item").length > 0) {
+    return;
+  }
 
-  //     if( key == 'B'+platformID){
-  //       beaconStillInRange = true;      
-  //       break;
-  //     }
-  //   }
-
-  //   if(!beaconStillInRange)
-  //   {
-  //     beacon_util.recordDetection[key] = false;
-  //   }
+  // Sort the result by accuracy
+  // pluginResult.beacons.sort(function(beacon_a, beacon_b) {
+  //   return parseFloat(beacon_a.accuracy) - parseFloat(beacon_b.accuracy);
   // });
 
-  var one_beacon_verified_this_round = false;
+  one_beacon_verified_this_round = false;
   for (var i = 0; i < pluginResult.beacons.length; i++) {
     var beacon = pluginResult.beacons[i];
 
     var platformID = beacon_util.transformToPlatformID(beacon);
 
-    if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
-
+    function beaconInRangeAction() {
       if ((!beacon_util.recordDetection['B' + platformID]) && (!one_beacon_verified_this_round)) {
         beacon_util.recordDetection['B' + platformID] = true;
-        var ifSucceed = false;
+        var email = 'visitMode@gmail.com';
+        if (localStorage.getItem("loggedIn") !== "false"){
+          email = window.localStorage.getItem('email');
+        }
         $$.ajax({
           url: 'https://smartcampus.csie.ncku.edu.tw/smart_campus/get_linked_stations/',
           type: 'post',
           data: {
+            'email': email,
             'beacon_id': platformID,
           },
           async: false,
@@ -194,45 +189,75 @@ beacon_util.didRangeBeaconsInRegion = function(pluginResult) {
             var currentSite = findStation(stations_stored, parseInt(stationsObj[0], 10));
 
             // Device Vibrate
+            /*
             if (myApp.device.os == 'android') {
               navigator.vibrate([500, 100, 500]);
             } else {
               navigator.vibrate(500);
             }
-
+            var siteName = currentSite['name'];
+            if (siteName.length > 20) {
+              siteName = siteName.substring(0, 18) + '...';
+            }
             myApp.addNotification({
               title: '接近' + currentSite['category'] + '站點',
-              subtitle: currentSite['name'],
+              subtitle: siteName,
               message: '(點擊查看站點介紹)',
-              hold: 6000,
+              hold: 5000,
               media: '<img src="./img/icon.png">',
               closeOnClick: true,
               onClick: function() {
-                mainView.router.load({
-                  url: 'itemDetail.html',
-                  context: {
-                    site: currentSite,
-                    isBeacon: true,
-                    favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
-                    favorite: isFavorite(parseInt(stationsObj[0], 10)),
-                  },
-                });
+                if (mainView.activePage.name == "itemDetail") {
+                  mainView.router.load({
+                    reload: true,
+                    reloadPrevious: false,
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                } else {
+                  mainView.router.load({
+                    url: 'itemDetail.html',
+                    context: {
+                      site: currentSite,
+                      isBeacon: true,
+                      favoriteSequence: JSON.parse(window.localStorage.getItem('favoriteStations')),
+                      favorite: isFavorite(parseInt(stationsObj[0], 10)),
+                    },
+                  });
+                }
               }
             });
+            */
+            // System notification
+            notification.addStationNotification(currentSite);
 
-            ifSucceed = true;
+            one_beacon_verified_this_round = true;
           },
           error: function(data) {
             console.log(data);
           },
         });
-        if (ifSucceed) {
-          one_beacon_verified_this_round = true;
-        }
       }
-    } else if (beacon.proximity == 'ProximityFar') {
-      beacon_util.recordDetection['B' + platformID] = false;
+    }
+    if (myApp.device.os == 'android') {
+      if ((beacon.accuracy > 0 && beacon.accuracy < 2.5)) {
+        beaconInRangeAction();
+      } else if (beacon.accuracy > 3.0) {
+        beacon_util.recordDetection['B' + platformID] = false;
+      }
+    }else{
+      if ((beacon.proximity == 'ProximityImmediate' || beacon.proximity == 'ProximityNear')) {
+        beaconInRangeAction();
+      } else if (beacon.proximity == 'ProximityFar') {
+        beacon_util.recordDetection['B' + platformID] = false;
+      }
     }
   }
+  
   return;
 }

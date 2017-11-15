@@ -82,6 +82,12 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
     private static final String SAMPLE_EXPIRATION_MILLISECOND = "com.unarin.cordova.beacon.android.altbeacon.SampleExpirationMilliseconds";
     private static final int DEFAULT_SAMPLE_EXPIRATION_MILLISECOND = 20000;
     private static final int DEFAULT_FOREGROUND_SCAN_PERIOD = 1100;
+
+    private static final String BACKGROUND_BETWEEN_SCAN_PERIOD_NAME = "com.unarin.cordova.beacon.android.altbeacon.BackgroundBetweenScanPeriod";
+    private static final String BACKGROUND_SCAN_PERIOD_NAME = "com.unarin.cordova.beacon.android.altbeacon.BackgroundScanPeriod";
+    public static final long DEFAULT_BACKGROUND_BETWEEN_SCAN_PERIOD = 300000;
+    public static final long DEFAULT_BACKGROUND_SCAN_PERIOD = 10000;
+
     private static int CDV_LOCATION_MANAGER_DOM_DELEGATE_TIMEOUT = 30;
     private static final int BUILD_VERSION_CODES_M = 23;
 
@@ -121,6 +127,12 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
         final int foregroundScanPeriod = this.preferences.getInteger(
                 FOREGROUND_SCAN_PERIOD_NAME, DEFAULT_FOREGROUND_SCAN_PERIOD);
+        
+        final int backgroundScanPeriod = this.preferences.getInteger(
+                BACKGROUND_SCAN_PERIOD_NAME, DEFAULT_BACKGROUND_SCAN_PERIOD);
+
+        final int backgroundBetweenScanPeriod = this.preferences.getInteger(
+                BACKGROUND_BETWEEN_SCAN_PERIOD_NAME, DEFAULT_BACKGROUND_BETWEEN_SCAN_PERIOD);
 
         Log.i(TAG, "Determined config value FOREGROUND_SCAN_PERIOD: " +
                 String.valueOf(foregroundScanPeriod));
@@ -128,6 +140,8 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
         iBeaconManager = BeaconManager.getInstanceForApplication(cordovaActivity);
         iBeaconManager.setForegroundBetweenScanPeriod(foregroundBetweenScanPeriod);
         iBeaconManager.setForegroundScanPeriod(foregroundScanPeriod);
+        iBeaconManager.setBackgroundBetweenScanPeriod(backgroundBetweenScanPeriod);
+        iBeaconManager.setBackgroundScanPeriod(backgroundScanPeriod);
 
         final int sampleExpirationMilliseconds = this.preferences.getInteger(
                 SAMPLE_EXPIRATION_MILLISECOND, DEFAULT_SAMPLE_EXPIRATION_MILLISECOND);

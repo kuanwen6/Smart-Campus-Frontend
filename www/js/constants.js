@@ -39,3 +39,6 @@ var directionsDisplay,
 
 var exit_confirm_result;
 var network_interrupt_alert;
+
+var STATION_NOTIFICATION = 1;
+var REWARD_NOTIFICATION = 2;

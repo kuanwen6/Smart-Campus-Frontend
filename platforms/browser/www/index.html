@@ -59,7 +59,7 @@
             <div class="page-btn">
               <div>
                 <div>
-                  <a href="info.html"><img src="img/info_button.png"></a>
+                  <a href="#" onclick="mainView.router.load({url: 'info.html', context: {'isLoggedIn':JSON.parse(window.localStorage.getItem('loggedIn'))}})"><img src="img/info_button.png"></a>
                 </div>
                 <div>
                   <a href="map.html" data-context='{"isDirection":false}'><img src="img/map_button.png"></a>
@@ -131,6 +131,7 @@
   <script src="js/site.js"></script>
   <script src="js/route.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/notification.js"></script>
   <script src="js/beacon_util.js"></script>
 </body>
 

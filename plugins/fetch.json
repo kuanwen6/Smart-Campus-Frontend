@@ -15,15 +15,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "com.unarin.cordova.beacon": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/petermetz/cordova-plugin-ibeacon.git",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-splashscreen": {
         "source": {
             "type": "registry",
@@ -76,6 +67,50 @@
         "source": {
             "type": "registry",
             "id": "https://github.com/apache/cordova-plugin-statusbar.git"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-device": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-device"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-app-event": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-app-event"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-badge": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-badge"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "com.unarin.cordova.beacon": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jeffwang0516/cordova-plugin-ibeacon.git",
+            "subdir": ".",
+            "ref": "custom"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "de.appplant.cordova.plugin.local-notification": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jeffwang0516/cordova-plugin-local-notifications.git",
+            "subdir": ".",
+            "ref": "0.8.5custom"
         },
         "is_top_level": true,
         "variables": {}

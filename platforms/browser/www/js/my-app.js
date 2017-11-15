@@ -10,23 +10,30 @@ $$(document).on('backbutton', function() {
   var page = view.activePage;
 
   if (page.name == "index") {
-    var result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
+    if (exit_confirm_result != undefined){
+      myApp.closeModal(exit_confirm_result);
+    }
+    exit_confirm_result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
       navigator.app.clearHistory();
       navigator.app.exitApp();
     });
+  } else if (page.name == "itemDetail") {
+    mainView.hideToolbar();
+    $$('.page-content').css('padding-bottom', 0);
+    mainView.router.back();
   } else {
     view.router.back();
   }
 });
 
 $$(document).on('pause', function() {
-  beacon_util.stopScanForBeacons();
+  //beacon_util.stopScanForBeacons();
 
   console.log("pause");
 });
 
 $$(document).on('resume', function() {
-  beacon_util.startScanForBeacons();
+  //beacon_util.startScanForBeacons();
 
   console.log("resume");
 });
@@ -36,7 +43,10 @@ $$(document).on('online', function() {
 });
 
 $$(document).on('offline', function() {
-  myApp.alert('需網路連線以正常運作！', '網路連線中斷');
+  if (network_interrupt_alert != undefined){
+    myApp.closeModal(network_interrupt_alert);
+  }
+  network_interrupt_alert = myApp.alert('需網路連線以正常運作！', '網路連線中斷');
   console.log("offline");
 });
 
@@ -52,6 +62,8 @@ $$(document).on('deviceready', function() {
     });
   } else {
     beacon_util.init_setup_for_IBeacon();
+    notification.initialize();
+
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
