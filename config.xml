@@ -71,6 +71,9 @@
     <config-file parent="NSLocationAlwaysUsageDescription" platform="ios" target="*-Info.plist">
         <string>這個應用程式會在背景偵測iBeacon以進行導覽指南</string>
     </config-file>
+    <config-file parent="NSLocationWhenInUseUsageDescription" platform="ios" target="*-Info.plist">
+        <string>這個應用程式會在您使用時運用iBeacon與GPS進行導覽指南</string>
+    </config-file>
     <preference name="orientation" value="portrait" />
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="DisallowOverscroll" value="true" />
