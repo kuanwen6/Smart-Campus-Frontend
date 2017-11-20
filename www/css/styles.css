@@ -256,6 +256,10 @@
   font-size: 3vh;
 }
 
+.login-form-to-json.active-state {
+  background-image: url('../img/long_btn_bg_active.png');
+}
+
 .popup-register {
   background-image: url('../img/welcome_bg.png');
   background-size: 100% 100%;
@@ -271,6 +275,10 @@
   line-height: 10vh;
   color: white;
   font-size: 3vh;
+}
+
+.register-form-to-json.active-state {
+  background-image: url('../img/long_btn_bg_active.png');
 }
 
 .level-and-money {
