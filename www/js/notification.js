@@ -47,16 +47,26 @@ var notification = {
   addStationNotification: function(currentSite) {
     cordova.plugins.notification.local.hasPermission(function (granted) {
       if ( granted ) {
-        cordova.plugins.notification.local.schedule({
-          id: currentSite['id'],
-          title: '接近' + currentSite['category'] + '站點',
-          text: currentSite['name'],
-          icon: (myApp.device.os == 'android') ? 'res://icon' : 'file://img/icon.png',
-          smallIcon: (myApp.device.os == 'android') ? '' : 'file://img/icon.png',
-          badge: 1,
-          priority: 4,
-          data: { type: STATION_NOTIFICATION, station: currentSite }
-        });
+        if ( myApp.device.os == 'android'){
+          cordova.plugins.notification.local.schedule({
+            id: currentSite['id'],
+            title: '成大校園導覽',
+            text: '接近' + currentSite['category'] + '站點   '+ currentSite['name'],
+            badge: 1,
+            priority: 4,
+            data: { type: STATION_NOTIFICATION, station: currentSite }
+          });
+        } else {
+          cordova.plugins.notification.local.schedule({
+            id: currentSite['id'],
+            title: '接近' + currentSite['category'] + '站點',
+            text: currentSite['name'],
+            icon: 'file://img/icon.png',
+            smallIcon: 'file://img/icon.png',
+            badge: 1,
+            data: { type: STATION_NOTIFICATION, station: currentSite }
+          });
+        }
       }
     });
   }
