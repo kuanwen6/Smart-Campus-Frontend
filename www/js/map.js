@@ -179,7 +179,7 @@ myApp.onPageInit('map', function(page) {
     });
     var _distance = '';
     if (Latitude !== undefined && Longitude !== undefined) {
-      _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0]);
+      _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0], 0);
     }
 
     if (animateMarker) {

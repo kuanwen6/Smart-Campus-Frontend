@@ -72,7 +72,7 @@ function calculateAndDisplayRoute(origin, waypts) {
   });
 }
 
-function distance(lat1, lng1, lat2, lng2, type = 0) {
+function distance(lat1, lng1, lat2, lng2, type) {
   if (lat1 === -1 && lng1 === -1) {
     return '未開啟GPS';
   }
@@ -181,7 +181,7 @@ function createCards(data, onclickCallback) {
 function createFavoriteCards(favorite, lat, lng, callback) {
   var distanceBetween;
   for (var i = 0; i < favorite.length; i += 1) {
-    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
+    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0], 0);
 
     (function(currentFavorite, dis){
       $$('*[data-page="customRoute"] .swipe-list').append('<li class="swipeout" id="' + currentFavorite.id + '" style="z-index:100;">' +
@@ -221,7 +221,7 @@ function createFavoriteCards(favorite, lat, lng, callback) {
 function createFavorite(favorite, lat, lng, callback) {
   var distanceBetween;
   for (var i = 0; i < favorite.length; i += 1) {
-    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0]);
+    distanceBetween = distance(lat, lng, favorite[i].location[1], favorite[i].location[0], 0);
 
     (function(currentFavorite, dis){
       $$('.favorite-swipe-list').append('<li class="swipeout swipeout-favorite-' + currentFavorite.id + '" id="' + currentFavorite.id + '" style="z-index:100;">' + 
@@ -280,7 +280,7 @@ function createSites(sites, favorite, lat, lng, callback) {
         category = 'art';
     }
 
-    distanceBetween = distance(lat, lng, sites[i].location[1], sites[i].location[0]);
+    distanceBetween = distance(lat, lng, sites[i].location[1], sites[i].location[0], 0);
 
     (function(currentSite, cate, dis){
     if ($.inArray(currentSite.id, favorite) === -1) {
