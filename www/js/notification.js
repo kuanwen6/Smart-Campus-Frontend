@@ -54,7 +54,7 @@ var notification = {
           icon: (myApp.device.os == 'android') ? 'res://icon' : 'file://img/icon.png',
           smallIcon: (myApp.device.os == 'android') ? '' : 'file://img/icon.png',
           badge: 1,
-          priority: 1,
+          priority: 4,
           data: { type: STATION_NOTIFICATION, station: currentSite }
         });
       }

@@ -419,7 +419,7 @@ function findSequence(stations, sequence) {
 }
 
 function findStation(stations, id) {
-  return stations.find(function(entry) { return entry.id === id; });
+  return stations.filter(function(entry) { return entry.id === id; })[0];
 }
 
 function getRewards(rewards, rewardID) {
