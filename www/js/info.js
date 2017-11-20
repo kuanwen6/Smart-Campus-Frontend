@@ -16,9 +16,9 @@ myApp.onPageInit('info', function(page) {
       }
     }
 
-    var rewardImg = allRewardsInfo.find(function(x) {
+    var rewardImg = allRewardsInfo.filter(function(x) {
       return x.id === rewards[i];
-    })['image_url'];
+    })[0]['image_url'];
     $$('.collections > div').eq(i).append('<img src="' + rewardImg + '"/>');
   }
 

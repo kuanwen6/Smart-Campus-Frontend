@@ -405,14 +405,14 @@ function createSites(sites, favorite, lat, lng, callback) {
 }
 
 function findRoute(routes, id) {
-  return routes.find(function(entry) { return entry.id === parseInt(id, 10); });
+  return routes.filter(function(entry) { return entry.id === parseInt(id, 10); })[0];
 }
 
 function findSequence(stations, sequence) {
   var result = [];
 
   for (var i = 0; i < sequence.length; i += 1) {
-    result.push(stations.find(function(entry) { return entry.id === sequence[i]; }));
+    result.push(stations.filter(function(entry) { return entry.id === sequence[i]; })[0]);
   }
 
   return result;

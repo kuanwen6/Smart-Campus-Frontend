@@ -174,9 +174,9 @@ myApp.onPageInit('map', function(page) {
   function showMarkerInfo() {
     var _this = this;
 
-    var station = stations.find(function(x) {
+    var station = stations.filter(function(x) {
       return x.name === _this.title;
-    });
+    })[0];
     var _distance = '';
     if (Latitude !== undefined && Longitude !== undefined) {
       _distance = distance(Latitude, Longitude, station['location'][1], station['location'][0], 0);
