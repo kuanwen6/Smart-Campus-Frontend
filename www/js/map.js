@@ -36,7 +36,10 @@ myApp.onPageInit('map', function(page) {
   var Accuracy = undefined;
   var map = new google.maps.Map($$('#map')[0], {
     zoom: 16,
-    center: { lat: 22.998089, lng: 120.217441 },
+    center: {
+      lat: 22.998089,
+      lng: 120.217441
+    },
     disableDefaultUI: true,
     clickableIcons: false
   });
@@ -70,11 +73,28 @@ myApp.onPageInit('map', function(page) {
     strokeWeight: 1,
     map: map
   });
+  var userIdentity = window.localStorage.getItem('userIdentity');
+  var inVisibleGroup;
+  switch (userIdentity) {
+    case 'student':
+      inVisibleGroup = '古蹟';
+      $('div.filter-div#0 > span').toggleClass('filter-added');
+      break;
+    case 'public':
+      inVisibleGroup = '行政教學';
+      $('div.filter-div#3 > span').toggleClass('filter-added');
+      break;
+    default:
+      console.log('Error in userIdentity!');
+      break;
+  };
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
   setMarkers();
-  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+  navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, {
+    enableHighAccuracy: true
+  });
 
   function directionOrMapOverview(isDirection) {
     if (isDirection) {
@@ -93,7 +113,12 @@ myApp.onPageInit('map', function(page) {
         for (var _iterator = stations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var station = _step.value;
 
-          waypts.push({ location: { lat: station['location'][1], lng: station['location'][0] } });
+          waypts.push({
+            location: {
+              lat: station['location'][1],
+              lng: station['location'][0]
+            }
+          });
         }
       } catch (err) {
         _didIteratorError = true;
@@ -121,14 +146,17 @@ myApp.onPageInit('map', function(page) {
       '古蹟': 'img/markers/marker_red.png',
       '藝文': 'img/markers/marker_orange.png',
       '景觀': 'img/markers/marker_green.png',
-      '行政單位': 'img/markers/marker_blue.png'
+      '行政教學': 'img/markers/marker_blue.png'
     };
     var scaledSize = new google.maps.Size(25, 36);
     var anchor = new google.maps.Point(12.5, 36);
 
     window.setTimeout(function() {
       var marker = new google.maps.Marker({
-        position: { lat: station['location'][1], lng: station['location'][0] },
+        position: {
+          lat: station['location'][1],
+          lng: station['location'][0]
+        },
         title: station['name'],
         map: map,
         icon: {
@@ -136,7 +164,8 @@ myApp.onPageInit('map', function(page) {
           scaledSize: scaledSize,
           anchor: anchor
         },
-        animation: google.maps.Animation.DROP
+        animation: google.maps.Animation.DROP,
+        visible: inVisibleGroup == station['category'] ? false : true
       });
       marker.addListener('click', showMarkerInfo);
       markers[station['category']].push(marker);
@@ -144,7 +173,12 @@ myApp.onPageInit('map', function(page) {
   }
 
   function setMarkers() {
-    markers = { '古蹟': [], '藝文': [], '景觀': [], '行政單位': [] };
+    markers = {
+      '古蹟': [],
+      '藝文': [],
+      '景觀': [],
+      '行政教學': []
+    };
     var timeout = 100
     var _iteratorNormalCompletion2 = true;
     var _didIteratorError2 = false;
@@ -218,7 +252,7 @@ myApp.onPageInit('map', function(page) {
   }
 
   function setGroupMarkerVisible(groupId) {
-    var category = ['古蹟', '藝文', '景觀', '行政單位'];
+    var category = ['古蹟', '藝文', '景觀', '行政教學'];
     var _iteratorNormalCompletion3 = true;
     var _didIteratorError3 = false;
     var _iteratorError3 = undefined;
@@ -246,9 +280,18 @@ myApp.onPageInit('map', function(page) {
   }
 
   function getMap(latitude, longitude, accuracy) {
-    locationMarker.setPosition({ lat: latitude, lng: longitude });
-    locationMarkerFrame.setPosition({ lat: latitude, lng: longitude });
-    locationCircle.setCenter({ lat: latitude, lng: longitude });
+    locationMarker.setPosition({
+      lat: latitude,
+      lng: longitude
+    });
+    locationMarkerFrame.setPosition({
+      lat: latitude,
+      lng: longitude
+    });
+    locationCircle.setCenter({
+      lat: latitude,
+      lng: longitude
+    });
     locationCircle.setRadius(accuracy);
   }
 
@@ -264,7 +307,10 @@ myApp.onPageInit('map', function(page) {
 
       getMap(updatedLatitude, updatedLongitude, updatedAccuracy);
       if (page.context.isDirection && !onMapWatchSuccess.first) {
-        calculateAndDisplayRoute({ lat: Latitude, lng: Longitude }, waypts, display = true);
+        calculateAndDisplayRoute({
+          lat: Latitude,
+          lng: Longitude
+        }, waypts, display = true);
         onMapWatchSuccess.first = true
       }
     }
@@ -275,7 +321,10 @@ myApp.onPageInit('map', function(page) {
     if (page.context.isDirection) {
       var origin = waypts.pop();
       myApp.alert('導覽無法進行定位', '未開啟GPS');
-      calculateAndDisplayRoute({ lat: origin['location']['lat'], lng: origin['location']['lng'] }, waypts, display = true);
+      calculateAndDisplayRoute({
+        lat: origin['location']['lat'],
+        lng: origin['location']['lng']
+      }, waypts, display = true);
     }
   }
 });
