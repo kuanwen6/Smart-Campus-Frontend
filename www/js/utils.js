@@ -6,6 +6,7 @@ function userDataInit() {
   window.localStorage.setItem('rewards', '[]');
   window.localStorage.setItem('favoriteStations', '[]');
   window.localStorage.setItem('coins', 0);
+  window.localStorage.setItem('userIdentity', 'none')
 }
 
 function calculateAndDisplayRoute(origin, waypts) {
@@ -273,7 +274,7 @@ function createSites(sites, favorite, lat, lng, callback) {
       case '景觀':
         category = 'nature';
         break;
-      case '行政單位':
+      case '行政教學':
         category = 'business';
         break;
       default:

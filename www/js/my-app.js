@@ -10,7 +10,7 @@ $$(document).on('backbutton', function() {
   var page = view.activePage;
 
   if (page.name == "index") {
-    if (exit_confirm_result != undefined){
+    if (exit_confirm_result != undefined) {
       myApp.closeModal(exit_confirm_result);
     }
     exit_confirm_result = myApp.confirm("確定要離開嗎？", "成大校園導覽", function() {
@@ -49,7 +49,7 @@ $$(document).on('online', function() {
 });
 
 $$(document).on('offline', function() {
-  if (network_interrupt_alert != undefined){
+  if (network_interrupt_alert != undefined) {
     myApp.closeModal(network_interrupt_alert);
   }
   network_interrupt_alert = myApp.alert('需網路連線以正常運作！', '網路連線中斷');
@@ -71,7 +71,9 @@ $$(document).on('deviceready', function() {
     notification.initialize();
 
     directionsService = new google.maps.DirectionsService();
-    directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      suppressMarkers: true
+    });
 
     var applaunchCount = window.localStorage.getItem('launchCount');
     if (!applaunchCount) {
