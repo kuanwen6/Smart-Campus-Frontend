@@ -55,21 +55,19 @@ myApp.onPageInit('index', function(page) {
           buttons: [{
               text: '學生',
               onClick: function() {
-                //myApp.alert('yes')
                 window.localStorage.setItem('userIdentity', 'student')
               }
             },
             {
               text: '民眾',
               onClick: function() {
-                //myApp.alert('no')
                 window.localStorage.setItem('userIdentity', 'public')
               }
             },
           ]
         })
         myApp.alert('嗨！' + formData['nickname'] + '<br>請至註冊之信箱收取認證信件！', '註冊成功！', function() {
-          myApp.closeModal('#popup-register');
+          myApp.closeModal();
         });
       },
       error = function error(data, status) {
