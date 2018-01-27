@@ -1,52 +1,52 @@
 {
-    "prepare_queue": {
-        "installed": [],
-        "uninstalled": []
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "com.unarin.cordova.beacon": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
     },
-    "config_munge": {
-        "files": {}
+    "cordova-custom-config": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
     },
-    "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
-        },
-        "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
-        },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-custom-config": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-vibration": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "com.unarin.cordova.beacon": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "de.appplant.cordova.plugin.local-notification": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        }
+    "cordova-plugin-console": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
     },
-    "dependent_plugins": {
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        },
-        "cordova-plugin-app-event": {
-            "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
-        }
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "de.appplant.cordova.plugin.local-notification": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
     }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-app-event": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-compat": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "tw.edu.ncku.csie.smartcampus"
+    }
+  }
 }

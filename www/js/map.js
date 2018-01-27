@@ -74,20 +74,24 @@ myApp.onPageInit('map', function(page) {
     map: map
   });
   var userIdentity = window.localStorage.getItem('userIdentity');
-  var inVisibleGroup;
+
   switch (userIdentity) {
     case 'student':
-      inVisibleGroup = '古蹟';
-      $('div.filter-div#0 > span').toggleClass('filter-added');
+      handleInVisibleCategories('古蹟', 0);
       break;
     case 'public':
-      inVisibleGroup = '行政教學';
-      $('div.filter-div#3 > span').toggleClass('filter-added');
+      handleInVisibleCategories('行政教學', 0);
       break;
     default:
-      console.log('Error in userIdentity!');
       break;
-  };
+  }
+  window.localStorage.setItem('userIdentity', 'none');
+
+  var inVisibleCategories = JSON.parse(window.localStorage.getItem('inVisibleCategories'));
+  for (var i = 0; i < inVisibleCategories.length; i++) {
+    var category = {'古蹟': '0', '藝文': '1', '景觀': '2', '行政教學': '3'};
+    $('div.filter-div#' + category[inVisibleCategories[i]] + '> span').addClass('filter-added');
+  }
 
   map.addListener('click', hideMarkerInfo);
   directionOrMapOverview(page.context.isDirection);
@@ -95,6 +99,17 @@ myApp.onPageInit('map', function(page) {
   navigator.geolocation.watchPosition(onMapWatchSuccess, onMapError, {
     enableHighAccuracy: true
   });
+
+  function handleInVisibleCategories(categoryName, isToggle){
+    var inVisibleCategories = JSON.parse(window.localStorage.getItem('inVisibleCategories'));
+    if (inVisibleCategories.includes(categoryName)) {
+      if (isToggle)
+        inVisibleCategories.splice(inVisibleCategories.indexOf(categoryName), 1);
+    }
+    else
+      inVisibleCategories.push(categoryName);
+    window.localStorage.setItem('inVisibleCategories', JSON.stringify(inVisibleCategories));
+  }
 
   function directionOrMapOverview(isDirection) {
     if (isDirection) {
@@ -150,6 +165,7 @@ myApp.onPageInit('map', function(page) {
     };
     var scaledSize = new google.maps.Size(25, 36);
     var anchor = new google.maps.Point(12.5, 36);
+    var inVisibleCategories = JSON.parse(window.localStorage.getItem('inVisibleCategories'));
 
     window.setTimeout(function() {
       var marker = new google.maps.Marker({
@@ -165,7 +181,7 @@ myApp.onPageInit('map', function(page) {
           anchor: anchor
         },
         animation: google.maps.Animation.DROP,
-        visible: inVisibleGroup == station['category'] ? false : true
+        visible: inVisibleCategories.includes(station['category']) ? false : true
       });
       marker.addListener('click', showMarkerInfo);
       markers[station['category']].push(marker);
@@ -256,6 +272,7 @@ myApp.onPageInit('map', function(page) {
     var _iteratorNormalCompletion3 = true;
     var _didIteratorError3 = false;
     var _iteratorError3 = undefined;
+    handleInVisibleCategories(category[groupId], 1);
 
     try {
       for (var _iterator3 = markers[category[groupId]][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {

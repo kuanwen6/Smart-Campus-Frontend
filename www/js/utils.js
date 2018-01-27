@@ -6,7 +6,8 @@ function userDataInit() {
   window.localStorage.setItem('rewards', '[]');
   window.localStorage.setItem('favoriteStations', '[]');
   window.localStorage.setItem('coins', 0);
-  window.localStorage.setItem('userIdentity', 'none')
+  window.localStorage.setItem('userIdentity', 'none');
+  window.localStorage.setItem('inVisibleCategories', '[]');
 }
 
 function calculateAndDisplayRoute(origin, waypts) {
