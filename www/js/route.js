@@ -7,7 +7,7 @@ myApp.onPageInit('route', function() {
 
 myApp.onPageInit('themeRoute', function() {
   var stationsObj = JSON.parse(window.sessionStorage.getItem('allStationsInfo'));
-  var plansObj = JSON.parse(window.localStorage.getItem('allPlansInfo'));
+  var plansObj = JSON.parse(window.sessionStorage.getItem('allPlansInfo'));
 
   function cardOnclick() {
     $$('img.lazy').trigger('lazy');
