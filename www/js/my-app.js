@@ -131,7 +131,7 @@ $$(document).on('deviceready', function() {
       url = HOOKURL + 'smart_campus/get_all_travel_plans/',
       success = function success(data) {
         console.log('get plans info success');
-        window.localStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
+        window.sessionStorage.setItem('allPlansInfo', JSON.stringify(JSON.parse(data).data));
       },
       error = function error(data) {
         console.log('get plans info fail');
