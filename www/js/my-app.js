@@ -83,15 +83,6 @@ $$(document).on('deviceready', function() {
           closeButton: false,
           onClosed: function() {
             beacon_util.startUpBeaconUtil();
-
-            // myApp.confirm('是否開啟背景偵測？<br>APP在背景時將顯示接近站點通知', '接近站點通知',
-            //   function() {
-            //     window.localStorage.setItem('bgDetect', true);
-            //   },
-            //   function() {
-            //     window.localStorage.setItem('bgDetect', false);
-            //   }
-            // );
           },
         }
       );
@@ -99,7 +90,7 @@ $$(document).on('deviceready', function() {
         welcomescreen.close();
       });
     } else {
-      console.log('App has launched: ' + window.localStorage.launchCount);
+      checkLocalStorage();
       beacon_util.startUpBeaconUtil();
     }
 

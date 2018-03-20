@@ -42,3 +42,32 @@ var network_interrupt_alert;
 
 var STATION_NOTIFICATION = 1;
 var REWARD_NOTIFICATION = 2;
+
+var localStorageInitVals = [{
+  key: 'loggedIn',
+  value: 'false'
+}, {
+  key: 'launchCount',
+  value: 'true'
+}, {
+  key: 'nickname',
+  value: '訪客'
+}, {
+  key: 'experiencePoint',
+  value: '0'
+}, {
+  key: 'rewards',
+  value: '[]'
+}, {
+  key: 'favoriteStations',
+  value: '[]'
+}, {
+  key: 'coins',
+  value: '0'
+}, {
+  key: 'userIdentity',
+  value: 'none'
+}, {
+  key: 'inVisibleCategories',
+  value: '[]'
+}];

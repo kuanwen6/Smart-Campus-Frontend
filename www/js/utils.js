@@ -1,13 +1,16 @@
 function userDataInit() {
-  window.localStorage.setItem('loggedIn', false);
-  window.localStorage.setItem('launchCount', true);
-  window.localStorage.setItem('nickname', '訪客');
-  window.localStorage.setItem('experiencePoint', 0);
-  window.localStorage.setItem('rewards', '[]');
-  window.localStorage.setItem('favoriteStations', '[]');
-  window.localStorage.setItem('coins', 0);
-  window.localStorage.setItem('userIdentity', 'none');
-  window.localStorage.setItem('inVisibleCategories', '[]');
+  for (var i = 0; i < localStorageInitVals.length; i++) {
+    window.localStorage.setItem(localStorageInitVals[i].key, localStorageInitVals[i].value);
+  }
+}
+
+function checkLocalStorage() {
+  for (var i = 0; i < localStorageInitVals.length; i++) {
+    if(!window.localStorage.getItem(localStorageInitVals[i].key)) {
+      userDataInit();
+      break;
+    }
+  }
 }
 
 function calculateAndDisplayRoute(origin, waypts) {
